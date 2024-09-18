@@ -34,10 +34,12 @@ class AuthController extends Controller
             $user = Auth::user();
 
             // Redirect based on role
-            if ($user->role == 'admin') {
+            if ($user->role == 'owner') {
+                return redirect()->route('ownerDashboardView');
+            } else if($user->role == 'admin'){
                 return redirect()->route('adminDashboardView');
             } else {
-                return redirect()->route('userDashboardView');
+                return redirect()->route('cashierDashboardView');
             }
         } else {
             $validator->errors()->add('password', 'The password does not match with username');

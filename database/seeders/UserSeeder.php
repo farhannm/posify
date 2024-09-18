@@ -17,18 +17,24 @@ class UserSeeder extends Seeder
     public function run()
     {
         User::create([
-            'name' => 'Farhan Maulana',
+            'fullname' => 'Farhan Maulana',
             'email' => 'farhan@gmail.com',
             'password' => Hash::make('password123'),
             'role' => 'admin',
         ]);
 
-        // Buat pengguna dengan peran user
         User::create([
-            'name' => 'Ahmad Fauzan',
+            'fullname' => 'Ahmad Fauzan',
             'email' => 'ahmadfauzan@gmail.com',
             'password' => Hash::make('password123'),
-            'role' => 'user',
+            'role' => 'cashier',
+        ]);
+
+        User::create([
+            'fullname' => 'Radja Restu',
+            'email' => 'radjarestu@gmail.com',
+            'password' => Hash::make('password123'),
+            'role' => 'owner',
         ]);
     }
 }

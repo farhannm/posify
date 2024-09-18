@@ -7,16 +7,21 @@ class PagesController extends Controller
     // Landing
     public function viewLandingPage()
     {
-        return view('pages/landing');
+        return view('landing');
     }
 
-
-    // User Pages
-    public function userDashboard()
+    // Cashier Pages
+    public function cashierDashboard()
     {
-        return view('pages/user/dashboard');
+        return view('pages/cashier/dashboard');
     }
     
+    // Owner Pages
+    public function ownerDashboard()
+    {
+        return view('pages/owner/dashboard');
+    }
+
     // Admin Pages
     public function adminDashboard()
     {

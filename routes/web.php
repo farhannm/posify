@@ -14,23 +14,26 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [PagesController::class, 'viewLandingPage'])->name('index');
+Route::get('/', function(){
+    return view('landing');
+ });
 
-Route::middleware('guest')->group(function () {
-    Route::get('/login', [\App\Http\Controllers\AuthController::class, 'loginView'])->name('loginView');
-    Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login'])->name('login');
-    Route::get('/register', [\App\Http\Controllers\AuthController::class, 'registerView'])->name('registerView');
-    Route::post('/register', [\App\Http\Controllers\AuthController::class, 'register'])->name('register');
+Route::get('/login', [\App\Http\Controllers\AuthController::class, 'loginView'])->name('loginView');
+Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login'])->name('login');
+Route::get('/register', [\App\Http\Controllers\AuthController::class, 'registerView'])->name('registerView');
+Route::post('/register', [\App\Http\Controllers\AuthController::class, 'register'])->name('register');
+
+Route::middleware(['auth', 'role:owner'])->group(function () {
+    Route::get('/dashboards', [PagesController::class, 'ownerDashboard'])->name('ownerDashboardView');
 });
 
-
-Route::middleware(['auth', 'role:user'])->group(function () {
-    Route::get('/dashboard', [PagesController::class, 'userDashboard'])->name('userDashboardView');
+Route::middleware(['auth', 'role:cashier'])->group(function () {
+    Route::get('/cashier-dashboard', [PagesController::class, 'cashierDashboard'])->name('cashierDashboardView');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/logout', [\App\Http\Controllers\AuthController::class, 'logout'])->name('logout');
-    Route::get('/', [PagesController::class, 'adminDashboard'])->name('adminDashboardView');
+    Route::get('/dashboards', [PagesController::class, 'adminDashboard'])->name('adminDashboardView');
     Route::get('/elements/avatar', [PagesController::class, 'elementsAvatar'])->name('elements/avatar');
     Route::get('/elements/alert', [PagesController::class, 'elementsAlert'])->name('elements/alert');
     Route::get('/elements/button', [PagesController::class, 'elementsButton'])->name('elements/button');

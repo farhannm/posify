@@ -13,17 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('fullname');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->enum('role', ['admin', 'cashier', 'owner']);
-            $table->rememberToken();
+        Schema::create('transactions', function (Blueprint $table) {
+            $table->id(); 
+            $table->decimal('total_paid', 10, 2); 
+            $table->enum('payment_method', ['cash', 'credit_card', 'debit_card', 'e-wallet']); 
             $table->timestamps();
         });
-        
     }
 
     /**
@@ -33,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('transactions');
     }
 };
