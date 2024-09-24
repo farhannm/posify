@@ -18,8 +18,9 @@ return new class extends Migration
             $table->unsignedBigInteger('category_id')->nullable();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->decimal('price', 10, 2);
-            $table->text('image');
+            $table->decimal('price', 10, 2)->nullable();
+            $table->text('image')->nullable();
+            $table->boolean('has_variant')->default(false); 
             $table->boolean('is_available')->default(true);
             $table->timestamps();
 

@@ -13,15 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('product_variants', function (Blueprint $table) {
+        Schema::create('variant_types', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('product_id'); // ref ke product
-            $table->unsignedBigInteger('variant_id'); // ref ke variant
-
+            $table->string('name'); // contoh: 'rasa', 'ukuran'
             $table->timestamps();
-
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-            $table->foreign('variant_id')->references('id')->on('variants')->onDelete('cascade');
         });
     }
 
@@ -32,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product_variants');
+        Schema::dropIfExists('variant_types');
     }
 };

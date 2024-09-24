@@ -9,5 +9,15 @@ class Variant extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['variant_type', 'value', 'additional_price'];
+    protected $fillable = ['variant_type_id', 'value', 'additional_price'];
+
+    public function variantType()
+    {
+        return $this->belongsTo(VariantType::class);
+    }
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'product_variants')->withPivot('additional_price');
+    }
 }

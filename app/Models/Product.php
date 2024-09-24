@@ -9,16 +9,16 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['category_id', 'name', 'description', 'price', 'category', 'is_available'];
-
-    public function variants()
-    {
-        return $this->belongsToMany(Variant::class, 'product_variants');
-    }
+    protected $fillable = ['category_id', 'name', 'description', 'price', 'image', 'is_available'];
 
     public function category()
     {
         return $this->belongsTo(Categories::class);
+    }
+
+    public function variants()
+    {
+        return $this->belongsToMany(Variant::class, 'product_variants')->withPivot('additional_price');
     }
     
 }
