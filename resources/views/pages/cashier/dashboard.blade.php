@@ -804,18 +804,18 @@
                             <p>60.00$</p>
                         </div>
                     </div>
-                    <div class="mt-5 grid grid-cols-3 gap-4 text-center">
-                        <button class="rounded-lg border border-slate-200 p-3 dark:border-navy-500">
+                    <div class="mt-5 grid grid-cols-2 gap-4 text-center">
+                        <button class="rounded-lg border border-slate-200 p-3 w-50 dark:border-navy-500 active:bg-primary-focus/90 focus:bg-primary-focus">
                             <svg xmlns="http://www.w3.org/2000/svg" class="inline h-9 w-9" fill="none"
                                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
-                            <span class="mt-1 font-medium text-primary dark:text-accent-light">
+                            <span class="mt-1 font-medium text-primary dark:text-accent-light focus:text-white">
                                 Cash
                             </span>
                         </button>
-                        <button class="rounded-lg border border-slate-200 p-3 dark:border-navy-500">
+                        <button class="rounded-lg border border-slate-200 p-3 w-50 dark:border-navy-500">
                             <svg xmlns="http://www.w3.org/2000/svg" class="inline h-9 w-9" fill="none"
                                 viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -823,16 +823,6 @@
                             </svg>
                             <span class="mt-1 font-medium text-primary dark:text-accent-light">
                                 Debit
-                            </span>
-                        </button>
-                        <button class="rounded-lg border border-slate-200 p-3 dark:border-navy-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="inline h-9 w-9" fill="none"
-                                viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-                            </svg>
-                            <span class="mt-1 font-medium text-primary dark:text-accent-light">
-                                Scan
                             </span>
                         </button>
                     </div>
@@ -1168,16 +1158,6 @@
                             </svg>
                             <span class="mt-1 font-medium text-primary dark:text-accent-light">
                                 Debit
-                            </span>
-                        </button>
-                        <button class="rounded-lg border border-slate-200 p-3 dark:border-navy-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="inline h-9 w-9" fill="none"
-                                viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-                            </svg>
-                            <span class="mt-1 font-medium text-primary dark:text-accent-light">
-                                Scan
                             </span>
                         </button>
                     </div>
