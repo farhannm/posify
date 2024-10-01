@@ -106,20 +106,24 @@ export const charts = {
     },
   },
   demoChart3: {
-    colors: ["#ff9800", "#6366f1"],
+    colors: ["#31E1EC", "#3878FF"],
     series: [
       {
-        name: "Net Profit",
-        data: [44, 55, 57, 56, 61, 58, 63],
+        name: "Revenue",
+        data: [44000000, 55000000, 57000000, 56000000, 61000000, 58000000, 63000000, 70000000, 65000000, 60000000, 72000000, 68000000],
+        type: "bar",  // Tipe data untuk Revenue
       },
       {
-        name: "Revenue",
-        data: [76, 85, 101, 98, 87, 105, 91],
+        name: "Transaction",
+        // Mengalikan setiap data transaction dengan 100,000
+        data: [76, 85, 101, 98, 87, 105, 91, 110, 115, 120, 125, 130].map(val => val * 400000),
+        type: "bar",  // Tipe data untuk Transaction  
       },
-    ],
+    ],  
     chart: {
       type: "bar",
-      height: 350,
+      width: "100%", // ini di ubah
+      height: 505,
       toolbar: {
         show: false,
       },
@@ -128,6 +132,7 @@ export const charts = {
       bar: {
         horizontal: true,
         columnWidth: "55%",
+        barHeight: "70%",
         borderRadius: 5,
       },
     },
@@ -140,18 +145,31 @@ export const charts = {
       colors: ["transparent"],
     },
     xaxis: {
-      categories: ["Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"],
+      categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
     },
+    
     fill: {
       opacity: 1,
     },
     tooltip: {
-      y: {
-        formatter: function (val) {
-          return "$ " + val + " thousands";
+      y: [
+        {
+          formatter: function (val) {
+            let formattedValue = new Intl.NumberFormat('id-ID', {
+              style: 'currency',
+              currency: 'IDR',
+              minimumFractionDigits: 2,
+            }).format(val);
+            return formattedValue.replace('IDR', 'Rp');
+          },
         },
-      },
-    },
+        {
+          formatter: function (val) {
+            return (val / 100000) + ' transaction'; // Membagi kembali nilai transaksi agar tampilannya sesuai
+          },
+        },
+      ],
+    },  
     legend: {
       position: "top",
       horizontalAlign: "right",
