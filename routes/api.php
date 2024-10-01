@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\paymentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +15,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::post('/create', [PaymentController::class, 'create'])->name('createTransaction');
+Route::post('/webhooks', [PaymentController::class, 'webhook'])->name('updateTransaction');

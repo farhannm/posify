@@ -9,11 +9,11 @@ class Transaction extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['order_id', 'total_paid', 'payment_method'];
+    protected $fillable = ['order_id', 'total_paid','payment_status' ,'payment_method','checkout_link'];
 
     // Relasi one-to-one dengan Order
-    public function order()
-    {
-        return $this->belongsTo(Order::class, 'order_id');
-    }
+    // public function order()
+    // {
+    //     return $this->belongsTo(Order::class, 'order_id');
+    // }
 }

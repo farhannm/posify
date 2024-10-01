@@ -14,9 +14,12 @@ return new class extends Migration
     public function up()
     {
         Schema::create('transactions', function (Blueprint $table) {
-            $table->id(); 
+            $table->id();
+            $table->string('order_id');
             $table->decimal('total_paid', 10, 2); 
+            $table->string('payment_status')->nullable();
             $table->enum('payment_method', ['cash', 'credit_card', 'debit_card', 'e-wallet']); 
+            $table->string('checkout_link');
             $table->timestamps();
         });
     }

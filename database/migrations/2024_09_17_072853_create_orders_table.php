@@ -19,7 +19,6 @@ return new class extends Migration
             $table->unsignedBigInteger('transaction_id')->nullable();
             $table->string('customer_name')->nullable();
             $table->decimal('total_amount', 10, 2);
-            $table->enum('payment_status', ['pending', 'paid'])->default('pending');
             $table->timestamps();
 
             $table->foreign('transaction_id')->references('id')->on('transactions')->onDelete('cascade');
