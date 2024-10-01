@@ -2,15 +2,15 @@
     <div class="hidden w-full place-items-center lg:grid">
         <div class="w-full max-w-lg p-6">
             <img class="w-full" x-show="!$store.global.isDarkModeEnabled"
-                src="{{ asset('images/illustrations/dashboard-check.svg') }}" alt="image" />
+                src="{{ asset('images/illustrations/loginWanita.svg') }}" alt="image" />
             <img class="w-full" x-show="$store.global.isDarkModeEnabled"
-                src="{{ asset('images/illustrations/dashboard-check-dark.svg') }}" alt="image" />
+                src="{{ asset('images/illustrations/loginWanita-darkMode.svg') }}" alt="image" />
         </div>
     </div>
     <main class="flex w-full flex-col items-center bg-white dark:bg-navy-700 lg:max-w-md">
         <div class="flex w-full max-w-sm grow flex-col justify-center p-5">
             <div class="text-center">
-                <img class="mx-auto h-16 w-16 lg:hidden" src="{{ asset('images/app-logo.svg') }}" alt="logo" />
+                <img class="mx-auto h-16 w-16 lg:hidden" src="{{ asset('images/logo.png') }}" alt="logo" />
                 <div class="mt-4">
                     <h2 class="text-2xl font-semibold text-slate-600 dark:text-navy-100">
                         Welcome Back
@@ -68,7 +68,7 @@
                             type="checkbox" />
                         <span class="line-clamp-1">Remember me</span>
                     </label>
-                    <a href="#"
+                    <a href="{{ route('registerView') }}"
                         class="text-xs text-slate-400 transition-colors line-clamp-1 hover:text-slate-800 focus:text-slate-800 dark:text-navy-300 dark:hover:text-navy-100 dark:focus:text-navy-100">Forgot
                         Password?</a>
                 </div>
@@ -76,14 +76,14 @@
                     class="btn mt-10 h-10 w-full bg-primary font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus dark:focus:bg-accent-focus dark:active:bg-accent/90">
                     Sign In
                 </button>
-                <div class="mt-4 text-center text-xs+">
+                <!-- <div class="mt-4 text-center text-xs+">
                     <p class="line-clamp-1">
                         <span>Dont have Account?</span>
 
                         <a class="text-primary transition-colors hover:text-primary-focus dark:text-accent-light dark:hover:text-accent"
                             href="{{ route('registerView') }}">Create account</a>
                     </p>
-                </div>
+                </div> -->
             </form>
         </div>
     </main>

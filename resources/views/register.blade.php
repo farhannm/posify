@@ -1,18 +1,19 @@
-<x-base-layout title="Register">
+<x-base-layout title="Forgot Password">
     <div class="fixed top-0 hidden p-6 lg:block lg:px-12">
         <a href="#" class="flex items-center space-x-2">
-            <img class="h-12 w-12 " src="{{ asset('images/app-logo.svg') }}" alt="logo" />
+            <img class="h-12 w-12 " src="{{ asset('images/logo.png') }}" alt="logo" />
             <p class="text-xl font-semibold uppercase text-slate-700 dark:text-navy-100">
-                {{ config('app.name') }}
+                <!-- {{ config('app.name') }} -->
+                  Posify
             </p>
         </a>
     </div>
     <div class="hidden w-full place-items-center lg:grid">
         <div class="w-full max-w-lg p-6">
             <img class="w-full" x-show="!$store.global.isDarkModeEnabled"
-                src="{{ asset('images/illustrations/dashboard-meet.svg') }}" alt="image" />
+                src="{{ asset('images/illustrations/forgotPassword.svg') }}" alt="image" />
             <img class="w-full" x-show="$store.global.isDarkModeEnabled"
-                src="{{ asset('images/illustrations/dashboard-meet-dark.svg') }}" alt="image" />
+                src="{{ asset('images/illustrations/forgotPassword-dark.svg') }}" alt="image" />
         </div>
     </div>
     <main class="flex w-full flex-col items-center bg-white dark:bg-navy-700 lg:max-w-md">
@@ -24,12 +25,12 @@
                         Welcome To {{ config('app.name') }}
                     </h2>
                     <p class="text-slate-400 dark:text-navy-300">
-                        Please sign up to continue
+                        Isi form dibawah untuk reset password
                     </p>
                 </div>
             </div>
 
-            <div class="mt-10 flex space-x-4">
+            <!-- <div class="mt-10 flex space-x-4">
                 <button
                     class="btn w-full space-x-3 border border-slate-300 font-medium text-slate-800 hover:bg-slate-150 focus:bg-slate-150 active:bg-slate-150/80 dark:border-navy-450 dark:text-navy-50 dark:hover:bg-navy-500 dark:focus:bg-navy-500 dark:active:bg-navy-500/90">
                     <img class="h-5.5 w-5.5 " src="{{ asset('images/100x100.png') }}" alt="logo" />
@@ -40,13 +41,13 @@
                     <img class="h-5.5 w-5.5 " src="{{ asset('images/100x100.png') }}" alt="logo" />
                     <span>Github</span>
                 </button>
-            </div>
-            <div class="my-7 flex items-center space-x-3">
+            </div> -->
+            <!-- <div class="my-7 flex items-center space-x-3">
                 <div class="h-px flex-1 bg-slate-200 dark:bg-navy-500"></div>
                 <p class="text-tiny+ uppercase">or sign up with email</p>
 
                 <div class="h-px flex-1 bg-slate-200 dark:bg-navy-500"></div>
-            </div>
+            </div> -->
             <form class="mt-4" action="{{ route('register') }}" method="post">
                 @method('POST') @csrf
                 <div class="space-y-4">
@@ -125,12 +126,12 @@
                 </div>
                 <button type="submit"
                     class="btn mt-10 h-10 w-full bg-primary font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus dark:focus:bg-accent-focus dark:active:bg-accent/90">
-                    Sign In
+                    Submit
                 </button>
             </form>
             <div class="mt-4 text-center text-xs+">
                 <p class="line-clamp-1">
-                    <span>Already have an account? </span>
+                    <span>Sudah memiliki akun? </span>
                     <a class="text-primary transition-colors hover:text-primary-focus dark:text-accent-light dark:hover:text-accent"
                         href="{{ route('loginView') }}">Sign In</a>
                 </p>
