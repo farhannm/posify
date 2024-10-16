@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('order_id');
             $table->decimal('total_paid', 10, 2); 
             $table->string('payment_status')->nullable();
-            $table->enum('payment_method', ['cash', 'credit_card', 'debit_card', 'e-wallet']); 
+            $table->String('payment_method'); 
             $table->string('checkout_link');
             $table->timestamps();
         });
