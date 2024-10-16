@@ -17,8 +17,8 @@ class PaymentController extends Controller
 
         $params = array (
             'transaction_details' => array(
-                'order_id' => $request->order_id,
-                'gross_amount' =>  $order->price * $order->quantity,
+                'order_id' => $request->test,
+                'gross_amount' =>  $order->price * $order->quantity * 1000,
             ),
             
             'customer_details' => array(
@@ -30,7 +30,7 @@ class PaymentController extends Controller
             'item_details' => array(
                 array(
                     'name' => $request->product_name,
-                    'price' => $order->price,
+                    'price' => $order->price * 1000,
                     'quantity' => $order->quantity,
                 )
             ),

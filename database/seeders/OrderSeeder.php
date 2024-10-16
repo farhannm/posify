@@ -16,6 +16,7 @@ class OrderSeeder extends Seeder
     {
         DB::table('orders')->insert([
             [
+                'id' => 30,
                 'user_id' => 2,
                 'transaction_id' => null,
                 'customer_name' => 'John Doe',
@@ -24,6 +25,7 @@ class OrderSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 31,
                 'user_id' => 2,
                 'transaction_id' => null,
                 'customer_name' => 'Jane Smith',
@@ -32,6 +34,7 @@ class OrderSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 32,
                 'user_id' => 2,
                 'transaction_id' => null,
                 'customer_name' => 'Michael Johnson',
@@ -40,6 +43,7 @@ class OrderSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 33,
                 'user_id' => 2,
                 'transaction_id' => null,
                 'customer_name' => 'Emily Davis',
