@@ -5,26 +5,33 @@ namespace App\Http\Controllers;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-
+use App\Models\OrderItem;
 class PaymentController extends Controller
 {
+    
     public function create (Request $request){
+        $order = OrderItem::find($request->order_id);
+        if (!$order) {
+            return response()->json(['error' => 'Order not found'], 404);
+        }
+
         $params = array (
             'transaction_details' => array(
                 'order_id' => $request->order_id,
-                'gross_amount' =>  $request->total_amount,
+                'gross_amount' =>  $order->price * $order->quantity,
             ),
+            
             'customer_details' => array(
-                'first_name' => 'budi',
-                'last_name' => 'pratama',
-                'email' => 'budi.pra@example.com',
-                'phone' => '08111222333',
+                'first_name' => $order->customer_name,
+                'last_name' => '-',
+                'email' => 'dummy@gmail.com',
+                'phone' => '-',
             ),
             'item_details' => array(
                 array(
                     'name' => $request->product_name,
-                    'price' => $request->total_amount,
-                    'quantity' => 1,
+                    'price' => $order->price,
+                    'quantity' => $order->quantity,
                 )
             ),
             'enabled_payments' => array('credit_card','bca_va','bni_va','bri_va')
@@ -42,7 +49,7 @@ class PaymentController extends Controller
     
         $payment = new Transaction;
         $payment->order_id = $params['transaction_details']['order_id'];
-        $payment->total_paid = $request->total_amount;
+        $payment->total_paid = $order->price * $order->quantity;
         $payment->payment_status = 'pending';
         $payment->payment_method = 'credit_card';
         $payment->checkout_link = '$response->redirect_url';
