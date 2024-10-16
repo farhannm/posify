@@ -6,6 +6,7 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use App\Models\OrderItem;
+use App\Models\Product;
 class PaymentController extends Controller
 {
     
@@ -13,6 +14,11 @@ class PaymentController extends Controller
         $order = OrderItem::find($request->order_id);
         if (!$order) {
             return response()->json(['error' => 'Order not found'], 404);
+        }
+
+        $nama = Product::find($order->product_id);
+        if (!$nama) {
+            return response()->json(['error' => 'Product not found'], 404);
         }
 
         $params = array (
@@ -23,13 +29,11 @@ class PaymentController extends Controller
             
             'customer_details' => array(
                 'first_name' => $order->customer_name,
-                'last_name' => '-',
                 'email' => 'dummy@gmail.com',
-                'phone' => '-',
             ),
             'item_details' => array(
                 array(
-                    'name' => $request->product_name,
+                    'name' => $nama->name,
                     'price' => $order->price * 1000,
                     'quantity' => $order->quantity,
                 )
@@ -51,8 +55,8 @@ class PaymentController extends Controller
         $payment->order_id = $params['transaction_details']['order_id'];
         $payment->total_paid = $order->price * $order->quantity;
         $payment->payment_status = 'pending';
-        $payment->payment_method = 'credit_card';
-        $payment->checkout_link = '$response->redirect_url';
+        $payment->payment_method = '-';
+        $payment->checkout_link = $response->redirect_url;
         $payment->save();
         
         return response()->json($response);

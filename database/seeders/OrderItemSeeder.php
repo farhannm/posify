@@ -37,7 +37,7 @@ class OrderItemSeeder extends Seeder
                 'order_id' => 31,
                 'product_id' => 3, // Spicy Ramen
                 'quantity' => 1,
-                'price' => 30.00,
+                'price' => 15.00,
                 'total' => 30.00,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -47,7 +47,7 @@ class OrderItemSeeder extends Seeder
                 'product_id' => 4, // Nasi Goreng
                 'quantity' => 3,
                 'price' => 25.00,
-                'total' => 100.00,
+                'total' => 75.00,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
