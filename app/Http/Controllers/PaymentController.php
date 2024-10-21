@@ -38,7 +38,7 @@ class PaymentController extends Controller
                     'quantity' => $order->quantity,
                 )
             ),
-            'enabled_payments' => array('credit_card','bca_va','bni_va','bri_va')
+            'enabled_payments' => array('bca_va','bni_va','bri_va', 'gopay', 'shopeepay')
         );
         
         
