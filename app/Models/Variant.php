@@ -13,11 +13,11 @@ class Variant extends Model
 
     public function variantType()
     {
-        return $this->belongsTo(VariantType::class);
+        return $this->belongsTo(VariantType::class, 'variant_type_id');
     }
 
     public function products()
     {
-        return $this->belongsToMany(Product::class, 'product_variants')->withPivot('additional_price');
+        return $this->belongsToMany(Product::class, 'product_variants');
     }
 }

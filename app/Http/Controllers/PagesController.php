@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
+use App\Models\Variant;
+use App\Models\VariantType;
+use Illuminate\Support\Facades\DB;
+
 class PagesController extends Controller
 {
     // Landing
@@ -26,6 +31,33 @@ class PagesController extends Controller
     public function adminDashboard()
     {
         return view('pages/admin/dashboard');
+    }
+
+    public function viewProducts()
+    {
+        $products = Product::with(['category', 'variants'])->paginate(10);
+        $totalStock = DB::table('product_variant_stocks')->sum('stock');
+        $totalProduct = Product::count();
+        $totalVariants = Variant::count();
+
+        $countCoffee = Product::where('category_id', 1)->count();
+        $countNonCoffee = Product::where('category_id', 2)->count();
+        $countMeals = Product::where('category_id', 3)->count();
+        $countSideDish = Product::where('category_id', 4)->count();
+
+        return view('pages/admin/products', compact('products', 'totalStock', 'totalProduct', 'totalVariants', 'countCoffee', 'countNonCoffee', 'countMeals', 'countSideDish'));
+    }
+
+    public function viewProductVariants()
+    {
+        $variantTypes = VariantType::with('variants')->get();
+
+        return view('pages/admin/product-variants', compact('variantTypes'));
+    }
+
+    public function viewProductForm()
+    {
+        return view('pages/admin/add-product');
     }
 
     public function elementsAvatar()

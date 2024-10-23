@@ -9,7 +9,7 @@ class Transaction extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['order_id', 'total_paid', 'payment_method'];
+    protected $fillable = ['order_id', 'total_paid', 'payment_method', 'payment_status'];
 
     // Relasi one-to-one dengan Order
     public function order()

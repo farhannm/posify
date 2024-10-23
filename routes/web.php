@@ -14,18 +14,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
-Route::get('/', function(){
+Route::get('/', function () {
     return view('landing');
- });
+})->name('landing');
+
 
 Route::get('/login', [\App\Http\Controllers\AuthController::class, 'loginView'])->name('loginView');
 Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login'])->name('login');
 Route::get('/register', [\App\Http\Controllers\AuthController::class, 'registerView'])->name('registerView');
 Route::post('/register', [\App\Http\Controllers\AuthController::class, 'register'])->name('register');
 
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [\App\Http\Controllers\AuthController::class, 'logout'])->name('logout');
+});
+
 Route::middleware(['auth', 'role:owner'])->group(function () {
-    Route::get('/dashboards', [PagesController::class, 'ownerDashboard'])->name('ownerDashboardView');
+    Route::get('/owner-dashboards', [PagesController::class, 'ownerDashboard'])->name('ownerDashboardView');
 });
 
 Route::middleware(['auth', 'role:cashier'])->group(function () {
@@ -33,8 +37,16 @@ Route::middleware(['auth', 'role:cashier'])->group(function () {
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::post('/logout', [\App\Http\Controllers\AuthController::class, 'logout'])->name('logout');
-    Route::get('/dashboards', [PagesController::class, 'adminDashboard'])->name('adminDashboardView');
+    Route::get('/admin-dashboards', [PagesController::class, 'adminDashboard'])->name('adminDashboardView');
+
+    //Products
+    Route::get('/admin/products', [PagesController::class, 'viewProducts'])->name('view-products');
+    Route::get('/admin/products/add-product', [PagesController::class, 'viewProductForm'])->name('add-product-form');
+
+    //Variants
+    Route::get('/admin/products/variants', [PagesController::class, 'viewProductVariants'])->name('view-product-variants');
+
+
     Route::get('/elements/avatar', [PagesController::class, 'elementsAvatar'])->name('elements/avatar');
     Route::get('/elements/alert', [PagesController::class, 'elementsAlert'])->name('elements/alert');
     Route::get('/elements/button', [PagesController::class, 'elementsButton'])->name('elements/button');

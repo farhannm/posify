@@ -1,4 +1,4 @@
-<x-app-layout title="CRM Analytics Dashboard" is-header-blur="true">
+<x-app-layout title="Dashboard Admin" is-header-blur="true">
     <!-- Main Content Wrapper -->
     <main class="main-content w-full pb-8">
         <div
