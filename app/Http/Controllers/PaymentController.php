@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ProductVariantStock;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -24,6 +25,7 @@ class PaymentController extends Controller
         $valid = OrderItem::where('order_id', $order->id)->get();
         if ($valid->isEmpty()) {
             return response()->json(['error' => 'order item not found'], 404);
+        }else{
             for($i = 0; $i < $valid->count(); $i++) {
                 $order_item[$i] = $valid->skip($i)->first();
                 $nama[$i] = Product::find($order_item[$i]->product_id);
@@ -32,7 +34,7 @@ class PaymentController extends Controller
 
         $params = array (
             'transaction_details' => array(
-                'order_id' => $request->test,
+                'order_id' => $order->id,
                 'gross_amount' =>  $order->total_amount * 1000,
             ),
             
@@ -57,26 +59,29 @@ class PaymentController extends Controller
                 'quantity' => $order_item[$i]->quantity
             );
         }
-        
+
         $auth = base64_encode(env('MIDTRANS_SERVER_KEY'));
         
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
             'Authorization' => "Basic $auth",
-        ])->post('https://app.sandbox.midtrans.com/snap/v1/transactions', $params); 
+        ])->post('https://app.sandbox.midtrans.com/snap/v1/transactions', $params);
+
+        $response = json_decode($response->body());
     
         $payment = new Transaction;
         $payment->order_id = $params['transaction_details']['order_id'];
         $payment->total_paid = $params['transaction_details']['gross_amount'];
         $payment->payment_status = 'pending';
         $payment->payment_method = '-';
-        $payment->checkout_link = $response->json('token');
+        $payment->checkout_link = $response->token;
         $payment->save();
         
         return response()->json($response);
     }
 
     public function webhook(Request $request){
+        
         $auth = base64_encode(env('MIDTRANS_SERVER_KEY'));
 
         $response = Http::withHeaders([
@@ -88,6 +93,11 @@ class PaymentController extends Controller
 
         $payment = Transaction::where('order_id',$response->order_id)->firstOrFail();
 
+        $order = Order::find($response->order_id);
+        if (!$order) {
+            return response()->json(['error' => 'Order not found'], 404);
+        }
+
         if($payment->payment_status === 'settlement' || $payment->payment_status === 'capture'){
             return response()->json('Payment sedang di proses');
         }
@@ -98,6 +108,7 @@ class PaymentController extends Controller
         if($response->transaction_status === 'settlement'){
             $payment->payment_status = 'settlement';
             $payment->payment_method = $response->payment_type;
+            $order->transaction_id = $payment->id;
         }
         if($response->transaction_status === 'pending'){
             $payment->payment_status = 'pending';
@@ -111,7 +122,14 @@ class PaymentController extends Controller
         if($response->transaction_status === 'cancle'){
             $payment->payment_status = 'cancle';
         }
+        $order->save();
         $payment->save();
         return response()->json('success');
+    }
+
+    public function test(Request $request){
+        $test = ProductVariantStock::find($request->id);
+
+        return response()->json($test);
     }
 }
