@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Categories;
+use App\Models\Product;
+
 class PagesController extends Controller
 {
     // Landing
@@ -11,12 +14,13 @@ class PagesController extends Controller
     }
 
     // Cashier Pages
-    public function cashierDashboard()
+    public function     cashierDashboard()
     {
-        return view('pages/cashier/dashboard');
+        $products = Product::all();
+        $categories = Categories::all();
+        return view('pages/cashier/dashboard', compact('products', 'categories'));
     }
-    
-    // Owner Pages
+
     public function ownerDashboard()
     {
         return view('pages/owner/dashboard');

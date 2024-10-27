@@ -16,7 +16,7 @@ class OrderItemSeeder extends Seeder
     {
         DB::table('order_items')->insert([
             [
-                'order_id' => 30,
+                'order_id' => 49,
                 'product_id' => 1, // Espresso
                 'quantity' => 2,
                 'price' => 20.00,
@@ -25,7 +25,7 @@ class OrderItemSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'order_id' => 30,
+                'order_id' => 49,
                 'product_id' => 2, // Chocolate Milkshake
                 'quantity' => 1,
                 'price' => 15.00,

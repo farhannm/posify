@@ -28,8 +28,8 @@ class ProductSeeder extends Seeder
             ],
             [
                 'category_id' => 2, // Milkshake
-                'name' => 'Chocolate Milkshake',
-                'description' => 'A rich and creamy milkshake made with real chocolate and fresh milk.',
+                'name' => 'Milkshake',
+                'description' => 'A rich and creamy milkshake made with fresh milk.',
                 'price' => 15.00,
                 'image' => 'chocolate_milkshake.jpg',
                 'has_variant' => false,
@@ -39,10 +39,10 @@ class ProductSeeder extends Seeder
             ],
             [
                 'category_id' => 3, // Mie
-                'name' => 'Spicy Ramen',
+                'name' => 'Ramen',
                 'description' => 'A bowl of hot and spicy ramen noodles with a delicious broth.',
                 'price' => 30.00,
-                'image' => 'spicy_ramen.jpg',
+                'image' => 'ramen.jpg',
                 'has_variant' => true,
                 'is_available' => true,
                 'created_at' => now(),
