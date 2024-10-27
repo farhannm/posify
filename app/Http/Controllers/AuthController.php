@@ -36,16 +36,24 @@ class AuthController extends Controller
             'email' => 'required|email|exists:users,email'
         ], $customMessage);
 
+        $sudahRequest = PasswordResetToken::where('email', $request->email)->where('created_at', '>', now()->subMinutes(5))->first();
+
+
+        if ($sudahRequest) {
+            return redirect()->back()->with('failed', 'Anda sudah melakukan permintaan reset password. Silahkan periksa email Anda atau coba lagi setelah 5 menit');
+        }
+
+        PasswordResetToken::where('email', $request->email)->delete();
 
         $token = \Str::random(60);
-        PasswordResetToken::updateOrCreate(
-        ['email' => $request->email],
-            [
+        $expiresAt = now()->addMinutes(5);
+
+        PasswordResetToken::create([
                 'email' => $request->email,
                 'token' => $token,
                 'created_at' => now(),
-            ]
-            );
+                'expires_at' => $expiresAt,
+            ]);
 
             Mail::to($request->email)->send(new ResetPasswordMail($token));
 
@@ -59,8 +67,8 @@ class AuthController extends Controller
         
         $getToken = PasswordResetToken::where('token', $token)->first();
 
-        if(!$getToken) {
-            return redirect()->route('login')->with('failed', 'Token tidak valid');
+        if(!$getToken || $getToken->expires_at < now()) {
+            return redirect()->route('login')->with('failed', 'Token tidak valid atau sudah kadaluarsa');
         }
 
         return view('auth.validate-token', compact('token'));
@@ -78,8 +86,8 @@ class AuthController extends Controller
 
         $token = PasswordResetToken::where('token', $request->token)->first();
 
-        if (!$token) {
-            return redirect()->route('login')->with('failed', 'Token tidak valid');
+        if (!$token || $token->expires_at < now()) {
+            return redirect()->route('login')->with('failed', 'Token tidak valid atau sudah kadaluarsa');
         }
 
         $user = User::where('email', $token->email)->first();
@@ -93,7 +101,7 @@ class AuthController extends Controller
         ]);
 
 
-        PasswordResetToken::where('token', $token)->delete();
+        PasswordResetToken::where('token', $token->token)->delete();
 
         return redirect()->route('login')->with('success', 'Password berhasil diganti');
 

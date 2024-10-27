@@ -20,5 +20,6 @@ class PasswordResetToken extends Model
         'email',
         'token',
         'created_at',
+        'expires_at',
     ];
 }

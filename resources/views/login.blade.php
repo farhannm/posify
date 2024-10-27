@@ -96,6 +96,23 @@
                     </span>
                 </div>
             @endif
+
+
+            @if(session('failed'))
+                <div class="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded relative flex items-center justify-between" role="alert">
+                    <div>
+                        <strong class="font-bold">Failed!</strong>
+                        <span class="block sm:inline">{{ session('failed') }}</span>
+                    </div>
+                    <button type="button" class="ml-4 text-red-500 focus:outline-none" onclick="this.parentElement.style.display='none';">
+                        <svg class="fill-current h-6 w-6" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <path d="M14.348 14.849a1 1 0 01-1.414 0L10 11.414l-2.935 2.935a1 1 0 01-1.414-1.414l2.935-2.935L5.651 7.07a1 1 0 111.414-1.414l2.935 2.935 2.935-2.935a1 1 0 011.414 1.414L11.414 10l2.935 2.935a1 1 0 010 1.414z"/>
+                        </svg>
+                    </button>
+                </div>
+            @endif
+
+
         </div>
     </main>
 </x-base-layout>
