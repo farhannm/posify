@@ -249,19 +249,22 @@
                             </button>
                         </div>
                     </div>
+                    
                     <div class="swiper-wrapper mt-5" x-data="{ selected: 'slide-1' }">
-                        <div class="card swiper-slide w-24 shrink-0 cursor-pointer" @click="selected = 'slide-1'">
+                        @foreach ($categories as $index => $category)
+                        <div class="card swiper-slide w-24 shrink-0 cursor-pointer" @click="selected = 'slide-{{ $index + 1}}'">
                             <div class="flex flex-col items-center rounded-lg px-2 py-4"
-                                :class="selected === 'slide-1' ?
+                                :class="selected === 'slide-{{ $index + 1}}' ?
                                     'text-secondary bg-secondary/10  dark:bg-secondary-light/10 dark:text-secondary-light' :
                                     'text-slate-600 dark:text-navy-100'">
                                 <img class="w-12" src="{{ asset('images/100x100.png') }}" alt="image" />
                                 <h3 class="pt-2 font-medium tracking-wide line-clamp-1">
-                                    Burger
+                                    {{ $category->category_name }}
                                 </h3>
                             </div>
                         </div>
-                        <div class="card swiper-slide w-24 shrink-0 cursor-pointer" @click="selected = 'slide-2'">
+                        @endforeach
+                        <!-- <div class="card swiper-slide w-24 shrink-0 cursor-pointer" @click="selected = 'slide-2'">
                             <div class="flex flex-col items-center rounded-lg px-2 py-4"
                                 :class="selected === 'slide-2' ?
                                     'text-secondary bg-secondary/10  dark:bg-secondary-light/10 dark:text-secondary-light' :
@@ -348,26 +351,33 @@
                                     Burrito
                                 </h3>
                             </div>
-                        </div>
+                        </div>-->
+                        
                     </div>
                 </div>
+                
+                
                 <div
                     class="mt-4 grid grid-cols-2 gap-4 sm:mt-5 sm:grid-cols-2 sm:gap-5 lg:mt-6 lg:grid-cols-3 xl:grid-cols-4">
+                    @foreach ($products as $product)
                     <div class="card p-2">
                         <img class="rounded-lg" src="{{ asset('images/800x600.png') }}" alt="image" />
                         <div class="pt-2">
+                            
                             <p class="font-medium text-slate-700 line-clamp-1 dark:text-navy-100">
-                                Duck Salad
+                                {{$product->name}}
                             </p>
+                            
                             <p class="text-xs text-slate-400 line-clamp-1 dark:text-navy-300">
-                                Description
+                                {{$product->description}}
                             </p>
                             <p class="text-right font-medium text-primary dark:text-accent-light">
-                                35.00 $
+                                {{'Rp '. number_format($product->price,2)}}
                             </p>
                         </div>
                     </div>
-                    <div class="card p-2">
+                    @endforeach
+                    <!-- <div class="card p-2">
                         <img class="rounded-lg" src="{{ asset('images/800x600.png') }}" alt="image" />
                         <div class="pt-2">
                             <p class="font-medium text-slate-700 line-clamp-1 dark:text-navy-100">
@@ -520,7 +530,7 @@
                                 86.00 $
                             </p>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
             <div class="hidden sm:col-span-6 sm:block lg:col-span-4">
@@ -639,6 +649,7 @@
                                         2
                                     </div>
                                 </div>
+
                                 <div>
                                     <div class="flex items-center space-x-1">
                                         <p class="font-medium text-slate-700 line-clamp-1 dark:text-navy-100">
@@ -1139,8 +1150,11 @@
                             <p>60.00$</p>
                         </div>
                     </div>
-                    <div class="mt-5 grid grid-cols-3 gap-4 text-center">
-                        <button class="rounded-lg border border-slate-200 p-3 dark:border-navy-500">
+                    <div class="mt-5 grid grid-cols-3 gap-4 text-center" y-data="{ selected: 'button-1 }">
+                        <button class="rounded-lg border border-slate-200 p-3 dark:border-navy-500 cursor-pointer" @click="selected = 'button-1'"
+                                :class="selected === 'button-1' ?
+                                    text-secondary bg-secondary:text-accent-light : 'text-slate-500 dark:text-navy-300':
+                                    'text-slate-500 dark:text-navy-300'">
                             <svg xmlns="http://www.w3.org/2000/svg" class="inline h-9 w-9" fill="none"
                                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -1150,7 +1164,10 @@
                                 Cash
                             </span>
                         </button>
-                        <button class="rounded-lg border border-slate-200 p-3 dark:border-navy-500">
+                        <button class="rounded-lg border border-slate-200 p-3 dark:border-navy-500 cursor-pointer"  @click="selected = 'button-2'"
+                                :class="selected === 'button-2' ?
+                                    text-primary dark:text-accent-light : 'text-slate-500 dark:text-navy-300':
+                                    'text-slate-500 dark:text-navy-300'">
                             <svg xmlns="http://www.w3.org/2000/svg" class="inline h-9 w-9" fill="none"
                                 viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round"
