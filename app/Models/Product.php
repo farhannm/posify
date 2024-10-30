@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Product extends Model
 {
@@ -16,9 +16,22 @@ class Product extends Model
         return $this->belongsTo(Categories::class);
     }
 
+    public function productVariantStocks()
+    {
+        return $this->hasMany(ProductVariantStock::class, 'product_id');
+    }
+
     public function variants()
     {
-        return $this->belongsToMany(Variant::class, 'product_variants');
+        $variantIds = $this->variantIds(); 
+        return Variant::whereIn('id', $variantIds)->get();
     }
-    
+
+    private function variantIds()
+    {
+        return $this->productVariantStocks->flatMap(function ($stock) {
+            return $stock->variant_ids;
+        })->unique()->values()->all();
+    }
 }
+

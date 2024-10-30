@@ -16,8 +16,7 @@ return new class extends Migration
         Schema::create('variants', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('variant_type_id'); 
-            $table->string('value'); // contoh: 'Strawberry', 'Large'
-            $table->decimal('additional_price', 10, 2)->default(0.00); 
+            $table->string('value'); // contoh: 'Strawberry', 'Large' 
             $table->timestamps();
 
             $table->foreign('variant_type_id')->references('id')->on('variant_types')->onDelete('cascade');

@@ -9,7 +9,7 @@ class ProductVariantStock extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['product_id', 'variant_ids', 'stock'];
+    protected $fillable = ['product_id', 'variant_ids', 'stock', 'isAvailable'];
 
     /**
      * Cast variant_ids as JSON.
@@ -23,7 +23,7 @@ class ProductVariantStock extends Model
      */
     public function product()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class, 'product_id');
     }
 
     /**

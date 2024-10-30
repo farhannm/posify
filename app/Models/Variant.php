@@ -18,6 +18,6 @@ class Variant extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Product::class, 'product_variants');
+        return $this->hasMany(ProductVariantStock::class);
     }
 }

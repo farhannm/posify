@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PagesController;
+use App\Http\Controllers\ProductsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -42,9 +43,15 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     //Products
     Route::get('/admin/products', [PagesController::class, 'viewProducts'])->name('view-products');
     Route::get('/admin/products/add-product', [PagesController::class, 'viewProductForm'])->name('add-product-form');
+    Route::post('/admin/products/add-product', [ProductsController::class, 'store'])->name('products-store');
 
     //Variants
     Route::get('/admin/products/variants', [PagesController::class, 'viewProductVariants'])->name('view-product-variants');
+    Route::get('/admin/products/add-variants/{id}', [PagesController::class, 'viewAddVariantsForm'])->name('add-variants-form');
+    Route::post('/admin/products/add-variant/{id}', [ProductsController::class, 'addVariants'])->name('add-variants');
+
+    //Details
+    Route::get('/admin/products/product-detail/{id}', [PagesController::class, 'viewProductDetail'])->name('view-product-detail');
 
 
     Route::get('/elements/avatar', [PagesController::class, 'elementsAvatar'])->name('elements/avatar');

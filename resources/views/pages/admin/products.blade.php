@@ -88,7 +88,7 @@
                     </p>
                 </div>
 
-                <img class="h-36 object-contain sm:mt-0" src="{{ asset('images/dishes.png') }}" alt="image" />
+                <img class="h-40 object-contain sm:mt-0" src="{{ asset('images/dishes.png') }}" alt="image" />
                 {{-- <div class="flex justify-end z-3">
                     <a href="{{ route('view-products') }}">
                         <button
@@ -102,7 +102,7 @@
                     </a>
                 </div> --}}
 
-                <div class="flex justify-end">
+                {{-- <div class="flex justify-end">
                     <a href="{{ route('view-product-variants')}}">
                         <button class="badge mt-5 rounded-lg bg-black/20 text-indigo-50 p-2 w-36 text-sm hover:bg-black/35">
                             {{ $totalVariants ? $totalVariants : 0 }} variants
@@ -113,7 +113,7 @@
                             </svg>
                         </button>
                     </a>
-                </div>
+                </div> --}}
             </div>
             
             <div class="col-span-2">
@@ -222,9 +222,6 @@
                                  Product Name
                             </th>
                             <th class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                Availability
-                            </th>
-                            <th class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
                                 Category
                             </th>
                             <th class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
@@ -232,6 +229,9 @@
                             </th>
                             <th class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
                                 Base Price
+                            </th>
+                            <th class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
+                                Variants
                             </th>
                             <th class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
                                 Actions
@@ -248,19 +248,19 @@
                                         {{ $product->name }}
                                     </td>
                                     <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                        {{ $product->is_available ? 'Available' : 'Not Available' }}
-                                    </td>
-                                    <td class="whitespace-nowrap px-4 py-3 sm:px-5">
                                         {{ $product->category ? $product->category->category_name : 'No Category' }}
                                     </td>
                                     <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                        {{ $totalStock ? $totalStock : 'Out of Stock' }}
+                                        {{ $product->total_stock ? $product->total_stock : 'Out of Stock' }}
                                     </td>
                                     <td class="whitespace-nowrap px-4 py-3 sm:px-5">
                                         {{ $product->price ? 'Rp. ' . number_format($product->price, 0, ',', '.') : 'N/A' }}
                                     </td>
                                     <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                        <a href="{{ route('view-products') }}" class="mr-2">
+                                        {{ $product->productVariantStocks()->count() ? $product->productVariantStocks()->count() : 'No Variant'}}
+                                    </td>
+                                    <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+                                        <a href="{{ route('view-product-detail', $product->id) }}" class="mr-2">
                                             <button
                                                 class="btn h-8 w-8 rounded-md bg-violet-100 p-0 font-medium text-slate-800 hover:bg-violet-200 focus:bg-slate-200 active:bg-slate-200/80 dark:bg-navy-500 dark:text-navy-50 dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 rotate-45" fill="none"
@@ -280,20 +280,20 @@
                                             @click="isShowPopper = !isShowPopper"
                                             class="btn h-8 w-8 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25"
                                             >
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                class="h-5 w-5"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke="currentColor"
-                                                stroke-width="2"
-                                            >
-                                                <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
-                                                />
-                                            </svg>
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    class="h-5 w-5"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                    stroke-width="2"
+                                                >
+                                                    <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
+                                                    />
+                                                </svg>
                                             </button>
 
                                             <div x-ref="popperRoot" class="popper-root" :class="isShowPopper && 'show'">

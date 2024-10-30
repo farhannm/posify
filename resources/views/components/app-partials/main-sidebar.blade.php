@@ -111,8 +111,7 @@
                     <div x-data="usePopper({ placement: 'right-end', offset: 12 })" @click.outside="if(isShowPopper) isShowPopper = false" class="flex">
                         <button @click="isShowPopper = !isShowPopper" x-ref="popperRef" class="avatar h-12 w-12">
                             <img class="rounded-full object-contain w-1 h-1" src="{{ asset('images/illustrations/penguins.svg') }}" alt="avatar" />
-                            <span
-                                class="absolute right-0 h-3.5 w-3.5 rounded-full border-2 border-white bg-success dark:border-navy-700"></span>
+                            <span class="absolute right-0 h-3.5 w-3.5 rounded-full border-2 border-white bg-success dark:border-navy-700"></span>
                         </button>
                         <div :class="isShowPopper && 'show'" class="popper-root fixed" x-ref="popperRoot">
                             <div
