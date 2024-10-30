@@ -23,7 +23,10 @@ class PagesController extends Controller
 
     public function ownerDashboard()
     {
-        return view('pages/owner/dashboard');
+        $analysis = new AnalysisController();
+        $totalRevenue = $analysis->revenue();
+
+        return view('pages/owner/dashboard', compact('totalRevenue'));
     }
 
     // Admin Pages

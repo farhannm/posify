@@ -12,33 +12,39 @@
             </div>
             <div class="w-1/2 ml-auto">
                 <div>
-                <!-- calendar -->
-                <div class="flex justify-center mt-4">
-                    <label class="relative flex">
-                    <input
-                        x-init="$el._x_flatpickr = flatpickr($el, {
-                        mode: 'range', 
-                        dateFormat: 'Y-m-d', 
-                        defaultDate: ['2024-9-19', '2024-9-29']
-                        })"
-                        class="form-input peer w-64 rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
-                        placeholder="Choose date..."
-                        type="text"
-                        />
-                        <span class="pointer-events-none absolute flex h-full w-10 items-center justify-center text-slate-400 peer-focus:text-primary dark:text-navy-300 dark:peer-focus:text-accent">
-                        <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5 transition-colors duration-200"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        stroke-width="1.5"
-                        >
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10m-11 9h12c.55 0 1-.45 1-1V8c0-.55-.45-1-1-1H5c-.55 0-1 .45-1 1v11c0 .55.45 1 1 1z"/>
-                        </svg>
-                    </span>
-                    </label>
-                </div>
+                <form method="GET" action="{{ route('ownerDashboardView') }}" id="dateForm">
+                    <!-- calendar -->
+                    <div class="flex justify-center mt-4">
+                        <label class="relative flex">
+                            <input
+                                x-init="$el._x_flatpickr = flatpickr($el, {
+                                mode: 'range', 
+                                dateFormat: 'Y-m-d', 
+                                defaultDate: [(new Date()).toISOString().split('T')[0], (new Date()).toISOString().split('T')[0]],
+                                onChange: function(selectedDates, dateStr, instance) {
+                                    document.getElementById('dateForm').submit();
+                                }
+                                })"
+                                name="rentang_tanggal"
+                                class="form-input peer w-64 rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                placeholder="Choose date..."
+                                type="text"
+                            />
+                            <span class="pointer-events-none absolute flex h-full w-10 items-center justify-center text-slate-400 peer-focus:text-primary dark:text-navy-300 dark:peer-focus:text-accent">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    class="h-5 w-5 transition-colors duration-200"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    stroke-width="1.5"
+                                >
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10m-11 9h12c.55 0 1-.45 1-1V8c0-.55-.45-1-1-1H5c-.55 0-1 .45-1 1v11c0 .55.45 1 1 1z"/>
+                                </svg>
+                            </span>
+                        </label>
+                    </div>
+                </form>
                 </div>
             </div>
         </div>
@@ -99,7 +105,7 @@
                         <!-- uang -->
                         <div class="flex justify-center text-4xl font-bold text-black"> 
                             <div class="mr-2">Rp</div>
-                            <div>6.400.000,00</div>
+                            <div>{{ $totalRevenue }}</div>
                         </div>
                         <!-- persentase -->
                         <div class="flex justify-center mr-1">  

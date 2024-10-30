@@ -22,6 +22,14 @@ Route::get('/', function(){
     return view('landing');
  });
 
+
+// bagian analisis
+
+
+
+
+
+
 Route::get('/login', [\App\Http\Controllers\AuthController::class, 'loginView'])->name('loginView');
 Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login'])->name('login');
 
@@ -38,7 +46,7 @@ Route::get('/register', [\App\Http\Controllers\AuthController::class, 'registerV
 Route::post('/register', [\App\Http\Controllers\AuthController::class, 'register'])->name('register');
 
 Route::middleware(['auth', 'role:owner'])->group(function () {
-    Route::get('/dashboards', [PagesController::class, 'ownerDashboard'])->name('ownerDashboardView');
+    Route::get('/owner-dashboard', [PagesController::class, 'ownerDashboard'])->name('ownerDashboardView');
 });
 
 Route::middleware(['auth', 'role:cashier'])->group(function () {
