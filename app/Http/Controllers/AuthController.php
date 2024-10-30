@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
+use illuminate\Support\Str;
 // mail
 use Illuminate\Support\Facades\Mail;
 
@@ -45,7 +46,7 @@ class AuthController extends Controller
 
         PasswordResetToken::where('email', $request->email)->delete();
 
-        $token = \Str::random(60);
+        $token = Str::random(60);
         $expiresAt = now()->addMinutes(5);
 
         PasswordResetToken::create([

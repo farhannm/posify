@@ -18,16 +18,16 @@ use App\Http\Controllers\CashierController;
 
 
 
-Route::get('/', function(){
-    return view('landing');
- });
+Route::get('/', function () {
+    return view('auth.mail-reset-password');
+});
+
+// Route::get('/', function () {
+//     return view('landing');
+// })->name('landing');
 
 
 // bagian analisis
-
-
-
-
 
 
 Route::get('/login', [\App\Http\Controllers\AuthController::class, 'loginView'])->name('loginView');
