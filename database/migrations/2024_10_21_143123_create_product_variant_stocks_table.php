@@ -13,20 +13,18 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('order_items', function (Blueprint $table) {
+        Schema::create('product_variant_stocks', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('order_id'); 
             $table->unsignedBigInteger('product_id');
-            $table->json('variant');
-            $table->integer('quantity');
-            $table->decimal('price', 10, 2); 
-            $table->decimal('total', 10, 2); 
+            $table->json('variant_ids'); 
+            $table->decimal('additional_price', 10, 2)->default(0.00); 
+            $table->integer('stock')->default(0);
+            $table->boolean('isAvailable')->default(false);
             $table->timestamps();
-
-            // Menambahkan foreign key constraints
-            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
+        
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
         });
+
     }
 
     /**
@@ -36,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('order_items');
+        Schema::dropIfExists('product_variant_stocks');
     }
 };

@@ -13,6 +13,11 @@ class Variant extends Model
 
     public function variantType()
     {
-        return $this->belongsTo(VariantType::class);
+        return $this->belongsTo(VariantType::class, 'variant_type_id');
+    }
+
+    public function products()
+    {
+        return $this->hasMany(ProductVariantStock::class);
     }
 }

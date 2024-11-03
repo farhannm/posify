@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class ProductVariantStockSeeder extends Seeder
 {
@@ -14,23 +16,41 @@ class ProductVariantStockSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('product_variant_stocks')->insert([
-            ['product_id' => 1, 'variant_ids' => json_encode([3]), 'stock' => 10, 'isAvailable' => true, 'created_at' => now(), 'updated_at' => now()], // Small
-            ['product_id' => 1, 'variant_ids' => json_encode([4]), 'stock' => 5, 'isAvailable' => true, 'created_at' => now(), 'updated_at' => now()], // Large
+        $sizes = [1, 2, 3];  
+        $flavors = [4, 5, 6];  
 
-            ['product_id' => 2, 'variant_ids' => json_encode([1, 3]), 'stock' => 7, 'isAvailable' => true, 'created_at' => now(), 'updated_at' => now()], // Strawberry,small
-            ['product_id' => 2, 'variant_ids' => json_encode([1, 4]), 'stock' => 10, 'isAvailable' => true, 'created_at' => now(), 'updated_at' => now()], // Strawberry, small
-            ['product_id' => 2, 'variant_ids' => json_encode([2, 3]), 'stock' => 7, 'isAvailable' => true, 'created_at' => now(), 'updated_at' => now()], // Strawberry, large
-            ['product_id' => 2, 'variant_ids' => json_encode([2, 4]), 'stock' => 10, 'isAvailable' => true, 'created_at' => now(), 'updated_at' => now()], // Vanilla, large
+        $productVariantStocks = [];
 
-            ['product_id' => 3, 'variant_ids' => json_encode([3]), 'stock' => 10, 'isAvailable' => true, 'created_at' => now(), 'updated_at' => now()], // Small
-            ['product_id' => 3, 'variant_ids' => json_encode([4]), 'stock' => 5, 'isAvailable' => true, 'created_at' => now(), 'updated_at' => now()], // Large
+        // Membuat kombinasi semua size dan flavor
+        foreach ($sizes as $size) {
+            foreach ($flavors as $flavor) {
+                $productVariantStocks[] = [
+                    'product_id' => 1, 
+                    'variant_ids' => json_encode([$size, $flavor]), 
+                    'additional_price' => $this->calculateAdditionalPrice($size),
+                    'stock' => 20, 
+                    'isAvailable' => true,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ];
+            }
+        }
 
-            ['product_id' => 4, 'variant_ids' => json_encode([3]), 'stock' => 10, 'isAvailable' => true, 'created_at' => now(), 'updated_at' => now()], // Small
-            ['product_id' => 4, 'variant_ids' => json_encode([4]), 'stock' => 5, 'isAvailable' => true, 'created_at' => now(), 'updated_at' => now()], // Large
+        // Insert data ke database
+        DB::table('product_variant_stocks')->insert($productVariantStocks);
+    }
 
-            ['product_id' => 5, 'variant_ids' => json_encode([5]), 'stock' => 10, 'isAvailable' => true, 'created_at' => now(), 'updated_at' => now()], // Red
-            ['product_id' => 5, 'variant_ids' => json_encode([6]), 'stock' => 5, 'isAvailable' => true, 'created_at' => now(), 'updated_at' => now()], // Blue
-        ]);
+    private function calculateAdditionalPrice($sizeId)
+    {
+        switch ($sizeId) {
+            case 1: // Regular
+                return 0.00;
+            case 2: // Medium
+                return 4000.00;
+            case 3: // Large
+                return 7000.00;
+            default:
+                return 0.00;
+        }
     }
 }

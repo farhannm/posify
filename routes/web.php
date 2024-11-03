@@ -1,7 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\PagesController;
+use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\CashierController;
 
 /*
@@ -14,8 +15,6 @@ use App\Http\Controllers\CashierController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-
 
 
 Route::get('/', function(){
@@ -45,6 +44,10 @@ Route::post('/validate-forgot-password', [\App\Http\Controllers\AuthController::
 Route::get('/register', [\App\Http\Controllers\AuthController::class, 'registerView'])->name('registerView');
 Route::post('/register', [\App\Http\Controllers\AuthController::class, 'register'])->name('register');
 
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [\App\Http\Controllers\AuthController::class, 'logout'])->name('logout');
+});
+
 Route::middleware(['auth', 'role:owner'])->group(function () {
     Route::get('/owner-dashboard', [PagesController::class, 'ownerDashboard'])->name('ownerDashboardView');
 });
@@ -54,8 +57,22 @@ Route::middleware(['auth', 'role:cashier'])->group(function () {
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::post('/logout', [\App\Http\Controllers\AuthController::class, 'logout'])->name('logout');
-    Route::get('/dashboards', [PagesController::class, 'adminDashboard'])->name('adminDashboardView');
+    Route::get('/admin-dashboards', [PagesController::class, 'adminDashboard'])->name('adminDashboardView');
+
+    //Products
+    Route::get('/admin/products', [PagesController::class, 'viewProducts'])->name('view-products');
+    Route::get('/admin/products/add-product', [PagesController::class, 'viewProductForm'])->name('add-product-form');
+    Route::post('/admin/products/add-product', [ProductsController::class, 'store'])->name('products-store');
+
+    //Variants
+    Route::get('/admin/products/variants', [PagesController::class, 'viewProductVariants'])->name('view-product-variants');
+    Route::get('/admin/products/add-variants/{id}', [PagesController::class, 'viewAddVariantsForm'])->name('add-variants-form');
+    Route::post('/admin/products/add-variant/{id}', [ProductsController::class, 'addVariants'])->name('add-variants');
+
+    //Details
+    Route::get('/admin/products/product-detail/{id}', [PagesController::class, 'viewProductDetail'])->name('view-product-detail');
+
+
     Route::get('/elements/avatar', [PagesController::class, 'elementsAvatar'])->name('elements/avatar');
     Route::get('/elements/alert', [PagesController::class, 'elementsAlert'])->name('elements/alert');
     Route::get('/elements/button', [PagesController::class, 'elementsButton'])->name('elements/button');
