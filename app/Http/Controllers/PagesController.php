@@ -24,9 +24,10 @@ class PagesController extends Controller
     public function ownerDashboard()
     {
         $analysis = new AnalysisController();
-        $totalRevenue = $analysis->revenue();
+        $revenueData = $analysis->revenue();
+        $transactionData = $analysis->totalTransaction();
 
-        return view('pages/owner/dashboard', compact('totalRevenue'));
+        return view('pages/owner/dashboard', compact('revenueData', 'transactionData'));
     }
 
     // Admin Pages

@@ -20,15 +20,21 @@
                                 x-init="$el._x_flatpickr = flatpickr($el, {
                                 mode: 'range', 
                                 dateFormat: 'Y-m-d', 
-                                defaultDate: [(new Date()).toISOString().split('T')[0], (new Date()).toISOString().split('T')[0]],
-                                onChange: function(selectedDates, dateStr, instance) {
-                                    document.getElementById('dateForm').submit();
+                                defaultDate: [
+                                    '{{ request('rentang_tanggal') ? explode(" to ", request('rentang_tanggal'))[0] : \Carbon\Carbon::today()->format('Y-m-d') }}',
+                                    '{{ request('rentang_tanggal') ? explode(" to ", request('rentang_tanggal'))[1] ?? explode(" to ", request('rentang_tanggal'))[0] : \Carbon\Carbon::today()->format('Y-m-d') }}'
+                                ],
+                                onClose: function(selectedDates, dateStr, instance) {
+                                    if (selectedDates.length === 2) {
+                                        document.getElementById('dateForm').submit();
+                                    }
                                 }
                                 })"
                                 name="rentang_tanggal"
                                 class="form-input peer w-64 rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
                                 placeholder="Choose date..."
                                 type="text"
+                                value="{{ request('rentang_tanggal') }}"
                             />
                             <span class="pointer-events-none absolute flex h-full w-10 items-center justify-center text-slate-400 peer-focus:text-primary dark:text-navy-300 dark:peer-focus:text-accent">
                                 <svg
@@ -45,11 +51,14 @@
                         </label>
                     </div>
                 </form>
+
+                
                 </div>
             </div>
         </div>
             
-        
+
+
 
         <div class="flex">
             <!-- Bagian kiri -->
@@ -105,13 +114,21 @@
                         <!-- uang -->
                         <div class="flex justify-center text-4xl font-bold text-black"> 
                             <div class="mr-2">Rp</div>
-                            <div>{{ $totalRevenue }}</div>
+                            <div>{{ number_format($revenueData['totalRevenue'], 2, ',', '.') }}</div>
                         </div>
                         <!-- persentase -->
-                        <div class="flex justify-center mr-1">  
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-1" viewBox="0 0 576 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M384 160c-17.7 0-32-14.3-32-32s14.3-32 32-32l160 0c17.7 0 32 14.3 32 32l0 160c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-82.7L342.6 374.6c-12.5 12.5-32.8 12.5-45.3 0L192 269.3 54.6 406.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l160-160c12.5-12.5 32.8-12.5 45.3 0L320 306.7 466.7 160 384 160z"/></svg>
-                            <div>200</div>
-                            <div>%</div>
+                        <div class="flex justify-center mr-1">
+                        @if ($revenueData['isRevenueIncreased'])
+                            <span class="text-green-500 mr-1">▲</span>
+                            <div class="text-green-500">{{ number_format($revenueData['persentase'], 0) }}</div>
+                            <div class="text-green-500">%</div>
+                        @else
+                            <span class="text-red-500 mr-1">▼</span>
+                            <div class="text-red-500">{{ number_format($revenueData['persentase'], 0) }}</div>
+                            <div class="text-red-500">%</div>
+                        @endif
+
+
                         </div>
                         <!-- text revenue -->
                          <div class="flex justify-center mt-1">
@@ -151,12 +168,18 @@
                         <!-- total transaction -->
                         <div class="shadow-md w-1/2 rounded-3xl box-border bg-white p-5">
                             <!-- nilai  -->
-                            <div class="font-bold text-2xl text-black">80</div>
+                            <div class="font-bold text-2xl text-black">{{ number_format($transactionData['totalTransaksi'], 0, ',', '.')}}</div>
                          <!-- persentase -->
                          <div class="flex mr-1 text-xs">  
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" viewBox="0 0 576 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M384 160c-17.7 0-32-14.3-32-32s14.3-32 32-32l160 0c17.7 0 32 14.3 32 32l0 160c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-82.7L342.6 374.6c-12.5 12.5-32.8 12.5-45.3 0L192 269.3 54.6 406.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l160-160c12.5-12.5 32.8-12.5 45.3 0L320 306.7 466.7 160 384 160z"/></svg>
-                            <div>200</div>
-                            <div>%</div>
+                        @if ($revenueData['isRevenueIncreased'])
+                            <span class="text-green-500 mr-1">▲</span>
+                            <div class="text-green-500">{{ number_format($transactionData['persentase']) }}</div>
+                            <div class="text-green-500">%</div>
+                        @else
+                            <span class="text-red-500 mr-1">▼</span>
+                            <div class="text-red-500">{{ number_format($transactionData['persentase']) }}</div>
+                            <div class="text-red-500">%</div>
+                        @endif
                         </div>
                             <div class="text-neutral-900">Total Transcation</div>
                         </div>
