@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('transaction_id')->nullable();
             $table->string('customer_name')->nullable();
             $table->string('email')->nullable();
+            $table->enum('order_status', ['Pending', 'Approved', 'In Process', 'Done', 'Cancelled'])->default('Pending');
             $table->decimal('total_amount', 10, 2);
             $table->timestamps();
 

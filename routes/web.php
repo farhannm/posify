@@ -43,12 +43,18 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     //Products
     Route::get('/admin/products', [PagesController::class, 'viewProducts'])->name('view-products');
     Route::get('/admin/products/add-product', [PagesController::class, 'viewProductForm'])->name('add-product-form');
+    Route::get('/admin/products/edit-product/{id}', [PagesController::class, 'viewProductUpdateForm'])->name('edit-product-form');
     Route::post('/admin/products/add-product', [ProductsController::class, 'store'])->name('products-store');
+    Route::put('/admin/products/edit-product/{id}', [ProductsController::class, 'update'])->name('products-update');
+    Route::delete('/admin/products/delete-product/{id}', [ProductsController::class, 'delete'])->name('products-delete');
 
     //Variants
     Route::get('/admin/products/variants', [PagesController::class, 'viewProductVariants'])->name('view-product-variants');
     Route::get('/admin/products/add-variants/{id}', [PagesController::class, 'viewAddVariantsForm'])->name('add-variants-form');
+    Route::get('/admin/products/edit-variants/{id}/{variantId}', [PagesController::class, 'viewEditVariantsForm'])->name('edit-variants-form');
     Route::post('/admin/products/add-variant/{id}', [ProductsController::class, 'addVariants'])->name('add-variants');
+    Route::put('/admin/products/{id}/edit-variant/{variant_id}', [ProductsController::class, 'editVariants'])->name('edit-variants');
+    Route::delete('/admin/products/{id}/delete-variant/{variant_id}', [ProductsController::class, 'deleteVariant'])->name('delete-variants');
 
     //Details
     Route::get('/admin/products/product-detail/{id}', [PagesController::class, 'viewProductDetail'])->name('view-product-detail');

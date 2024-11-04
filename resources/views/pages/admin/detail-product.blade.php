@@ -71,7 +71,11 @@
         <div class="card p-4 lg:p-6">
             <!-- Product Image -->
             <div class="w-full">
-                <img src="{{ asset('images/dishes.png') }}" alt="Product" class="w-full h-72 object-scale-down">
+                @if ($product->image)
+                    <img src="{{ $product->image }}" alt="Product" class="w-full h-72 object-scale-down">
+                @else
+                    <img src="{{asset('images/dishes.png')}}" alt="Product" class="w-full h-72 object-scale-down"/>
+                @endif
             
               <!-- Product Details -->
               <div class="p-6">
@@ -165,13 +169,6 @@
                                                 {{ $stock->isAvailable ? 'TRUE' : 'FALSE' }}
                                             </td>
                                             <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                                <a href="#" class="mr-2">
-                                                    <button class="btn h-8 w-8 rounded-md bg-violet-100 p-0 font-medium text-slate-800 hover:bg-violet-200 focus:bg-slate-200 active:bg-slate-200/80 dark:bg-navy-500 dark:text-navy-50 dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 rotate-45" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12" />
-                                                        </svg>
-                                                    </button>
-                                                </a>
                                                 <div x-data="usePopper({placement:'bottom-end',offset:4})" @click.outside="if(isShowPopper) isShowPopper = false" class="inline-flex">
                                                     <button x-ref="popperRef" @click="isShowPopper = !isShowPopper" class="btn h-8 w-8 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
                                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -183,12 +180,12 @@
                                                         <div class="popper-box rounded-md border border-slate-150 bg-white py-1.5 font-inter dark:border-navy-500 dark:bg-navy-700">
                                                             <ul>
                                                                 <li>
-                                                                    <a href="#" class="flex h-8 items-center px-3 pr-8 font-medium tracking-wide outline-none transition-all hover:bg-slate-100 hover:text-slate-800 focus:bg-slate-100 focus:text-slate-800 dark:hover:bg-navy-600 dark:hover:text-navy-100 dark:focus:bg-navy-600 dark:focus:text-navy-100">
+                                                                    <a href="{{ route('edit-variants-form', ['id' => $product->id, 'variantId' => $stock->id]) }}" class="flex h-8 items-center px-3 pr-8 font-medium tracking-wide outline-none transition-all hover:bg-slate-100 hover:text-slate-800 focus:bg-slate-100 focus:text-slate-800 dark:hover:bg-navy-600 dark:hover:text-navy-100 dark:focus:bg-navy-600 dark:focus:text-navy-100">
                                                                         Edit
                                                                     </a>
                                                                 </li>
                                                                 <li>
-                                                                    <form action="#" method="POST" onsubmit="return confirm('Are you sure you want to delete this Variant?');">
+                                                                    <form action="{{ route('delete-variants', ['id' => $product->id, 'variant_id' => $stock->id]) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this Variant?');">
                                                                         @csrf
                                                                         @method('DELETE')
                                                                         <button type="submit" class="flex h-8 items-center px-3 pr-8 font-medium tracking-wide outline-none transition-all hover:bg-slate-100 hover:text-slate-800 focus:bg-slate-100 focus:text-slate-800 dark:hover:bg-navy-600 dark:hover:text-navy-100 dark:focus:bg-navy-600 dark:focus:text-navy-100">
