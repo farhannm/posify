@@ -24,9 +24,9 @@ class PagesController extends Controller
     {
         $products = Product::all();
         $categories = Categories::all();
-        $cart = session()->get('cart', []);
+        // $cart = session()->get('cart', []);
 
-        return view('pages/cashier/dashboard', compact('products', 'categories', 'cart'));
+        return view('pages/cashier/dashboard', compact('products', 'categories'));
     }
 
     public function ownerDashboard()

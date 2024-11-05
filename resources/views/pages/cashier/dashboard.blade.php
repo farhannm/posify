@@ -278,7 +278,7 @@
                 
                 <div class="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     @foreach ($products as $product)
-                        <div class="card p-2" onclick="addToCart({{ $product->id }})" style="cursor: pointer;">
+                        <div class="card p-2" onclick="addToCart({{ $product->id }}, '{{$product->name}}', {{$product->price}} )" style="cursor: pointer;">
                             <img class="rounded-lg" src="{{ asset('images/800x600.png') }}" alt="image" />
                             <div class="pt-2">
                                 <p class="font-medium text-slate-700 dark:text-navy-100">{{ $product->name }}</p>
@@ -346,7 +346,9 @@
                             </svg>
                         </button>
                         <button
-                            class="btn h-7 w-7 rounded-full p-0 hover:bg-slate-300/20 hover:text-error focus:bg-slate-300/20 focus:text-error active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
+                            class="btn h-7 w-7 rounded-full p-0 hover:bg-slate-300/20 hover:text-error focus:bg-slate-300/20 focus:text-error active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25"
+                            onclick="clearCart()">
+                            
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none"
                                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -443,10 +445,13 @@
                         </button>
                     </div>
                     <button
-                        class="btn mt-5 h-11 justify-between bg-primary font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus dark:focus:bg-accent-focus dark:active:bg-accent/90">
+                        class="btn mt-5 h-11 justify-between bg-primary font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus dark:focus:bg-accent-focus dark:active:bg-accent/90"
+                        onclick="checkout()">
                         <span>Checkout</span>
                         <span>$88.00</span>
                     </button>
+                    
+                        
                 </div>
             </div>
         </div>
@@ -788,6 +793,8 @@
                         <span>Checkout</span>
                         <span>$88.00</span>
                     </button>
+
+                   
                 </div>
             </div>
         </div>
@@ -801,41 +808,46 @@
     </div>
 
     <script>
-        function addToCart(productId) {
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            console.log('CSRF Token:', csrfToken);
+        function addToCart(productId, productName, productPrice) {
+            // Ambil keranjang dari local storage atau buat array kosong jika belum ada
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
             
-            fetch('/add-to-cart', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify({ product_id: productId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Produk berhasil ditambahkan ke keranjang!');
-                    updateCart(data.cart); // Memperbarui tampilan keranjang
-                } else {
-                    alert('Gagal menambahkan produk ke keranjang');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+            // Cari produk di keranjang berdasarkan productId
+            let productCart = cart.find(item => item.product_id === productId);
+
+            // Tambah kuantitas jika produk sudah ada di keranjang
+            if (productCart) {
+                productCart.quantity += 1;
+                productCart.total += productPrice;
+            } else {
+                // Jika belum ada, tambahkan produk baru ke keranjang
+                cart.push({
+                    product_id: productId,
+                    name: productName,
+                    price: productPrice,
+                    quantity: 1,
+                    total: productPrice,
+                });
+            }
+
+            // Simpan kembali keranjang ke local storage
+            localStorage.setItem('cart', JSON.stringify(cart));
+
+            // Panggil updateCart untuk memperbarui tampilan keranjang
+            updateCart();
         }
 
-
-        function updateCart(cart) {
+        function updateCart() {
+            // Ambil keranjang dari local storage atau array kosong jika tidak ada
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
             let cartContainer = document.querySelector('.cart-items');
-            cartContainer.innerHTML = ''; // Kosongkan konten keranjang sebelumnya
+            cartContainer.innerHTML = ''; // Bersihkan elemen sebelum diisi ulang
 
+            // Loop melalui setiap item di keranjang dan tambahkan ke HTML
             cart.forEach(item => {
                 let cartItemHTML = `
                     <div class="cart-item">
-                        <p>${item.name}</p>
+                        <p>Nama: ${item.name}</p>
                         <p>Quantity: ${item.quantity}</p>
                         <p>Total: Rp ${item.total.toLocaleString()}</p>
                     </div>
@@ -844,7 +856,58 @@
             });
         }
 
+        function clearCart() {
+            localStorage.removeItem('cart');
+            updateCart(); // Perbarui tampilan keranjang
+        }
+        // Memuat keranjang dari local storage saat halaman dimuat
+
+        document.addEventListener('DOMContentLoaded', updateCart);
+        // clearCart();
+
+        function checkout() {
+                            const orderId = 132;
+                            fetch("{{ route('createTransaction') }}", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                                },
+                                body: JSON.stringify({
+                                    order_id: orderId
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log("Response Data:", data);
+                                if (data.error) {
+                                    alert(data.error);
+                                } else if (data) {
+                                    const redirectUrl = `https://app.sandbox.midtrans.com/snap/v4/redirection/${data}`;
+                                    console.log("Redirecting to:", redirectUrl);
+                                    window.location.href = redirectUrl;
+                                } else {
+                                    alert("Terjadi kesalahan, tidak ada link pembayaran yang ditemukan.");
+                                }
+                            })
+                            .catch(error => {
+                                console.error("Error Details:", error);
+                                alert("Terjadi kesalahan pada saat memproses transaksi. Silakan coba lagi nanti.");
+                            });
+
+                        }
+
     </script>
+    <!-- function checkout() {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        console.log("Keranjang checkout:", cart);
+        // Di sini Anda bisa mengirim `cart` ke server menggunakan fetch atau AJAX
+    } -->
+
+
+
+
+
 
 
 </x-base-layout>

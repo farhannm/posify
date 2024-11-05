@@ -23,10 +23,6 @@ Route::get('/', function(){
  });
 
 
-// bagian order
-// Route::post('/add_to_cart', [OrderController::class, 'addToCart'])->name('add_to_cart');
-Route::post('/add-to-cart', [OrderController::class, 'addToCart'])->name('add-to-cart');
-
 
 
 

@@ -77,7 +77,7 @@ class PaymentController extends Controller
         $payment->checkout_link = $response->token;
         $payment->save();
         
-        return response()->json($response);
+        return response()->json($response->token);
     }
 
     public function webhook(Request $request){
