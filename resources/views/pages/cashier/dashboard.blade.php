@@ -1,4 +1,10 @@
 <x-base-layout title="POS System" is-header-blur="true">
+
+<style>
+        * {
+            border: 1px solid red;
+        }
+</style>
     <!-- Sidebar -->
     <div class="sidebar print:hidden">
 
@@ -357,7 +363,7 @@
                 </div>
                 
                 
-                <div
+                <div 
                     class="mt-4 grid grid-cols-2 gap-4 sm:mt-5 sm:grid-cols-2 sm:gap-5 lg:mt-6 lg:grid-cols-3 xl:grid-cols-4">
                     @foreach ($products as $product)
                     <div class="card p-2">
@@ -637,7 +643,16 @@
                     </div>
                 </div>
                 <div class="card mt-5 p-4 sm:p-5">
+                    <!-- wrapper bagian item order -->
+                     @foreach ($cart as $item)
                     <div class="flex flex-col space-y-3.5">
+                        <!-- wrapper per product -->
+
+
+                        <!-- test -->
+                        <!-- Modal untuk memilih varian dan kuantitas -->
+                        
+                        <!-- end of test -->
                         <div class="group flex items-center justify-between space-x-3">
                             <div class="flex items-center space-x-4">
                                 <div class="relative flex">
@@ -653,7 +668,7 @@
                                 <div>
                                     <div class="flex items-center space-x-1">
                                         <p class="font-medium text-slate-700 line-clamp-1 dark:text-navy-100">
-                                            Roast beef
+                                            {{ $item['name']}}
                                         </p>
                                         <button
                                             class="btn h-6 w-6 rounded-full p-0 opacity-0 hover:bg-slate-300/20 focus:bg-slate-300/20 focus:opacity-100 active:bg-slate-300/25 group-hover:opacity-100 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
@@ -669,9 +684,12 @@
                                     </p>
                                 </div>
                             </div>
-                            <p class="font-inter font-semibold">$12.00</p>
+                            <p class="font-inter font-semibold">{{number_format($item['total'], 0, ',', '.') }}</p>
                         </div>
-                        <div class="group flex items-center justify-between space-x-3">
+                        @endforeach
+                        <!-- end of wrapper per product -->
+
+                        <!-- <div class="group flex items-center justify-between space-x-3">
                             <div class="flex items-center space-x-4">
                                 <div class="relative flex">
                                     <img src="{{ asset('images/800x600.png') }}"
@@ -798,8 +816,9 @@
                                 </div>
                             </div>
                             <p class="font-inter font-semibold">$18.00</p>
-                        </div>
-                    </div>
+                        </div> -->
+                    </div> 
+                    
                     <div class="my-4 h-px bg-slate-200 dark:bg-navy-500"></div>
                     <div class="space-y-2 font-inter">
                         <div class="flex justify-between text-slate-600 dark:text-navy-100">
@@ -1194,5 +1213,76 @@
             $60
         </button>
     </div>
+
+    <script>
+        function addToCart(productId) { // dinamis
+            const variant = document.getElementById('variant').value;
+            const quantity = document.getElementById('quantity').value;
+            
+            fetch('/add-to-cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    product_id: productId, // dinamis
+                    variant: variant,
+                    quantity: quantity
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    renderCart(data.cart);
+                    closeModal();
+                } else {
+                    alert('Gagal menambah ke keranjang');
+                }
+            });
+        }
+
+        function openModal(productId) {
+            document.getElementById('productModal').classList.remove('hidden');
+            document.getElementById('addToCartButton').onclick = function () {
+                addToCart(productId);
+            };
+        }
+
+        function closeModal() {
+            document.getElementById('productModal').classList.add('hidden');
+        }
+
+        // render Cart
+        function renderCart(cart) {
+        const cartContainer = document.getElementById('cartItems');
+        cartContainer.innerHTML = ''; // Bersihkan konten sebelumnya
+
+        cart.forEach(item => {
+            const productHTML = `
+                <div class="group flex items-center justify-between space-x-3">
+                    <div class="flex items-center space-x-4">
+                        <div class="relative flex">
+                            <img src="/path/to/image.png" class="mask is-star h-11 w-11 object-cover" alt="image" />
+                            <div class="absolute top-0 right-0 -m-1 flex h-5 min-w-[1.25rem] items-center justify-center rounded-full border border-white bg-slate-200 px-1 text-tiny+ font-medium leading-none text-slate-800 dark:border-navy-700 dark:bg-navy-450 dark:text-white">
+                                ${item.quantity}
+                            </div>
+                        </div>
+                        <div>
+                            <p class="font-medium text-slate-700 line-clamp-1 dark:text-navy-100">
+                                ${item.name}
+                            </p>
+                            <p class="text-xs+ text-slate-400 dark:text-navy-300">
+                                ${item.variant}
+                            </p>
+                        </div>
+                    </div>
+                    <p class="font-inter font-semibold">Rp ${item.price}</p>
+                </div>
+            `;
+            cartContainer.insertAdjacentHTML('beforeend', productHTML);
+        });
+    }
+    </script>
 
 </x-base-layout>

@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\CashierController;
@@ -22,7 +23,12 @@ Route::get('/', function(){
  });
 
 
-// bagian analisis
+// bagian order
+Route::post('/add_to_cart', [OrderController::class, 'addToCart'])->name('add_to_cart');
+
+// test dummy
+Route::get('/add-dummy-cart', [PagesController::class, 'addDummyToCart'])->name('add.dummy.cart');
+Route::get('/cart', [PagesController::class, 'showCart'])->name('show.cart');
 
 
 
