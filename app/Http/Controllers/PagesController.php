@@ -12,41 +12,7 @@ use App\Models\ProductVariantStock;
 
 class PagesController extends Controller
 {
-    // test
-    public function addDummyToCart()
-    {
-        // Contoh data dummy
-        $dummyCart = [
-            [
-                'product_id' => 1,
-                'variant' => ['Size' => 'M', 'Color' => 'Red'],
-                'quantity' => 2,
-                'price' => 100.00,
-                'total' => 100000,
-                'name' => 'Produk Dummy 1',
-            ],
-            [
-                'product_id' => 2,
-                'variant' => null,
-                'quantity' => 1,
-                'price' => 50000,
-                'total' => 50000,
-                'name' => 'Produk Dummy 2',
-            ],
-        ];
-
-        // Menyimpan data dummy ke dalam session `cart`
-        session()->put('cart', $dummyCart);
-
-        return response()->json(['success' => true, 'cart' => $dummyCart]);
-    }
-
-    public function showCart()
-    {
-        $cart = session()->get('cart', []);
-        return view('pages/cashier/cart', compact('cart'));
-    }
-
+    
     // Landing
     public function viewLandingPage()
     {

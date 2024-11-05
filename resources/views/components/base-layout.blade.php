@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
 
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}" class="object-contain" />
-
+    
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
