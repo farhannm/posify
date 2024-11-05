@@ -4,22 +4,22 @@
 
         <!-- Notification -->
         <div id="delete_success" class="fixed bottom-5 right-5 bg-green-500 text-white px-6 py-2 rounded-md shadow-md hidden transition-all duration-300 z-1">
-            Food deleted successfully.
+            Product deleted successfully.
         </div>
         <div id="delete_failed" class="fixed bottom-5 right-5 bg-red-500 text-white px-6 py-2 rounded-md shadow-md hidden transition-all duration-300 z-1">
-            Failed to delete food.
+            Failed to delete Product.
         </div>
         <div id="create_success" class="fixed bottom-5 right-5 bg-green-500 text-white px-6 py-2 rounded-md shadow-md hidden transition-all duration-300 z-1">
-            Food created successfully.
+            Product created successfully.
         </div>
         <div id="create_failed" class="fixed bottom-5 right-5 bg-red-500 text-white px-6 py-2 rounded-md shadow-md hidden transition-all duration-300 z-1">
-            Failed to create food.
+            Failed to create Product.
         </div>
         <div id="edit_success" class="fixed bottom-5 right-5 bg-green-500 text-white px-6 py-2 rounded-md shadow-md hidden transition-all duration-300 z-1">
-            Food updated successfully.
+            Product updated successfully.
         </div>
         <div id="edit_failed" class="fixed bottom-5 right-5 bg-red-500 text-white px-6 py-2 rounded-md shadow-md hidden transition-all duration-300 z-1">
-            Failed to update food.
+            Failed to update Product.
         </div>
 
 
@@ -300,12 +300,12 @@
                                                 <div class="popper-box rounded-md border border-slate-150 bg-white py-1.5 font-inter dark:border-navy-500 dark:bg-navy-700">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" class="flex h-8 items-center px-3 pr-8 font-medium tracking-wide outline-none transition-all hover:bg-slate-100 hover:text-slate-800 focus:bg-slate-100 focus:text-slate-800 dark:hover:bg-navy-600 dark:hover:text-navy-100 dark:focus:bg-navy-600 dark:focus:text-navy-100">
+                                                            <a href="{{ route('edit-product-form', $product->id) }}" class="flex h-8 items-center px-3 pr-8 font-medium tracking-wide outline-none transition-all hover:bg-slate-100 hover:text-slate-800 focus:bg-slate-100 focus:text-slate-800 dark:hover:bg-navy-600 dark:hover:text-navy-100 dark:focus:bg-navy-600 dark:focus:text-navy-100">
                                                                 Edit
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <form action="#" method="POST" onsubmit="return confirm('Are you sure you want to delete this food?');">
+                                                            <form action="{{route('products-delete', $product->id)}}" method="POST" onsubmit="return confirm('Are you sure you want to delete this Product?');">
                                                                 @csrf
                                                                 @method('DELETE')
                                                                 <button type="submit" class="flex h-8 items-center px-3 pr-8 font-medium tracking-wide outline-none transition-all hover:bg-slate-100 hover:text-slate-800 focus:bg-slate-100 focus:text-slate-800 dark:hover:bg-navy-600 dark:hover:text-navy-100 dark:focus:bg-navy-600 dark:focus:text-navy-100">

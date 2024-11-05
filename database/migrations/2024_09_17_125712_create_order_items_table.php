@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('order_id'); 
             $table->unsignedBigInteger('product_id');
-            $table->json('variant');
+            $table->json('variant_ids');
             $table->integer('quantity');
             $table->decimal('price', 10, 2); 
             $table->decimal('total', 10, 2); 

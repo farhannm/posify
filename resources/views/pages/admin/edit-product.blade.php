@@ -1,12 +1,25 @@
-<x-app-layout title="Add Product" is-header-blur="true">
+<x-app-layout title="Edit Product" is-header-blur="true">
     <main class="main-content w-full px-[var(--margin-x)] pb-8">
         <!-- Notification -->
+        <div id="delete_success" class="fixed bottom-5 right-5 bg-green-500 text-white px-6 py-2 rounded-md shadow-md hidden transition-all duration-300 z-1">
+            Product deleted successfully.
+        </div>
+        <div id="delete_failed" class="fixed bottom-5 right-5 bg-red-500 text-white px-6 py-2 rounded-md shadow-md hidden transition-all duration-300 z-1">
+            Failed to delete product.
+        </div>
         <div id="create_success" class="fixed bottom-5 right-5 bg-green-500 text-white px-6 py-2 rounded-md shadow-md hidden transition-all duration-300 z-1">
             Product created successfully.
         </div>
         <div id="create_failed" class="fixed bottom-5 right-5 bg-red-500 text-white px-6 py-2 rounded-md shadow-md hidden transition-all duration-300 z-1">
             Failed to create product.
         </div>
+        <div id="edit_success" class="fixed bottom-5 right-5 bg-green-500 text-white px-6 py-2 rounded-md shadow-md hidden transition-all duration-300 z-1">
+            Product updated successfully.
+        </div>
+        <div id="edit_failed" class="fixed bottom-5 right-5 bg-red-500 text-white px-6 py-2 rounded-md shadow-md hidden transition-all duration-300 z-1">
+            Failed to update product.
+        </div>
+        
 
 
         @if(session('create_success'))
@@ -69,15 +82,19 @@
                         <div class="border-b border-slate-200 p-4 dark:border-navy-500 sm:px-5">
                             <div class="flex items-center space-x-2">
                                 <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 p-2 text-primary dark:bg-accent-light/10 dark:text-accent-light">
-                                    <i class='bx bx-message-square-add text-xl'></i>
+                                    <i class='bx bx-message-square-edit text-xl'></i>
                                 </div>
                                 <h4 class="text-lg font-medium text-slate-700 dark:text-navy-100">
-                                    Add Product
+                                    Edit Product
                                 </h4>
                             </div>
                         </div>
                         <div class="space-y-4 p-4 sm:p-5">
-                            <!-- Step 1: General Information -->
+                            @if ($product->image)
+                                <img src="{{ $product->image }}" alt="Product" class="w-full h-72 object-scale-down">
+                            @else
+                                <img src="{{asset('images/dishes.png')}}" alt="Product" class="w-full h-72 object-scale-down"/>
+                            @endif
                             <div x-show="step === 1">
                                 <div class="space-y-4 p-4 sm:p-5">
                                     <label class="block">
@@ -85,19 +102,21 @@
                                         <input
                                             name="name"
                                             class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
-                                            placeholder="Enter product name" type="text" required />
+                                            placeholder="Enter product name" type="text" value="{{$product->name}}" required />
                                     </label>
                                     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                         <label class="block">
                                             <span>Category</span> <span class="text-red-500">*</span>
                                             <select name="category_id" class="mt-1.5 w-full" x-init="$el._x_tom = new Tom($el, { create: true, sortField: { field: 'text', direction: 'asc' } })" required>
                                                 <option value="">Select a category</option>
-                                                @foreach($categories as $category) <!-- Loop melalui kategori -->
-                                                    <option value="{{ $category->id }}">{{ $category->category_name }}</option> <!-- Ambil id dan nama kategori -->
+                                                @foreach($categories as $category)
+                                                    <option value="{{ $category->id }}" 
+                                                        {{ $product->category && $product->category->id == $category->id ? 'selected' : '' }}>
+                                                        {{ $category->category_name }}
+                                                    </option> 
                                                 @endforeach
                                             </select>
                                         </label>
-                                        
         
                                         <div class="grid grid-cols-1">
                                             <label class="block">
@@ -105,7 +124,7 @@
                                                 <input
                                                     name="price" 
                                                     class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
-                                                    placeholder="Rp. " type="number" required />
+                                                    placeholder="Rp. " type="number" value="{{ $product->price }}" required />
                                             </label>
                                         </div>
                                     </div>
@@ -116,20 +135,14 @@
                                             rows="4"
                                             placeholder="Product description..."
                                             class="form-textarea mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent p-2.5 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
-                                        ></textarea>
+                                        >{{$product->description}}</textarea>
                                     </div>
-                                    <div>
-                                        <span>Images</span>
-                                        <div class="filepond fp-bordered fp-bg-filled">
-                                            <input class="mt-1.5" type="file" name="image" id="image"/>
-                                        </div>
-                                    </div>
+
+                                    <button type="submit" class="btn space-x-2 btn min-w-[7rem] bg-primary font-medium text-white hover:bg-primary/20">
+                                        Submit
+                                    </button>
                                 </div> 
                             </div>
-        
-                            <button type="submit" class="btn space-x-2 btn min-w-[7rem] bg-primary font-medium text-white hover:bg-primary/20">
-                                Submit
-                            </button>
                         </div>
                     </div>
                 </div>

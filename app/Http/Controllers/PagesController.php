@@ -107,14 +107,46 @@ class PagesController extends Controller
         // Kirim data ke view
         return view('pages/admin.detail-product', compact('product', 'productVariantStocks', 'results'));
     }
+
+    public function viewProductUpdateForm(Request $request, $id)
+    {
+        $product = Product::with('category')->find($id);
+        $categories = Categories::all();
+
+        if (!$product) {
+            return view('pages/layouts-error-404-2');
+        }
+
+        return view('pages/admin/edit-product', compact('product', 'categories'));
+    }
     
     public function viewAddVariantsForm(Request $request, $id)
     {
         $product = Product::with('productVariantStocks')->find($id);
+        $variantType = VariantType::all();
+        $variant = Variant::all();
 
-        return view('pages/admin/add-variants', compact('product'));
+        return view('pages/admin/add-variants', compact('product', 'variantType', 'variant'));
     }
+
+    public function viewEditVariantsForm(Request $request, $id, $productVariantStockId = null)
+    {
+        $product = Product::with('productVariantStocks')->find($id);
+        $variantType = VariantType::all();
+        $variant = Variant::all();
+
+        $selectedVariant = $product->productVariantStocks->firstWhere('id', $productVariantStockId);
+        
+        $selectedVariantCombinations = $product->productVariantStocks
+            ->where('id', $productVariantStockId)
+            ->map(function($stock) {
+                return is_string($stock->variant_ids) ? json_decode($stock->variant_ids) : $stock->variant_ids;
+            })
+            ->filter() 
+            ->toArray();
     
+        return view('pages/admin/edit-product-variant', compact('product', 'variantType', 'variant', 'selectedVariant','selectedVariantCombinations'));
+    }    
 
     public function viewProductVariants()
     {
