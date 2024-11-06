@@ -37,7 +37,7 @@ class AuthController extends Controller
             if ($user->role == 'owner') {
                 return redirect()->route('ownerDashboardView');
             } else if($user->role == 'admin'){
-                return redirect()->route('adminDashboardView');
+                return redirect()->route('view-products');
             } else {
                 return redirect()->route('cashierDashboardView');
             }

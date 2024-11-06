@@ -114,6 +114,7 @@ class ProductsController extends Controller
                 'variant_ids.*' => 'nullable|exists:variants,id',
                 'additional_price' => 'nullable|numeric',
                 'stock' => 'nullable|integer',
+                'isAvailable' => 'boolean'
             ]);
     
             $productVariantStock = DB::table('product_variant_stocks')->insert([
@@ -121,6 +122,7 @@ class ProductsController extends Controller
                 'variant_ids' => json_encode($request->variant_ids) ?? [],
                 'additional_price' => $request->additional_price ?? 0.00,
                 'stock' => $request->stock ?? 0,
+                'isAvailable' => $request->is_available ?? true,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
