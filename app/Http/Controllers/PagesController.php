@@ -34,8 +34,10 @@ class PagesController extends Controller
         $analysis = new AnalysisController();
         $revenueData = $analysis->revenue();
         $transactionData = $analysis->totalTransaction();
+        $totalItemData = $analysis->itemSold();
+        $revenueThisMonth = $analysis->revenueThisMonth();
 
-        return view('pages/owner/dashboard', compact('revenueData', 'transactionData'));
+        return view('pages/owner/dashboard', compact('revenueData', 'transactionData', 'totalItemData', 'revenueThisMonth'));
     }
 
     // Admin Pages

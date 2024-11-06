@@ -69,12 +69,18 @@
                         <div>    
                             <div class="flex font-bold text-3xl text-black">
                                 <div class="mr-2">Rp</div>
-                                <div>15.000.000,00</div>
+                                <div>{{ number_format($revenueThisMonth['totalBulanRevenue'], 2, ',', '.') }}</div>
                             </div>
                             <div class="flex mr-1 text-xs">  
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" viewBox="0 0 576 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M384 160c-17.7 0-32-14.3-32-32s14.3-32 32-32l160 0c17.7 0 32 14.3 32 32l0 160c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-82.7L342.6 374.6c-12.5 12.5-32.8 12.5-45.3 0L192 269.3 54.6 406.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l160-160c12.5-12.5 32.8-12.5 45.3 0L320 306.7 466.7 160 384 160z"/></svg>
-                                <div>200</div>
-                                <div>%</div>
+                            @if ($revenueThisMonth['isRevenueBulananIncreased'])
+                                <span class="text-green-500 mr-1">▲</span>
+                                <div class="text-green-500">{{ number_format($revenueThisMonth['persentase']) }}</div>
+                                <div class="text-green-500">%</div>
+                            @else
+                                <span class="text-red-500 mr-1">▼</span>
+                                <div class="text-red-500">{{ number_format($revenueThisMonth['persentase']) }}</div>
+                                <div class="text-red-500">%</div>
+                            @endif
                             </div>
                             <div class="text-2xl text-black">This Month</div>
                         </div>
@@ -170,8 +176,8 @@
                             <!-- nilai  -->
                             <div class="font-bold text-2xl text-black">{{ number_format($transactionData['totalTransaksi'], 0, ',', '.')}}</div>
                          <!-- persentase -->
-                         <div class="flex mr-1 text-xs">  
-                        @if ($revenueData['isRevenueIncreased'])
+                        <div class="flex mr-1 text-xs">  
+                        @if ($transactionData['isTransactionIncreased'])
                             <span class="text-green-500 mr-1">▲</span>
                             <div class="text-green-500">{{ number_format($transactionData['persentase']) }}</div>
                             <div class="text-green-500">%</div>
@@ -187,12 +193,18 @@
                         <!-- Item Sold -->
                         <div class="shadow-md w-1/2 rounded-3xl box-border bg-white p-5">
                             <!-- nilai  -->
-                            <div class="font-bold text-2xl text-black">530</div>
+                            <div class="font-bold text-2xl text-black">{{ number_format($totalItemData['totalItemTerjual'], 0, ',', '.')}}</div>
                          <!-- persentase -->
-                         <div class="flex mr-1 text-xs">  
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" viewBox="0 0 576 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M384 160c-17.7 0-32-14.3-32-32s14.3-32 32-32l160 0c17.7 0 32 14.3 32 32l0 160c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-82.7L342.6 374.6c-12.5 12.5-32.8 12.5-45.3 0L192 269.3 54.6 406.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l160-160c12.5-12.5 32.8-12.5 45.3 0L320 306.7 466.7 160 384 160z"/></svg>
-                            <div>200</div>
-                            <div>%</div>
+                        <div class="flex mr-1 text-xs">  
+                        @if ($totalItemData['isSoldItemIncreased'])
+                            <span class="text-green-500 mr-1">▲</span>
+                            <div class="text-green-500">{{ number_format($totalItemData['persentase']) }}</div>
+                            <div class="text-green-500">%</div>
+                        @else
+                            <span class="text-red-500 mr-1">▼</span>
+                            <div class="text-red-500">{{ number_format($totalItemData['persentase']) }}</div>
+                            <div class="text-red-500">%</div>
+                        @endif
                         </div>
                             <div class="text-neutral-900">Item Sold</div>
 

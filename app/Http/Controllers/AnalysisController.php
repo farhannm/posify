@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Transaction;
+use App\Models\OrderItem;
 use Carbon\Carbon;
 
 
@@ -128,4 +129,110 @@ class AnalysisController extends Controller
             'persentase' => $persentase,
         ];
     }
-}
+
+    public function revenueThisMonth() {
+        $startOfMonth = Carbon::now()->startOfMonth()->format('Y-m-d');
+        $endOfMonth = Carbon::now()->endOfMonth()->format('Y-m-d');
+        
+        $totalBulanRevenue = Transaction::
+        where('payment_status', 'settlement')
+        ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+        ->sum('total_paid');
+            
+        $revenueBulanSebelum = Cache::get('revenue_bulan_sebelum', 0);
+
+
+        if ($revenueBulanSebelum != 0) {
+            $persentase = ($totalBulanRevenue - $revenueBulanSebelum) / $revenueBulanSebelum * 100;
+        } else {
+            $persentase = $totalBulanRevenue > 0 ? $totalBulanRevenue * 100 : 0;
+        }
+    
+        Cache::put('revenue_bulan_sebelum', $totalBulanRevenue);
+
+       
+            
+            
+
+        $monthBefore = Carbon::now()->subMonth()->format('Y-m-d');
+            
+        $revenueBulanSebelum = Transaction::
+            where('payment_status', 'settlement')
+            ->whereDate('created_at', $monthBefore)
+            ->sum('id');
+    
+            if ($revenueBulanSebelum != 0) {
+                $persentase = ($totalBulanRevenue - $revenueBulanSebelum) / $revenueBulanSebelum * 100;
+            } else {
+                $persentase = $totalBulanRevenue > 0 ? $totalBulanRevenue * 100 : 0;
+            }
+        
+            Cache::put('revenue_sebelum', $totalBulanRevenue);
+        
+
+        return [
+            'totalBulanRevenue' => $totalBulanRevenue,
+            'revenueBulanSebelum' => $revenueBulanSebelum,
+            'isRevenueBulananIncreased' => $totalBulanRevenue > $revenueBulanSebelum,
+            'persentase' => $persentase,
+        ];
+    }
+    
+
+
+
+
+
+
+    public function itemSold() {
+        $rentangTanggal = request()->input('rentang_tanggal');
+        $tanggal = explode(" to ", $rentangTanggal);
+    
+        $startDate = $tanggal[0] ?? null;
+        $endDate = $tanggal[1] ?? $startDate;
+    
+        if ($rentangTanggal) {
+            // Menghitung totalItemTerjual berdasarkan rentang tanggal
+            $totalItemTerjual = OrderItem::join('orders as O', 'O.id', '=', 'order_items.order_id')
+                ->join('transactions as T', 'T.id', '=', 'O.transaction_id')
+                ->where('T.payment_status', 'settlement')
+                ->whereBetween('T.created_at', [$startDate, $endDate])
+                ->sum('order_items.quantity');
+            
+            // Ambil totalItemSebelum dari Cache
+            $totalItemSebelum = Cache::get('total_item_sebelum', 0);
+        } else {
+            // Menghitung totalItemTerjual untuk hari ini
+            $totalItemTerjual = OrderItem::join('orders as O', 'O.id', '=', 'order_items.order_id')
+                ->join('transactions as T', 'T.id', '=', 'O.transaction_id')
+                ->where('T.payment_status', 'settlement')
+                ->whereDate('T.created_at', Carbon::today())
+                ->sum('order_items.quantity');
+            
+            // Menghitung totalItemSebelum untuk kemarin
+            $yesterday = Carbon::now()->subDay()->format('Y-m-d');
+            $totalItemSebelum = OrderItem::join('orders as O', 'O.id', '=', 'order_items.order_id')
+                ->join('transactions as T', 'T.id', '=', 'O.transaction_id')
+                ->where('T.payment_status', 'settlement')
+                ->whereDate('T.created_at', $yesterday)
+                ->sum('order_items.quantity');
+        }
+    
+        // Perhitungan persentase perubahan
+        if ($totalItemSebelum != 0) {
+            $persentase = ($totalItemTerjual - $totalItemSebelum) / $totalItemSebelum * 100;
+        } else {
+            $persentase = $totalItemTerjual > 0 ? $totalItemTerjual * 100 : 0;
+        }
+    
+        // Simpan totalItemTerjual ke Cache untuk penggunaan selanjutnya
+        Cache::put('total_item_sebelum', $totalItemTerjual);
+    
+        return [
+            'totalItemTerjual' => $totalItemTerjual,
+            'totalItemSebelum' => $totalItemSebelum,
+            'isSoldItemIncreased' => $totalItemTerjual > $totalItemSebelum,
+            'persentase' => $persentase,
+        ];
+    }
+}    

@@ -1,10 +1,10 @@
 <x-base-layout title="POS System" is-header-blur="true">
 
-<style>
+<!-- <style>
         * {
             border: 1px solid red;
         }
-</style>
+</style> -->
     <!-- Sidebar -->
     <div class="sidebar print:hidden">
 
@@ -279,8 +279,9 @@
                 <div class="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     @foreach ($products as $product)
                         <div class="card p-2" onclick="addToCart({{ $product->id }}, '{{$product->name}}', {{$product->price}} )" style="cursor: pointer;">
-                            <img class="rounded-lg" src="{{ asset('images/800x600.png') }}" alt="image" />
-                            <div class="pt-2">
+                        <div class="w-40 h-40 mx-auto flex items-center justify-center">
+                            <img class="rounded-lg w-full h-full object-cover" src="{{ $product->image }}" alt="image" />
+                        </div>                            <div class="pt-2">
                                 <p class="font-medium text-slate-700 dark:text-navy-100">{{ $product->name }}</p>
                                 <p class="text-xs text-slate-400 dark:text-navy-300">{{ $product->description }}</p>
                                 <p class="text-right font-medium text-primary dark:text-accent-light">
@@ -399,9 +400,7 @@
                     </div>
                 </div>
                 <div class="card mt-5 p-4 sm:p-5">
-                    <h2>Keranjang Belanja</h2>
-
-                    <div class="cart-items">
+                    <div class="cart-items bg-slate-50">
 
                         
                         
@@ -422,25 +421,45 @@
                             <p>60.00$</p>
                         </div>
                     </div>
-                    <div class="mt-5 grid grid-cols-2 gap-4 text-center">
-                        <button class="rounded-lg border border-slate-200 p-3 w-50 dark:border-navy-500 active:bg-primary-focus/90 focus:bg-primary-focus">
+                    <script>
+                        export default {
+                            data() {
+                                return {
+                                    clicked : 'slide-1' 
+                                }
+                            }
+                        }
+                    </script>
+                    <div class="mt-5 grid grid-cols-2 gap-4 text-center" x-data="{ clicked : 'slide-1' }">
+                        <button class="rounded-lg border border-slate-200 p-3 w-50 dark:border-navy-500 cursor-pointer" @click="clicked = 'slide-2'"
+                        :class="clicked === 'slide-2' ?
+                        'text-white bg-primary dark:bg-primary-light dark:text-primary-light' :
+                        'text-slate-600 dark:text-navy-100'">
                             <svg xmlns="http://www.w3.org/2000/svg" class="inline h-9 w-9" fill="none"
                                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
-                            <span class="mt-1 font-medium text-primary dark:text-accent-light focus:text-white">
+                            <span class="mt-1 font-medium dark:text-accent-light focus:text-white" @click="clicked = 'slide'"
+                            :class="clicked ==='slide-2' ?
+                            'text-white' : 'text-primary'">
                                 Cash
                             </span>
                         </button>
-                        <button class="rounded-lg border border-slate-200 p-3 w-50 dark:border-navy-500">
+                        <button class="rounded-lg border border-slate-200 p-3 w-50 dark:border-navy-500 cursor-pointer" @click="clicked = 'slide-3'"
+                        :class="clicked === 'slide-3' ?
+                        'text-white bg-primary dark:bg-primary-light dark:text-primary-light' :
+                        'text-slate-600 dark:text-navy-100'">
                             <svg xmlns="http://www.w3.org/2000/svg" class="inline h-9 w-9" fill="none"
                                 viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                             </svg>
-                            <span class="mt-1 font-medium text-primary dark:text-accent-light">
-                                Debit
+                            <span class="mt-1 font-medium dark:text-accent-light"
+                            @click="clicked = 'slide-3'"
+                            :class="clicked === 'slide-3' ?
+                            'text-white' : 'text-primary'">
+                                E-Money
                             </span>
                         </button>
                     </div>
@@ -784,7 +803,7 @@
                                     d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                             </svg>
                             <span class="mt-1 font-medium text-primary dark:text-accent-light">
-                                Debit
+                                E-Money
                             </span>
                         </button>
                     </div>
@@ -846,15 +865,30 @@
             // Loop melalui setiap item di keranjang dan tambahkan ke HTML
             cart.forEach(item => {
                 let cartItemHTML = `
-                    <div class="cart-item">
-                        <p>Nama: ${item.name}</p>
-                        <p>Quantity: ${item.quantity}</p>
-                        <p>Total: Rp ${item.total.toLocaleString()}</p>
-                    </div>
+                    <div class="rounded-xl cart-item flex items-center justify-between my-2 border-b pb-2 text-sm bg-white">
+                            <!-- Product Image and Name -->
+                            <div class="flex items-center">
+                                <!-- Product Image -->
+                                <div class="w-10 h-10 rounded-full overflow-hidden bg-gray-200">
+                                    <img src="path-to-product-image.jpg" alt="Product Image" class="w-full h-full object-cover">
+                                </div>
+                                <!-- Product Name -->
+                                <div class="ml-3">
+                                    <h3 class="font-semibold">${item.name}</h3>
+                                </div>
+                            </div>
+                            <!-- Price and Quantity -->
+                            <div class="text-right">
+                                <p class="font-semibold text-gray-700">Rp ${item.total.toLocaleString()}</p>
+                                <p class="text-xs" style="color: #4A5568;">x ${item.quantity}</p>
+                            </div>
+                        </div>
                 `;
                 cartContainer.innerHTML += cartItemHTML;
             });
         }
+
+                        
 
         function clearCart() {
             localStorage.removeItem('cart');
@@ -866,7 +900,7 @@
         // clearCart();
 
         function checkout() {
-                            const orderId = 132;
+                            const orderId = 135; 
                             fetch("{{ route('createTransaction') }}", {
                                 method: "POST",
                                 headers: {
@@ -894,6 +928,7 @@
                                 console.error("Error Details:", error);
                                 alert("Terjadi kesalahan pada saat memproses transaksi. Silakan coba lagi nanti.");
                             });
+                            clearCart();
 
                         }
 
