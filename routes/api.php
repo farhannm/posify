@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\OrderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
@@ -46,3 +47,8 @@ Route::get('/product-variant-stocks', function (Request $request) {
     // Tampilkan hasil
     return response()->json($results);
 });
+
+Route::post('/orderitem/save', [OrderController::class, 'saveOrderItem'])->name('saveOrderItem');
+
+// check order id
+Route::get('check_order_id/{orderId}', [OrderController::class, 'checkOrderId'])->name('checkOrderId');

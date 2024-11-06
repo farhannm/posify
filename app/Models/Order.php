@@ -13,7 +13,12 @@ class Order extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'customer_name', 'total_amount'];
+    protected $fillable = ['id','user_id', 'customer_name', 'email', 'total_amount'];
+
+    // primary key 
+    protected $primaryKey = 'id';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     public function items()
     {

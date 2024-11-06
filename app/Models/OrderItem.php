@@ -9,7 +9,11 @@ class OrderItem extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['order_id', 'product_id', 'quantity', 'price'];
+    protected $fillable = ['order_id', 'product_id', 'variant_ids', 'quantity', 'price', 'total'];
+
+    protected $casts = [
+        'variant_ids' => 'array', // Mengonversi ke dan dari JSON
+    ];
 
     // Menghitung total di level aplikasi
     public function getTotalAttribute()

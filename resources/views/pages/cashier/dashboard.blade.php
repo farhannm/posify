@@ -463,6 +463,7 @@
                             </span>
                         </button>
                     </div>
+                    <button onclick="saveOrderItemToDatabase()">Simpan Keranjang</button>
                     <button
                         class="btn mt-5 h-11 justify-between bg-primary font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus dark:focus:bg-accent-focus dark:active:bg-accent/90"
                         onclick="checkout()">
@@ -827,24 +828,28 @@
     </div>
 
     <script>
+        let orderId;
         function addToCart(productId, productName, productPrice) {
-            // Ambil keranjang dari local storage atau buat array kosong jika belum ada
+    // Ambil keranjang dari local storage atau buat array kosong jika belum ada
             let cart = JSON.parse(localStorage.getItem('cart')) || [];
-            
+            console.log("Cart data before sending:", cart);
+
+
             // Cari produk di keranjang berdasarkan productId
             let productCart = cart.find(item => item.product_id === productId);
-
+            
             // Tambah kuantitas jika produk sudah ada di keranjang
             if (productCart) {
                 productCart.quantity += 1;
-                productCart.total += productPrice;
+                productCart.total = productCart.price * productCart.quantity;
             } else {
                 // Jika belum ada, tambahkan produk baru ke keranjang
                 cart.push({
+                    product_name: productName,
+                    variant_ids: [1],
                     product_id: productId,
-                    name: productName,
-                    price: productPrice,
                     quantity: 1,
+                    price: productPrice,
                     total: productPrice,
                 });
             }
@@ -858,7 +863,7 @@
 
         function updateCart() {
             // Ambil keranjang dari local storage atau array kosong jika tidak ada
-            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let cart = JSON.parse(localStorage.getItem('cart'));
             let cartContainer = document.querySelector('.cart-items');
             cartContainer.innerHTML = ''; // Bersihkan elemen sebelum diisi ulang
 
@@ -874,7 +879,7 @@
                                 </div>
                                 <!-- Product Name -->
                                 <div class="ml-3">
-                                    <h3 class="font-semibold">${item.name}</h3>
+                                    <h3 class="font-semibold">${item.product_name}</h3>
                                 </div>
                             </div>
                             <!-- Price and Quantity -->
@@ -888,6 +893,40 @@
             });
         }
 
+        async function saveOrderItemToDatabase () {
+            let cart = JSON.parse(localStorage.getItem('cart'));
+            if (!cart || cart.length === 0) {
+                alert("Pesanan anda kosong!");
+                return;
+            }
+            
+            
+            orderId = await createOrderId();
+
+            cart = cart.map(item => ({
+                ...item,
+                order_id: orderId //  order_id  sama untuk semua item
+            }));
+
+
+            fetch("{{ route('saveOrderItem') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                },
+                body: JSON.stringify({ cart: cart })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.message);
+                alert("Order items berhasil disimpan ke database");
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Gagal menyimpan order items ke database");
+            });
+        }
                         
 
         function clearCart() {
@@ -899,8 +938,43 @@
         document.addEventListener('DOMContentLoaded', updateCart);
         // clearCart();
 
+        
+
+        async function createOrderId() {
+            const letter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            while (true) {
+                let hurufDepan = '';
+                for  (let i = 0; i < 3; i++) {
+                    hurufDepan += letter.charAt(Math.floor(Math.random() * letter.length)); // math.random() akan menghasilkan bilangan diantara 0-1
+                }
+                const hurufAKhir = letter.charAt(Math.floor(Math.random() * letter.length));
+
+                const date = new Date();
+                const day = String(date.getDate()).padStart(2, '0'); // menambah 0 jika kurang dari 2
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = String(date.getFullYear()).slice(-2); // -2 mengambil dari urutan terakhir slice aslinya 2 (awal, akhir)
+
+                const customDate = day[0] + year[0] + month[0] + month[1] + year[1] + day[1];
+                const orderId = hurufDepan +  customDate +hurufAKhir;
+                
+                const response = await fetch(`/api/check_order_id/${orderId}`);
+                if (!response.ok) {
+                    // Jika tidak berhasil, log respons dan lempar error
+                    const text = await response.text(); // Ambil teks untuk melihat apa yang terjadi
+                    console.error('Server response:', text);
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+
+                if (data.isUnique) {
+                    return orderId;
+                }
+            }
+        }
+        
+
         function checkout() {
-                            const orderId = 135; 
+                             
                             fetch("{{ route('createTransaction') }}", {
                                 method: "POST",
                                 headers: {
@@ -929,7 +1003,6 @@
                                 alert("Terjadi kesalahan pada saat memproses transaksi. Silakan coba lagi nanti.");
                             });
                             clearCart();
-
                         }
 
     </script>

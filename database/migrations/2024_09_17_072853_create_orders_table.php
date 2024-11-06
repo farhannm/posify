@@ -14,13 +14,13 @@ return new class extends Migration
     public function up()
     {
         Schema::create('orders', function (Blueprint $table) {
-            $table->id();
+            $table->string('id')->primary();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('transaction_id')->nullable();
             $table->string('customer_name')->nullable();
             $table->string('email')->nullable();
             $table->enum('order_status', ['Pending', 'Approved', 'In Process', 'Done', 'Cancelled'])->default('Pending');
-            $table->decimal('total_amount', 10, 2);
+            $table->decimal('total_amount', 10, 2)->default(0);
             $table->timestamps();
 
             $table->foreign('transaction_id')->references('id')->on('transactions')->onDelete('cascade');
