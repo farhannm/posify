@@ -124,7 +124,7 @@ class PaymentController extends Controller
         }
         $order->save();
         $payment->save();
-        return response()->json('success');
+        return response()->json($response);
     }
 
     public function test(Request $request){

@@ -881,7 +881,7 @@
                                 <div class="ml-3">
                                     <h3 class="font-semibold">${item.product_name}</h3>
                                 </div>
-                            </div>
+                            </div>  
                             <!-- Price and Quantity -->
                             <div class="text-right">
                                 <p class="font-semibold text-gray-700">Rp ${item.total.toLocaleString()}</p>
