@@ -41,9 +41,6 @@
                             </svg>
                         </span>
                     </label>
-                    @error('password')
-                        <span class="text-tiny+ text-error">{{ $message }}</span>
-                    @enderror
                 </div>
 
                 <!-- Input untuk konfirmasi password -->
@@ -62,9 +59,9 @@
                             </svg>
                         </span>
                     </label>
-                    @error('password_confirmation')
-                        <span class="text-tiny+ text-error">{{ $message }}</span>
-                    @enderror
+                    @if (session('failed'))
+                        <span class="text-tiny+ text-error">{{ session('failed') }}</span>
+                    @endif
                 </div>
                 
 

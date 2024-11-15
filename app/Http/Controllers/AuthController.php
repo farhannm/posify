@@ -74,38 +74,44 @@ class AuthController extends Controller
         return view('auth.validate-token', compact('token'));
     }
 
-    public function validateForgotPassword (Request $request) {
+    public function validateForgotPassword(Request $request) {
         $customMessage = [
             'password.required' => 'Password tidak boleh kosong',
-            'password.min'      => 'Password minimal 6 karakter',
+            'password.min'      => 'Password minimal 8 karakter',
         ];
-
+    
         $request->validate([
-            'password'  => 'required|confirmed|min:8'
+            'password' => 'required|confirmed|min:8'
         ], $customMessage);
-
+    
         $token = PasswordResetToken::where('token', $request->token)->first();
-
+    
         if (!$token || $token->expires_at < now()) {
             return redirect()->route('login')->with('failed', 'Token tidak valid atau sudah kadaluarsa');
         }
-
+    
         $user = User::where('email', $token->email)->first();
-
+    
         if (!$user) {
             return redirect()->route('login')->with('failed', 'Email tidak terdaftar');
         }
-
+    
+        // **Cek apakah password baru sama dengan password lama**
+        if (Hash::check($request->password, $user->password)) {
+            return redirect()->back()->with('failed', 'Password baru tidak boleh sama dengan password lama.');
+        }
+    
+        // Update password baru
         $user->update([
             'password' => Hash::make($request->password)
         ]);
-
-
+    
+        // Hapus token reset password
         PasswordResetToken::where('token', $token->token)->delete();
-
+    
         return redirect()->route('login')->with('success', 'Password berhasil diganti');
-
     }
+    
 
 
     public function loginView()
