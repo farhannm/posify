@@ -54,11 +54,26 @@
                     </div>
                     
                     <div class="swiper-wrapper mt-5" x-data="{ selected: 'slide-1' }">
-                        @foreach ($categories as $index => $category)
-                        <div class="card swiper-slide w-24 shrink-0 cursor-pointer" @click="selected = 'slide-{{ $index + 1}}'">
+                        <!-- All Category -->
+                        <div class="card swiper-slide w-24 shrink-0 cursor-pointer" @click="selected = 'slide-all'; filterProducts('all')">
                             <div class="flex flex-col items-center rounded-lg px-2 py-4"
-                                :class="selected === 'slide-{{ $index + 1}}' ?
-                                    'text-secondary bg-secondary/10  dark:bg-secondary-light/10 dark:text-secondary-light' :
+                                :class="selected === 'slide-all' ?
+                                    'text-secondary bg-secondary/10 dark:bg-secondary-light/10 dark:text-secondary-light' :
+                                    'text-slate-600 dark:text-navy-100'">
+                                <img class="w-12" src="{{ asset('images/100x100.png') }}" alt="image" />
+                                <h3 class="pt-2 font-medium tracking-wide line-clamp-1">
+                                    All Category
+                                </h3>
+                            </div>
+                        </div>
+
+                        <!-- Other Categories -->
+                        @foreach ($categories as $index => $category)
+                        <div class="card swiper-slide w-24 shrink-0 cursor-pointer" 
+                            @click="selected = 'slide-{{ $index + 1 }}'; filterProducts('{{ $category->id }}')">
+                            <div class="flex flex-col items-center rounded-lg px-2 py-4"
+                                :class="selected === 'slide-{{ $index + 1 }}' ?
+                                    'text-secondary bg-secondary/10 dark:bg-secondary-light/10 dark:text-secondary-light' :
                                     'text-slate-600 dark:text-navy-100'">
                                 <img class="w-12" src="{{ asset('images/100x100.png') }}" alt="image" />
                                 <h3 class="pt-2 font-medium tracking-wide line-clamp-1">
@@ -67,9 +82,8 @@
                             </div>
                         </div>
                         @endforeach
-               
-                        
                     </div>
+<<<<<<< HEAD
                 </div>
                 
                 
@@ -84,6 +98,20 @@
                             @endif
                             {{-- <img class="rounded-lg w-full h-full object-cover" src="{{ $product->image }}" alt="image" /> --}}
                         </div>                            <div class="pt-2">
+=======
+
+                    <!-- Product List -->
+                    <div id="product-list" class="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        @foreach ($products as $product)
+                        <div class="card p-2 product-card" 
+                            data-category="{{ $product->category_id }}" 
+                            onclick="addToCart({{ $product->id }}, '{{ $product->name }}', {{ $product->price }})" 
+                            style="cursor: pointer;">
+                            <div class="w-40 h-40 mx-auto flex items-center justify-center">
+                                <img class="rounded-lg w-full h-full object-cover" src="{{ $product->image }}" alt="image" />
+                            </div>
+                            <div class="pt-2">
+>>>>>>> c9a855dd1980ba3abb53771cf4ff35ddcbcb194c
                                 <p class="font-medium text-slate-700 dark:text-navy-100">{{ $product->name }}</p>
                                 <p class="text-xs text-slate-400 dark:text-navy-300">{{ $product->description }}</p>
                                 <p class="text-right font-medium text-primary dark:text-accent-light">
@@ -91,9 +119,28 @@
                                 </p>
                             </div>
                         </div>
-                    @endforeach
+                        @endforeach
+                    </div>
 
-               
+                    <script>
+                        function filterProducts(categoryId) {
+                            const productCards = document.querySelectorAll('.product-card');
+
+                            productCards.forEach(card => {
+                                // Show all products if "all" is selected
+                                if (categoryId === 'all') {
+                                    card.style.display = 'block';
+                                } else {
+                                    // Show only products matching the selected category
+                                    if (card.dataset.category === categoryId) {
+                                        card.style.display = 'block';
+                                    } else {
+                                        card.style.display = 'none';
+                                    }
+                                }
+                            });
+                        }
+                    </script>
                 </div>
             </div>
             <div class="hidden sm:col-span-6 sm:block lg:col-span-4">
@@ -385,4 +432,20 @@
         }
 
     </script>
+<<<<<<< HEAD
 </x-app-layout>
+=======
+    <!-- function checkout() {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        console.log("Keranjang checkout:", cart);
+        // Di sini Anda bisa mengirim `cart` ke server menggunakan fetch atau AJAX
+    } -->
+
+
+
+
+
+
+
+</x-base-layout>
+>>>>>>> c9a855dd1980ba3abb53771cf4ff35ddcbcb194c
