@@ -1,8 +1,8 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Transaction;
 use App\Models\OrderItem;
@@ -235,4 +235,59 @@ class AnalysisController extends Controller
             'persentase' => $persentase,
         ];
     }
+
+    // public function mostSoldItem()
+    // {
+    //     $rentangTanggal = request()->input('rentang_tanggal');
+    //     $tanggal = explode(" to ", $rentangTanggal);
+
+    //     $startDate = $tanggal[0];
+    //     $endDate = $tanggal[1] ?? $tanggal[0];
+
+    //     if ($rentangTanggal) {
+    //         if ($startDate === $endDate) {
+    //             $mostSoldItem = OrderItem::join('orders as O', 'O.id', '=', 'order_items.order_id')
+    //                 ->join('transactions as T', 'T.id', '=', 'O.transaction_id')
+    //                 ->join('products as P', 'P.id', '=', 'order_items.product_id')
+    //                 ->where('T.payment_status', 'settlement')
+    //                 ->whereDate('T.created_at', $startDate)
+    //                 ->select(
+    //                     'order_items.product_id',
+    //                     'P.name as product_name',
+    //                     DB::raw('SUM(order_items.quantity) as mostSold')
+    //                 )
+    //                 ->groupBy('order_items.product_id', 'P.name')
+    //                 ->orderByDesc('mostSold')
+    //                 ->first();
+    //         } else {
+    //             $mostSoldItem = OrderItem::join('orders as O', 'O.id', '=', 'order_items.order_id')
+    //                 ->join('transactions as T', 'T.id', '=', 'O.transaction_id')
+    //                 ->join('products as P', 'P.id', '=', 'order_items.product_id')
+    //                 ->where('T.payment_status', 'settlement')
+    //                 ->whereBetween('T.created_at', [$startDate, $endDate])
+    //                 ->select(
+    //                     'order_items.product_id',
+    //                     'P.name as product_name',
+    //                     DB::raw('SUM(order_items.quantity) as mostSold')
+    //                 )
+    //                 ->groupBy('order_items.product_id', 'P.name')
+    //                 ->orderByDesc('mostSold')
+    //         }
+
+    //         if (!$mostSoldItem) {
+    //             return [
+    //                 'mostSoldName' => null,
+    //                 'mostSoldQuantity' => 0,
+    //             ];
+    //         }
+
+    //         return [
+    //             'mostSoldName' => $mostSoldItem->product_name,
+    //             'mostSoldQuantity' => $mostSoldItem->mostSold,
+    //         ];
+    //     }
+
+    // }
+
+    
 }    

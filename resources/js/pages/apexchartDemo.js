@@ -113,12 +113,12 @@ export const charts = {
         data: [44000000, 55000000, 57000000, 56000000, 61000000, 58000000, 63000000, 70000000, 65000000, 60000000, 72000000, 68000000],
         type: "bar",  // Tipe data untuk Revenue
       },
-      {
-        name: "Transaction",
-        // Mengalikan setiap data transaction dengan 100,000
-        data: [76, 85, 101, 98, 87, 105, 91, 110, 115, 120, 125, 130].map(val => val * 400000),
-        type: "bar",  // Tipe data untuk Transaction  
-      },
+      // {
+      //   name: "Transaction",
+      //   // Mengalikan setiap data transaction dengan 100,000
+      //   data: [76, 85, 101, 98, 87, 105, 91, 110, 115, 120, 125, 130].map(val => val * 400000),
+      //   type: "bar",  // Tipe data untuk Transaction  
+      // },
     ],  
     chart: {
       type: "bar",
@@ -158,16 +158,16 @@ export const charts = {
             let formattedValue = new Intl.NumberFormat('id-ID', {
               style: 'currency',
               currency: 'IDR',
-              minimumFractionDigits: 2,
+              minimumFractionDigits: 0,
             }).format(val);
             return formattedValue.replace('IDR', 'Rp');
           },
         },
-        {
-          formatter: function (val) {
-            return (val / 100000) + ' transaction'; // Membagi kembali nilai transaksi agar tampilannya sesuai
-          },
-        },
+        // {
+        //   formatter: function (val) {
+        //     return (val / 100000) + ' transaction'; // Membagi kembali nilai transaksi agar tampilannya sesuai
+        //   },
+        // },
       ],
     },  
     legend: {

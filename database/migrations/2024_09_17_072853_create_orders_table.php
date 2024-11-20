@@ -45,3 +45,6 @@ return new class extends Migration
         Schema::dropIfExists('orders');
     }
 };
+
+// orders_order_status_check
+// order_status::text = ANY (ARRAY['Pending'::character varying, 'Approved'::character varying, 'In Process'::character varying, 'Done'::character varying, 'Cancelled'::character varying]::text[])

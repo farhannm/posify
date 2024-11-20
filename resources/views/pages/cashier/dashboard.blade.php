@@ -290,9 +290,9 @@
                             </div>
                         </div>
                     @endforeach
-
-               
                 </div>
+
+        
             </div>
             <div class="hidden sm:col-span-6 sm:block lg:col-span-4">
                 <div class="flex items-center justify-between">
@@ -400,7 +400,7 @@
                     </div>
                 </div>
                 <div class="card mt-5 p-4 sm:p-5">
-                    <div class="cart-items bg-slate-50">
+                    <div class="cart-items overflow-y-scroll h-60 bg-slate-50">
 
                         
                         
@@ -430,8 +430,8 @@
                             }
                         }
                     </script>
-                    <div class="mt-5 grid grid-cols-2 gap-4 text-center" x-data="{ clicked : 'slide-1' }">
-                        <button class="rounded-lg border border-slate-200 p-3 w-50 dark:border-navy-500 cursor-pointer" @click="clicked = 'slide-2'"
+                    <div id="paymentMethod" class="mt-5 grid grid-cols-2 gap-4 text-center" x-data="{ clicked : 'slide-1' }">
+                        <button id="button-slide-2" class="rounded-lg border border-slate-200 p-3 w-50 dark:border-navy-500 cursor-pointer" @click="clicked = 'slide-2'"
                         :class="clicked === 'slide-2' ?
                         'text-white bg-primary dark:bg-primary-light dark:text-primary-light' :
                         'text-slate-600 dark:text-navy-100'">
@@ -446,7 +446,7 @@
                                 Cash
                             </span>
                         </button>
-                        <button class="rounded-lg border border-slate-200 p-3 w-50 dark:border-navy-500 cursor-pointer" @click="clicked = 'slide-3'"
+                        <button id="button-slide-3" class="rounded-lg border border-slate-200 p-3 w-50 dark:border-navy-500 cursor-pointer" @click="clicked = 'slide-3'"
                         :class="clicked === 'slide-3' ?
                         'text-white bg-primary dark:bg-primary-light dark:text-primary-light' :
                         'text-slate-600 dark:text-navy-100'">
@@ -463,10 +463,36 @@
                             </span>
                         </button>
                     </div>
-                    <button onclick="saveOrderItemToDatabase()">Simpan Keranjang</button>
+
+                    <div id="paymentModal" class="modal fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden z-50">
+                        <div class="bg-white rounded-lg p-6 max-w-sm w-full fixed items-center justify-center">
+                            <h2 class="text-lg font-bold text-center">Pemberitahuan</h2>
+                            <p class="mt-4 mb-6 text-base">Silahkan kunjungi cashier untuk melakukan pembayaran.</p>
+                        </div>
+                    </div>
+
+                    <div id="paymentModal2" class="modal fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden z-50">
+                        <div class="bg-white rounded-lg p-6 max-w-sm w-full fixed items-center justify-center">
+                            <h2 class="text-lg font-bold text-center">Orderan</h2>
+                            <div class="tampilOrder bg-slate-50 overflow-y-scroll h-40"></div>
+                            <div class="flex items-center justify-between gap-4">
+                                <div class="mt-2">
+                                    <label for="name-input" class="block mx-2 mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama</label>
+                                    <input type="text" id="name-input" class="mr-3 rounded-lg border border-slate-200 bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                </div>  
+                                <div class="mt-2 text-right">
+                                    <label for="email-input" class="block mx-2 mb-2 text-sm font-medium text-gray-900 dark:text-white text-right">Email</label>
+                                    <input type="email" id="email-input" class="mr-3 rounded-lg border border-slate-200 bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                </div>
+                            </div>
+                            <button id="closeEmoneyModal" class="rounded-lg border border-slate-200 mx-autobtn mt-5 h-11 w-full justify-between bg-primary font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus dark:focus:bg-accent-focus dark:active:bg-accent/90">
+                            Konfirmasi</button>
+                        </div>
+                    </div>
+                    
                     <button
                         class="btn mt-5 h-11 justify-between bg-primary font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus dark:focus:bg-accent-focus dark:active:bg-accent/90"
-                        onclick="checkout()">
+                        onclick="inputIdentitas()">
                         <span>Checkout</span>
                         <span>$88.00</span>
                     </button>
@@ -829,8 +855,10 @@
 
     <script>
         let orderId;
+        
         function addToCart(productId, productName, productPrice) {
-    // Ambil keranjang dari local storage atau buat array kosong jika belum ada
+            console.log(orderId);
+
             let cart = JSON.parse(localStorage.getItem('cart')) || [];
             console.log("Cart data before sending:", cart);
 
@@ -857,20 +885,19 @@
             // Simpan kembali keranjang ke local storage
             localStorage.setItem('cart', JSON.stringify(cart));
 
-            // Panggil updateCart untuk memperbarui tampilan keranjang
             updateCart();
         }
 
-        function updateCart() {
+        function updateCart(div = '.cart-items') {
             // Ambil keranjang dari local storage atau array kosong jika tidak ada
-            let cart = JSON.parse(localStorage.getItem('cart'));
-            let cartContainer = document.querySelector('.cart-items');
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let cartContainer = document.querySelector(div);
             cartContainer.innerHTML = ''; // Bersihkan elemen sebelum diisi ulang
 
             // Loop melalui setiap item di keranjang dan tambahkan ke HTML
             cart.forEach(item => {
                 let cartItemHTML = `
-                    <div class="rounded-xl cart-item flex items-center justify-between my-2 border-b pb-2 text-sm bg-white">
+                    <div class="cart-item flex items-center justify-between pb-2 text-sm bg-white mt-4">
                             <!-- Product Image and Name -->
                             <div class="flex items-center">
                                 <!-- Product Image -->
@@ -881,10 +908,10 @@
                                 <div class="ml-3">
                                     <h3 class="font-semibold">${item.product_name}</h3>
                                 </div>
-                            </div>  
+                            </div>
                             <!-- Price and Quantity -->
                             <div class="text-right">
-                                <p class="font-semibold text-gray-700">Rp ${item.total.toLocaleString()}</p>
+                                <p class="font-semibold text-gray-700">Rp ${item.total}</p>
                                 <p class="text-xs" style="color: #4A5568;">x ${item.quantity}</p>
                             </div>
                         </div>
@@ -894,13 +921,20 @@
         }
 
         async function saveOrderItemToDatabase () {
-            let cart = JSON.parse(localStorage.getItem('cart'));
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
             if (!cart || cart.length === 0) {
                 alert("Pesanan anda kosong!");
                 return;
             }
             
+            let identitas = JSON.parse(localStorage.getItem('identitas')) || [];
+            if (!identitas || identitas.length === 0) {
+                alert("identitas anda kosong!");
+                return;
+            }
             
+
             orderId = await createOrderId();
 
             cart = cart.map(item => ({
@@ -908,30 +942,37 @@
                 order_id: orderId //  order_id  sama untuk semua item
             }));
 
-
+            
             fetch("{{ route('saveOrderItem') }}", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     "X-CSRF-TOKEN": "{{ csrf_token() }}"
                 },
-                body: JSON.stringify({ cart: cart })
+                body: JSON.stringify({ cart: cart, identitas:identitas })
             })
             .then(response => response.json())
             .then(data => {
                 console.log(data.message);
                 alert("Order items berhasil disimpan ke database");
+
+
             })
             .catch(error => {
                 console.error('Error:', error);
                 alert("Gagal menyimpan order items ke database");
             });
+            clearIdentitas();
         }
                         
 
         function clearCart() {
             localStorage.removeItem('cart');
             updateCart(); // Perbarui tampilan keranjang
+        }
+
+        function clearIdentitas() {
+            localStorage.removeItem('identitas');
         }
         // Memuat keranjang dari local storage saat halaman dimuat
 
@@ -942,7 +983,8 @@
 
         async function createOrderId() {
             const letter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            while (true) {
+            let coba = 0;
+            while (coba < 50) {
                 let hurufDepan = '';
                 for  (let i = 0; i < 3; i++) {
                     hurufDepan += letter.charAt(Math.floor(Math.random() * letter.length)); // math.random() akan menghasilkan bilangan diantara 0-1
@@ -955,14 +997,13 @@
                 const year = String(date.getFullYear()).slice(-2); // -2 mengambil dari urutan terakhir slice aslinya 2 (awal, akhir)
 
                 const customDate = day[0] + year[0] + month[0] + month[1] + year[1] + day[1];
-                const orderId = hurufDepan +  customDate +hurufAKhir;
+                const orderId = hurufDepan +  customDate + hurufAKhir;
                 
                 const response = await fetch(`/api/check_order_id/${orderId}`);
                 if (!response.ok) {
-                    // Jika tidak berhasil, log respons dan lempar error
-                    const text = await response.text(); // Ambil teks untuk melihat apa yang terjadi
+                    const text = await response.text(); 
                     console.error('Server response:', text);
-                    throw new Error('Network response was not ok');
+                    throw new Error('Gagal mengakses database untuk mengecek Order ID');
                 }
                 const data = await response.json();
 
@@ -970,40 +1011,232 @@
                     return orderId;
                 }
             }
+            throw new Error('Gagal membuat Order ID');
         }
         
+        
 
-        function checkout() {
-                             
-                            fetch("{{ route('createTransaction') }}", {
-                                method: "POST",
-                                headers: {
-                                    "Content-Type": "application/json",
-                                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                                },
-                                body: JSON.stringify({
-                                    order_id: orderId
-                                })
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                console.log("Response Data:", data);
-                                if (data.error) {
-                                    alert(data.error);
-                                } else if (data) {
-                                    const redirectUrl = `https://app.sandbox.midtrans.com/snap/v4/redirection/${data}`;
-                                    console.log("Redirecting to:", redirectUrl);
-                                    window.location.href = redirectUrl;
-                                } else {
-                                    alert("Terjadi kesalahan, tidak ada link pembayaran yang ditemukan.");
-                                }
-                            })
-                            .catch(error => {
-                                console.error("Error Details:", error);
-                                alert("Terjadi kesalahan pada saat memproses transaksi. Silakan coba lagi nanti.");
-                            });
-                            clearCart();
-                        }
+
+        // async function checkout() {
+        //     if(clicked === 'slide-2') {
+        //         const modalCash = document.getElementById('paymentModal');
+        //         modalCash.classList.remove('hidden');
+        //     }else{
+        //         const modalEmoney = document.getElementById('paymentModal2');
+        //         modalEmoney.classList.remove('hidden');
+        //         updateCart('.tampilOrder');
+        //         return new Promise((resolve) => {
+        //             document.getElementById('closeEmoneyModal').onclick = function() {
+        //                 const name = document.getElementById('name-input').value;
+        //                 const email = document.getElementById('email-input').value;
+        //                 console.log(name, email);
+        //                 closeModal(modalEmoney);
+
+        //                 let identitas = JSON.parse(localStorage.getItem('identitas')) || [];
+
+        //                 identitas.push({
+        //                     name:name,
+        //                     email:email
+        //                 });
+
+        //                 localStorage.setItem('identitas', JSON.stringify(identitas));
+        //                 resolve();
+        //             };
+        //         }).then(async () => {
+        //             const simpan = await saveOrderItemToDatabase()
+        //         .then(async () => {
+        //             if (simpan) {
+        //                 return fetch("{{ route('createTransaction') }}", {
+        //                 method: "POST",
+        //                 headers: {
+        //                     "Content-Type": "application/json",
+        //                     "X-CSRF-TOKEN": "{{ csrf_token() }}"
+        //                 },
+        //                 body: JSON.stringify({
+        //                     order_id: orderId
+        //                 })
+        //             });
+        //             } else {
+        //                 throw new Error("Gagal menyimpan ke database");
+        //             }
+        //         }).then(response => response.json())
+        //             .then(data => {
+        //                 console.log("Response Data:", data);
+        //                 if (data.error) {
+        //                     alert(data.error);
+        //                 } else if (data) {
+        //                     const redirectUrl = `https://app.sandbox.midtrans.com/snap/v4/redirection/${data}`;
+        //                     console.log("Redirecting to:", redirectUrl);
+        //                     window.location.href = redirectUrl;
+        //                 } else {
+        //                     alert("Terjadi kesalahan, tidak ada link pembayaran yang ditemukan.");
+        //                 }
+        //             })
+        //             .catch(error => {
+        //                 console.error("Error Details:", error);
+        //                 alert("Terjadi kesalahan pada saat memproses transaksi. Silakan coba lagi nanti.");
+        //             }).finally(() => {
+        //                 clearCart();
+        //                 clearIdentitas();
+        //             });
+        //         }
+        // }
+
+        async function orderIdToPaymentGateway() {
+        try {
+            // Kirim permintaan transaksi ke server
+            const response = await fetch("{{ route('createTransaction') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                },
+                body: JSON.stringify({ order_id: orderId })
+            });
+
+            // Periksa apakah respons berhasil
+            if (!response.ok) {
+                throw new Error("Gagal menyimpan ke database atau mengirim transaksi ke payment gateway.");
+            }
+
+            // Ambil data dari respons
+            const data = await response.json();
+
+            console.log("Response Data:", data);
+
+            // Tangani hasil transaksi
+            if (data.error) {
+                alert(data.error);
+            } else if (data) {
+                const redirectUrl = `https://app.sandbox.midtrans.com/snap/v4/redirection/${data}`;
+                console.log("Redirecting to:", redirectUrl);
+                window.location.href = redirectUrl;
+            } else {
+                alert("Terjadi kesalahan, tidak ada link pembayaran yang ditemukan.");
+            }
+        } catch (error) {
+            // Tangani error
+            console.error("Error Details:", error);
+            alert("Terjadi kesalahan pada saat memproses transaksi. Silakan coba lagi nanti.");
+        } finally {
+            // Bersihkan keranjang dan identitas setelah proses selesai
+            clearCart();
+            clearIdentitas();
+        }
+    }
+
+        const buttonSlide2 = document.getElementById('button-slide-2');
+        const buttonSlide3 = document.getElementById('button-slide-3');
+        
+        
+
+        buttonSlide2.addEventListener('click', function() {
+            clicked ='slide-2';
+        });
+
+        buttonSlide3.addEventListener('click', function() {
+            clicked = 'slide-3';
+        });
+
+        function closeModal(modal) {
+            modal.classList.add('hidden');
+        }
+
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach((modal) => {
+                if (event.target === modal) {
+                    closeModal(modal);
+                }
+            });
+        };
+
+
+        
+
+
+        function inputIdentitas() {
+            if (clicked === 'slide-1') {
+                alert('Silahkan pilih metode pembayaran');
+            } else if (clicked === 'slide-2') {
+                const modalEmoney = document.getElementById('paymentModal2');
+                modalEmoney.classList.remove('hidden');
+                updateCart('.tampilOrder');
+
+                document.getElementById('closeEmoneyModal').onclick = function () {
+                    const name = document.getElementById('name-input').value;
+                    const email = document.getElementById('email-input').value;
+
+                    console.log(name, email);
+
+                    let identitas = JSON.parse(localStorage.getItem('identitas')) || [];
+
+                    identitas.push({
+                        name:name,
+                        email:email
+                    });
+
+                    localStorage.setItem('identitas', JSON.stringify(identitas));
+                    console.log("Identitas disimpan:", identitas);
+
+                    saveOrderItemToDatabase();
+                    
+
+                    closeModal(modalEmoney);
+
+                    // Tampilkan modal berikutnya jika perlu
+                    const modalCash = document.getElementById('paymentModal');
+                    modalCash.classList.remove('hidden');
+                };
+            } else {
+                const modalEmoney = document.getElementById('paymentModal2');
+                modalEmoney.classList.remove('hidden');
+                updateCart('.tampilOrder');
+
+                document.getElementById('closeEmoneyModal').onclick = function () {
+                    const name = document.getElementById('name-input').value;
+                    const email = document.getElementById('email-input').value;
+
+                    console.log(name, email);
+
+                    
+                    let identitas = JSON.parse(localStorage.getItem('identitas')) || [];
+
+                    identitas.push({
+                        name:name,
+                        email:email
+                    });
+
+                    localStorage.setItem('identitas', JSON.stringify(identitas));
+                    console.log("Identitas disimpan:", identitas);
+
+                    saveOrderItemToDatabase()
+                    .then(() => {
+                        console.log("sedang menyiapkan link bayar...");
+                        return orderIdToPaymentGateway();
+                    })
+                    .then(() => {
+                        console.log("Link pembayaran berhasil dibuat");
+                    })
+                    .catch((error) => {
+                        console.error("terjadi kesalahan saat mengakses server, silahkan coba lagi", error);
+                    });
+
+                    
+                    
+                    // orderIdToPaymentGateway();
+                    closeModal(modalEmoney);
+
+                };
+            }
+        }
+
+
+        
+        
+
+
+        
 
     </script>
     <!-- function checkout() {

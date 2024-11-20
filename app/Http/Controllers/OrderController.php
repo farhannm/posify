@@ -14,6 +14,12 @@ class OrderController extends Controller
         try {
             \Log::info('Cart Data:', $request->all());
 
+            $identitas = $request->validate([
+                'identitas' => 'required|array',
+                'identitas.*.name' => 'required|string',
+                'identitas.*.email' => 'required|string',
+            ]);
+
             
             // Validasi data
             $validated = $request->validate([
@@ -26,7 +32,8 @@ class OrderController extends Controller
                 'cart.*.total' => 'required|numeric',
             ]);
 
-            \Log::info('Validated Data:', $validated); // Lihat data yang telah divalidasi
+            \Log::info('Validated Identitas Data:', $identitas);
+            \Log::info('Validated Cart Data:', $validated);
 
             $totalAmount = 0;
 
@@ -39,8 +46,8 @@ class OrderController extends Controller
             $order = Order::create([
                 'id' => $orderId,
                 'user_id' => 1,
-                'customer_name' => 'Hanif', // dari front end checkout
-                'email' => 'dummy@gmail.com', // dari frontend
+                'customer_name' => $identitas['identitas'][0]['name'],
+                'email' => $identitas['identitas'][0]['email'], // dari frontend
                 'total_amount' => $totalAmount,
             ]);
     
