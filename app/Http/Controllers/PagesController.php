@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Variant;
 use App\Models\Categories;
+use App\Models\Order;
 use App\Models\VariantType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProductVariantStock;
+use Illuminate\Support\Facades\Auth;
 
 class PagesController extends Controller
 {
@@ -20,14 +22,148 @@ class PagesController extends Controller
     }
 
     // Cashier Pages
-    public function     cashierDashboard()
+    public function cashierDashboard()
     {
         $products = Product::all();
         $categories = Categories::all();
-        // $cart = session()->get('cart', []);
 
         return view('pages/cashier/dashboard', compact('products', 'categories'));
     }
+
+    public function viewAwaitingOrders()
+    {
+        $orders = Order::with('items')
+            ->where('order_status', 'Pending')
+            ->where('user_id', Auth::id()) 
+            ->orderBy('id', 'asc')
+            ->paginate(10);
+    
+        foreach ($orders as $order) {
+            foreach ($order->items as $item) {
+                $productVariantStocks = ProductVariantStock::where('product_id', $item->product_id)->get();
+                
+                $variantResults = [];
+                foreach ($productVariantStocks as $stock) {
+                    $variantIds = is_string($stock->variant_ids) ? json_decode($stock->variant_ids, true) : $stock->variant_ids;
+    
+                    $variantValues = DB::table('variants')
+                        ->whereIn('id', $variantIds)
+                        ->pluck('value')
+                        ->toArray();
+    
+                    $variantResults[] = [
+                        'product_variant_stock_id' => $stock->id,
+                        'variant_values' => $variantValues,
+                    ];
+                }
+                
+                $item->variant_results = $variantResults;
+            }
+        }
+    
+        return view('pages/cashier/awaiting-orders', compact('orders'));
+    }    
+
+    public function viewProcessedOrders()
+    {
+
+        $orders = Order::with('items')
+            ->where('order_status', 'In Process')
+            ->orderBy('id', 'asc')
+            ->paginate(10);
+    
+        foreach ($orders as $order) {
+            foreach ($order->items as $item) {
+                $productVariantStocks = ProductVariantStock::where('product_id', $item->product_id)->get();
+                
+                $variantResults = [];
+                foreach ($productVariantStocks as $stock) {
+                    $variantIds = is_string($stock->variant_ids) ? json_decode($stock->variant_ids, true) : $stock->variant_ids;
+    
+                    $variantValues = DB::table('variants')
+                        ->whereIn('id', $variantIds)
+                        ->pluck('value')
+                        ->toArray();
+    
+                    $variantResults[] = [
+                        'product_variant_stock_id' => $stock->id,
+                        'variant_values' => $variantValues,
+                    ];
+                }
+                
+                $item->variant_results = $variantResults;
+            }
+        }
+
+        return view('pages/cashier/processed-orders', compact('orders'));
+    }
+
+    public function viewCancelledOrders()
+    {
+        $orders = Order::with('items')
+            ->where('order_status', 'Cancelled')
+            ->orderBy('id', 'asc')
+            ->paginate(10);
+    
+        foreach ($orders as $order) {
+            foreach ($order->items as $item) {
+                $productVariantStocks = ProductVariantStock::where('product_id', $item->product_id)->get();
+                
+                $variantResults = [];
+                foreach ($productVariantStocks as $stock) {
+                    $variantIds = is_string($stock->variant_ids) ? json_decode($stock->variant_ids, true) : $stock->variant_ids;
+    
+                    $variantValues = DB::table('variants')
+                        ->whereIn('id', $variantIds)
+                        ->pluck('value')
+                        ->toArray();
+    
+                    $variantResults[] = [
+                        'product_variant_stock_id' => $stock->id,
+                        'variant_values' => $variantValues,
+                    ];
+                }
+                
+                $item->variant_results = $variantResults;
+            }
+        }
+
+        return view('pages/cashier/cancelled-orders', compact('orders'));
+    }
+
+    public function viewOrderHistory()
+    {
+        $orders = Order::with('items')
+            ->where('order_status', 'Done')
+            ->orderBy('id', 'asc')
+            ->paginate(10);
+    
+        foreach ($orders as $order) {
+            foreach ($order->items as $item) {
+                $productVariantStocks = ProductVariantStock::where('product_id', $item->product_id)->get();
+                
+                $variantResults = [];
+                foreach ($productVariantStocks as $stock) {
+                    $variantIds = is_string($stock->variant_ids) ? json_decode($stock->variant_ids, true) : $stock->variant_ids;
+    
+                    $variantValues = DB::table('variants')
+                        ->whereIn('id', $variantIds)
+                        ->pluck('value')
+                        ->toArray();
+    
+                    $variantResults[] = [
+                        'product_variant_stock_id' => $stock->id,
+                        'variant_values' => $variantValues,
+                    ];
+                }
+                
+                $item->variant_results = $variantResults;
+            }
+        }
+
+        return view('pages/cashier/order-history', compact('orders'));
+    }
+
 
     public function ownerDashboard()
     {

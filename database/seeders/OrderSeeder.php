@@ -14,43 +14,40 @@ class OrderSeeder extends Seeder
      */
     public function run()
     {
-        // DB::table('orders')->insert([
-        //     [
-        //         'id' => 49,
-        //         'user_id' => 2,
-        //         'transaction_id' => null,
-        //         'customer_name' => 'John Doe',
-        //         'total_amount' => 145.00,
+        // for ($i = 1; $i <= 10; $i++) {
+        //     DB::table('orders')->insert([
+        //         'user_id' => 2, 
+        //         'transaction_id' => null, 
+        //         'customer_name' => 'Customer ' . $i,
+        //         'email' => 'customer' . $i . '@example.com',
+        //         'order_status' => 'Pending',
+        //         'total_amount' => mt_rand(1000, 10000) / 100,
         //         'created_at' => now(),
         //         'updated_at' => now(),
-        //     ],
-        //     [
-        //         'id' => 31,
-        //         'user_id' => 2,
-        //         'transaction_id' => null,
-        //         'customer_name' => 'Jane Smith',
-        //         'total_amount' => 60.00,
-        //         'created_at' => now(),
-        //         'updated_at' => now(),
-        //     ],
-        //     [
-        //         'id' => 32,
-        //         'user_id' => 2,
-        //         'transaction_id' => null,
-        //         'customer_name' => 'Michael Johnson',
-        //         'total_amount' => 120.00,
-        //         'created_at' => now(),
-        //         'updated_at' => now(),
-        //     ],
-        //     [
-        //         'id' => 33,
-        //         'user_id' => 2,
-        //         'transaction_id' => null,
-        //         'customer_name' => 'Emily Davis',
-        //         'total_amount' => 110.00,
-        //         'created_at' => now(),
-        //         'updated_at' => now(),
-        //     ],
-        // ]);
+        //     ]);
+        // }
+
+        DB::table('orders')->insert([
+            [
+                'user_id' => 2,
+                'transaction_id' => null,
+                'customer_name' => 'John Doe',
+                'email' => 'johndoe@example.com',
+                'order_status' => 'Pending',
+                'total_amount' => 100.00,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'user_id' => 2,
+                'transaction_id' => null,
+                'customer_name' => 'Jane Smith',
+                'email' => 'janesmith@example.com',
+                'order_status' => 'Pending',
+                'total_amount' => 200.00,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
     }
 }

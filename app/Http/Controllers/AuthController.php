@@ -1,18 +1,17 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Mail\ResetPasswordMail;
-use App\Models\PasswordResetToken;
+use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Mail\ResetPasswordMail;
+use App\Models\PasswordResetToken;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
-// mail
-use Illuminate\Support\Facades\Mail;
 
 
 class AuthController extends Controller
@@ -45,7 +44,7 @@ class AuthController extends Controller
 
         PasswordResetToken::where('email', $request->email)->delete();
 
-        $token = \Str::random(60);
+        $token = Str::random(60);
         $expiresAt = now()->addMinutes(5);
 
         PasswordResetToken::create([
@@ -133,7 +132,7 @@ class AuthController extends Controller
             if ($user->role == 'owner') {
                 return redirect()->route('ownerDashboardView');
             } else if($user->role == 'admin'){
-                return redirect()->route('adminDashboardView');
+                return redirect()->route('view-products');
             } else {
                 return redirect()->route('cashierDashboardView');
             }

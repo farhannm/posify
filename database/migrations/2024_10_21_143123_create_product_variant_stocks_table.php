@@ -19,7 +19,7 @@ return new class extends Migration
             $table->json('variant_ids'); 
             $table->decimal('additional_price', 10, 2)->default(0.00); 
             $table->integer('stock')->default(0);
-            $table->boolean('isAvailable')->default(false);
+            $table->boolean('isAvailable')->nullable();
             $table->timestamps();
         
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');

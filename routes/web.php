@@ -1,10 +1,11 @@
 <?php
 
-
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\ProductsController;
-use App\Http\Controllers\CashierController;
+use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -18,15 +19,9 @@ use App\Http\Controllers\CashierController;
 */
 
 
-Route::get('/', function(){
+Route::get('/', function () {
     return view('landing');
- });
-
-
-
-
-
-
+})->name('landing');
 
 
 Route::get('/login', [\App\Http\Controllers\AuthController::class, 'loginView'])->name('loginView');
@@ -54,6 +49,13 @@ Route::middleware(['auth', 'role:owner'])->group(function () {
 
 Route::middleware(['auth', 'role:cashier'])->group(function () {
     Route::get('/cashier-dashboard', [PagesController::class, 'cashierDashboard'])->name('cashierDashboardView');
+    Route::get('/cashier/awaiting-orders', [PagesController::class, 'viewAwaitingOrders'])->name('viewAwaitingOrders');
+    Route::get('/cashier/inprocess-orders', [PagesController::class, 'viewProcessedOrders'])->name('viewProcessedOrders');
+    Route::get('/cashier/cancelled-orders', [PagesController::class, 'viewCancelledOrders'])->name('viewCancelledOrders');
+    Route::get('/cashier/order-history', [PagesController::class, 'viewOrderHistory'])->name('viewOrderHistory');
+
+    //Approve
+    Route::put('/cashier/awaiting-orders/{id}', [OrderController::class, 'approveOrder'])->name('approve-order');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {

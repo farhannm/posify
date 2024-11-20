@@ -12,11 +12,11 @@
                 <!-- Main Sections Links -->
                 <div class="is-scrollbar-hidden flex grow flex-col space-y-4 overflow-y-auto pt-6">
                     <!-- Dashboard -->
-                    <a href="{{ route('adminDashboardView') }}"
+                    {{-- <a href="{{ route('adminDashboardView') }}"
                         class="flex h-11 w-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 {{ $routePrefix === 'adminDashboardView' ? 'text-primary hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:bg-navy-600 bg-primary/10 dark:text-accent-light dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90' : 'hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25' }}"
                         x-tooltip.placement.right="'Dashboards'">
                         <i class='bx bxs-dashboard text-xl'></i>
-                    </a>
+                    </a> --}}
 
                     <!-- Products -->
                     <a href="{{ route('view-products')}}"
@@ -79,7 +79,63 @@
                     </div>
                 </div>
             @elseif (Auth::user()->role == 'cashier')
-                <p>none</p>
+                <div class="is-scrollbar-hidden flex grow flex-col space-y-4 overflow-y-auto pt-6">
+                    <!-- Dashboard -->
+                    <a href="{{ route('cashierDashboardView') }}"
+                        class="flex h-11 w-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 {{ $routePrefix === 'cashierDashboardView' ? 'text-primary hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:bg-navy-600 bg-primary/10 dark:text-accent-light dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90' : 'hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25' }}"
+                        x-tooltip.placement.right="'Dashboards'">
+                        <i class='bx bxs-dashboard text-xl'></i>
+                    </a>
+
+                    <!-- Awaiting -->
+                    <a href="{{ route('viewAwaitingOrders')}}"
+                        class="flex h-11 w-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 {{ $routePrefix === 'viewAwaitingOrders' ? 'text-primary hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:bg-navy-600 bg-primary/10 dark:text-accent-light dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90' : 'hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25' }}"
+                        x-tooltip.placement.right="'Awaiting Orders'">
+                        <i class='bx bx-dish text-xl'></i>
+                    </a>
+
+                    <!-- In Process -->
+                    <a href="{{ route('viewProcessedOrders') }}"
+                        class="flex h-11 w-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 {{ $routePrefix === 'viewProcessedOrders' ? 'text-primary hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:bg-navy-600 bg-primary/10 dark:text-accent-light dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90' : 'hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25' }}"
+                        x-tooltip.placement.right="'In Process'">
+                        <i class='bx bxs-dish text-xl'></i>
+                    </a>
+
+                    <!-- Cancelled -->
+                    <a href="{{ route('viewCancelledOrders') }}"
+                        class="flex h-11 w-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 {{ $routePrefix === 'viewCancelledOrders' ? 'text-primary hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:bg-navy-600 bg-primary/10 dark:text-accent-light dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90' : 'hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25' }}"
+                        x-tooltip.placement.right="'In Process'">
+                        <i class='bx bx-message-alt-x text-xl'></i>
+                    </a>
+
+                    <!-- History -->
+                    <a href="{{ route('viewOrderHistory') }}"
+                        class="flex h-11 w-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 {{ $routePrefix === 'viewOrderHistory' ? 'text-primary hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:bg-navy-600 bg-primary/10 dark:text-accent-light dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90' : 'hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25' }}"
+                        x-tooltip.placement.right="'Order History'">
+                        <i class='bx bx-receipt text-xl'></i>
+                    </a>
+
+                </div>
+
+                <div class="flex flex-col  space-y-8 py-8">
+                    <!-- Logout -->
+                    <div class="flex flex-col pt-2 pb-5">
+                        <div class="mt-3 px-4">
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit"
+                                    class="btn h-9 w-full bg-red-500 text-white hover:bg-red-600 focus:bg-red-600 active:bg-red-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                    </svg>
+                                </button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
             @elseif (Auth::user()->role == 'owner')
                 <!-- Main Sections Links -->
                 <div class="is-scrollbar-hidden flex grow flex-col space-y-4 overflow-y-auto pt-6">
