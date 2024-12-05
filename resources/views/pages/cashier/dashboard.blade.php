@@ -270,8 +270,6 @@
                             </div>
                         </div>
                         @endforeach
-               
-                        
                     </div>
                 </div>
                 
@@ -285,7 +283,7 @@
                                 <p class="font-medium text-slate-700 dark:text-navy-100">{{ $product->name }}</p>
                                 <p class="text-xs text-slate-400 dark:text-navy-300">{{ $product->description }}</p>
                                 <p class="text-right font-medium text-primary dark:text-accent-light">
-                                    {{ 'Rp ' . number_format($product->price, 2) }}
+                                    {{ 'Rp ' . number_format($product->price, 0, ',', '.') }}
                                 </p>
                             </div>
                         </div>
@@ -401,25 +399,11 @@
                 </div>
                 <div class="card mt-5 p-4 sm:p-5">
                     <div class="cart-items overflow-y-scroll h-60 bg-slate-50">
-
-                        
-                        
+                        <!-- detailnya ada di javascript untuk menampilkan keranjang -->
                     </div> 
                     
-                    <div class="my-4 h-px bg-slate-200 dark:bg-navy-500"></div>
-                    <div class="space-y-2 font-inter">
-                        <div class="flex justify-between text-slate-600 dark:text-navy-100">
-                            <p>Subtotal</p>
-                            <p class="font-medium tracking-wide">55.00$</p>
-                        </div>
-                        <div class="flex justify-between text-xs+">
-                            <p>Tax</p>
-                            <p class="font-medium tracking-wide">5.00$</p>
-                        </div>
-                        <div class="flex justify-between text-base font-medium text-primary dark:text-accent-light">
-                            <p>Total</p>
-                            <p>60.00$</p>
-                        </div>
+                    <div class="total-price space-y-2 font-inter">
+                        <!-- total price di javascript -->
                     </div>
                     <script>
                         export default {
@@ -430,8 +414,10 @@
                             }
                         }
                     </script>
+                    
                     <div id="paymentMethod" class="mt-5 grid grid-cols-2 gap-4 text-center" x-data="{ clicked : 'slide-1' }">
-                        <button id="button-slide-2" class="rounded-lg border border-slate-200 p-3 w-50 dark:border-navy-500 cursor-pointer" @click="clicked = 'slide-2'"
+                        {{-- cash --}}
+                        <button id="button-slide-2" class="rounded-lg border border-slate-200 p-3 w-full dark:border-navy-500 cursor-pointer" @click="clicked = 'slide-2'"
                         :class="clicked === 'slide-2' ?
                         'text-white bg-primary dark:bg-primary-light dark:text-primary-light' :
                         'text-slate-600 dark:text-navy-100'">
@@ -446,23 +432,124 @@
                                 Cash
                             </span>
                         </button>
-                        <button id="button-slide-3" class="rounded-lg border border-slate-200 p-3 w-50 dark:border-navy-500 cursor-pointer" @click="clicked = 'slide-3'"
-                        :class="clicked === 'slide-3' ?
-                        'text-white bg-primary dark:bg-primary-light dark:text-primary-light' :
-                        'text-slate-600 dark:text-navy-100'">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="inline h-9 w-9" fill="none"
-                                viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                            </svg>
-                            <span class="mt-1 font-medium dark:text-accent-light"
-                            @click="clicked = 'slide-3'"
-                            :class="clicked === 'slide-3' ?
-                            'text-white' : 'text-primary'">
-                                E-Money
-                            </span>
-                        </button>
+                        {{-- e money --}}
+                        
+                        <div x-data="{showModal:false, clicked: 'slide-1'}">
+                            <button id="button-slide-3" class="rounded-lg border border-slate-200 p-3 w-full dark:border-navy-500 cursor-pointer" @click="clicked = 'slide-3'; showModal = true"
+                            :class="clicked === 'slide-3' ? 'text-white bg-primary dark:bg-primary-light dark:text-primary-light' : 'text-slate-600 dark:text-navy-100'">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="inline h-9 w-9" fill="none"
+                                    viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                                </svg>
+                                <span class="mt-1 font-medium dark:text-accent-light" @click="clicked = 'slide-3'" :class="clicked === 'slide-3' ? 'text-white' : 'text-primary'">
+                                    E-Money
+                                </span>
+                            </button>
+                            <template x-teleport="#x-teleport-target">
+                              <div
+                                class="fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden px-4 py-6 sm:px-5"
+                                x-show="showModal"
+                                role="dialog"
+                                @keydown.window.escape="showModal = false"
+                              >
+                                <div
+                                  class="absolute inset-0 bg-slate-900/60 backdrop-blur transition-opacity duration-300"
+                                  @click="showModal = false"
+                                  x-show="showModal"
+                                  x-transition:enter="ease-out"
+                                  x-transition:enter-start="opacity-0"
+                                  x-transition:enter-end="opacity-100"
+                                  x-transition:leave="ease-in"
+                                  x-transition:leave-start="opacity-100"
+                                  x-transition:leave-end="opacity-0"
+                                ></div>
+                                <div
+                                  class="relative max-w-3xl rounded-lg bg-white px-4 py-10 text-center transition-opacity duration-300 dark:bg-navy-700 sm:px-5"
+                                  x-show="showModal"
+                                  x-transition:enter="ease-out"
+                                  x-transition:enter-start="opacity-0"
+                                  x-transition:enter-end="opacity-100"
+                                  x-transition:leave="ease-in"
+                                  x-transition:leave-start="opacity-100"
+                                  x-transition:leave-end="opacity-0"
+                                >
+                                    <path
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                    ></path>
+                                  </svg>
+                        {{-- kadieu --}}
+                                  <div class="mt-2">
+                                    <h2 class="text-2xl text-slate-700 dark:text-navy-100">
+                                        Pilih Metode Pembayaran
+                                    </h2>
+                                    <div x-data="{ pilihanPaymentMethod: '' }" class="mt-5 grid lg:gap-4 lg:grid-cols-5 lg:grid-rows-1">
+                                        <div>
+                                            <!-- gopay -->
+                                            <button
+                                                class="btn border border-slate-300 font-medium text-slate-800 hover:bg-slate-150 focus:bg-slate-150 active:bg-slate-150/80 dark:border-navy-450 dark:text-navy-50 dark:hover:bg-navy-500 dark:focus:bg-navy-500 dark:active:bg-navy-500/90"
+                                                @click="choosedPaymentMethod = 'gopay'; updatePrice(choosedPaymentMethod)">                                                <img class="scale-x-3 object-contain m-1 h-10 w-18" src="{{ asset('images/LogoGopay.png')}}">
+                                                <img class="scale-x-2 object-contain m-1 h-10 w-10" src="{{ asset('images/LogoQRIS.png')}}">                            
+                                            </button>
+                                            <p>+ 2%</p>
+                                        </div>   
+                                        
+                                        <div>
+                                            <button
+                                                class=" btn border border-slate-300 font-medium text-slate-800 hover:bg-slate-150 focus:bg-slate-150 active:bg-slate-150/80 dark:border-navy-450 dark:text-navy-50 dark:hover:bg-navy-500 dark:focus:bg-navy-500 dark:active:bg-navy-500/90"
+                                                @click="choosedPaymentMethod = 'shopeepay'; updatePrice(choosedPaymentMethod)">
+                                                <img class="scale-x-1 object-contain m-1 h-10 w-18" src="{{ asset('images/ShopeePay-Horizontal2_O.png')}}">
+                                                <img class="scale-x-2 object-contain m-1 h-10 w-10" src="{{ asset('images/LogoQRIS.png')}}">
+                                            </button>
+                                            <p>+ 2%</p>
+                                        </div>
+    
+                                        <div>
+                                            <button
+                                                class=" btn border border-slate-300 font-medium text-slate-800 hover:bg-slate-150 focus:bg-slate-150 active:bg-slate-150/80 dark:border-navy-450 dark:text-navy-50 dark:hover:bg-navy-500 dark:focus:bg-navy-500 dark:active:bg-navy-500/90"
+                                                @click="choosedPaymentMethod = 'bri'; updatePrice(choosedPaymentMethod)">
+                                                <img class="scale-x-1 object-contain m-1 h-10 w-28" src="{{ asset('images/BankBRI.png')}}">
+                                            </button>
+                                            <p>+ Rp4.440</p>
+                                        </div>
+    
+                                        <div>
+                                            <button
+                                                class=" btn border border-slate-300 font-medium text-slate-800 hover:bg-slate-150 focus:bg-slate-150 active:bg-slate-150/80 dark:border-navy-450 dark:text-navy-50 dark:hover:bg-navy-500 dark:focus:bg-navy-500 dark:active:bg-navy-500/90"
+                                                @click="choosedPaymentMethod = 'bni'; updatePrice(choosedPaymentMethod)">
+                                                <img class="scale-x-1 object-contain m-1 h-10 w-28" src="{{ asset('images/BankBNI.png')}}">
+                                            </button>
+                                            <p>+ Rp4.440</p>
+                                        </div>
+    
+                                        <div>
+                                            <button
+                                                class=" btn border border-slate-300 font-medium text-slate-800 hover:bg-slate-150 focus:bg-slate-150 active:bg-slate-150/80 dark:border-navy-450 dark:text-navy-50 dark:hover:bg-navy-500 dark:focus:bg-navy-500 dark:active:bg-navy-500/90"
+                                                @click="choosedPaymentMethod = 'bca'; updatePrice(choosedPaymentMethod)">
+                                                <img class="scale-x-1 object-contain m-1 h-10 w-28" src="{{ asset('images/BankBCA.png')}}">
+                                            </button>
+                                            <p>+ Rp4.440</p>
+                                        </div>
+                                        <p>Metode pembayaran yang dipilih: <span x-text="pilihanPaymentMethod"></span></p>
+
+                                    </div>
+                                    
+                                    <button
+                                      @click="showModal = false"
+                                      class="btn mt-6 bg-primary font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90"
+                                    >
+                                      Simpan
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </template>
+                          </div>
                     </div>
+
+                    
 
                     <div id="paymentModal" class="modal fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden z-50">
                         <div class="bg-white rounded-lg p-6 max-w-sm w-full fixed items-center justify-center">
@@ -489,12 +576,14 @@
                             Konfirmasi</button>
                         </div>
                     </div>
+
+                    
+                    
                     
                     <button
-                        class="btn mt-5 h-11 justify-between bg-primary font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus dark:focus:bg-accent-focus dark:active:bg-accent/90"
+                        class="total-price-checkout btn mt-5 h-11 justify-between bg-primary font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus dark:focus:bg-accent-focus dark:active:bg-accent/90"
                         onclick="inputIdentitas()">
-                        <span>Checkout</span>
-                        <span>$88.00</span>
+                        
                     </button>
                     
                         
@@ -834,10 +923,10 @@
                             </span>
                         </button>
                     </div>
+                    <div>
                     <button
                         class="btn mt-5 h-11 w-full justify-between bg-primary font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus dark:focus:bg-accent-focus dark:active:bg-accent/90">
-                        <span>Checkout</span>
-                        <span>$88.00</span>
+                        
                     </button>
 
                    
@@ -854,6 +943,7 @@
     </div>
 
     <script>
+        clearCart();
         let orderId;
         
         function addToCart(productId, productName, productPrice) {
@@ -888,11 +978,23 @@
             updateCart();
         }
 
+        function totalBayar() {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let total = 0;
+            console.log('isi dari cart', cart);
+
+            cart.forEach(item => {
+                total += item.total
+            });
+            console.log('isi dari total', total);
+
+            return total;
+        }
+
         function updateCart(div = '.cart-items') {
-            // Ambil keranjang dari local storage atau array kosong jika tidak ada
             let cart = JSON.parse(localStorage.getItem('cart')) || [];
             let cartContainer = document.querySelector(div);
-            cartContainer.innerHTML = ''; // Bersihkan elemen sebelum diisi ulang
+            cartContainer.innerHTML = ''; 
 
             // Loop melalui setiap item di keranjang dan tambahkan ke HTML
             cart.forEach(item => {
@@ -911,14 +1013,96 @@
                             </div>
                             <!-- Price and Quantity -->
                             <div class="text-right">
-                                <p class="font-semibold text-gray-700">Rp ${item.total}</p>
+                                <p class="font-semibold text-gray-700">Rp ${item.total.toLocaleString('id-ID')}</p>
                                 <p class="text-xs" style="color: #4A5568;">x ${item.quantity}</p>
                             </div>
                         </div>
                 `;
                 cartContainer.innerHTML += cartItemHTML;
             });
+            updatePrice();
         }
+            //    #/gopay-qris, #/shopeepay-qris, #/bank-transfer/bca-va,  #/bank-transfer/bni-va, #/bank-transfer/bri-va
+
+        
+        // kadieu
+        function callJSFunction(paymentMethod) {
+            console.log("Metode Pembayaran yang dipilih:", paymentMethod);
+            // Lakukan sesuatu dengan nilai paymentMethod
+            }
+
+
+        function updatePrice(choosedPaymentMethod) {
+            let subtotal = totalBayar();
+            console.log('isi dari subtotal', subtotal);
+            let tax = 0.11 * subtotal;
+            let total = subtotal + tax;
+            let biayaAdmin = 0;
+            let paymentInfo;
+            
+            console.log('sebelum paymentmethod');
+
+    
+            let pilihanPaymentMethod = choosedPaymentMethod;
+            console.log('paymentmethod', choosedPaymentMethod);
+
+            switch (pilihanPaymentMethod) {
+                case 'bca':
+                    paymentInfo = '/bank-transfer/bca-va';
+                    biayaAdmin = 4400;
+                    break;
+                case 'bni':
+                    paymentInfo = '/bank-transfer/bni-va';
+                    biayaAdmin = 4400;
+                    break;
+                case 'bri':
+                    paymentInfo = '/bank-transfer/bri-va';
+                    biayaAdmin = 4400;
+                    break;
+                case 'gopay':
+                    paymentInfo = '/gopay-qris';
+                    biayaAdmin = 0.02 * total;
+                    break;
+                case 'shopeepay':
+                    paymentInfo = '/shopeepay-qris';
+                    biayaAdmin = 0.02 * total;
+                    break;
+                default:
+                paymentInfo = 'Pilihan Tidak Valid'
+            }
+            total += biayaAdmin; 
+
+            let totalPriceContainer = document.querySelector('.total-price');
+            totalPriceContainer.innerHTML = `
+                    <div class="flex justify-between text-slate-600 dark:text-navy-100">
+                            <p>Subtotal</p>
+                            <p class="font-medium tracking-wide">Rp ${subtotal.toLocaleString('id-ID')}</p>
+                        </div>
+                        <div class="flex justify-between text-xs+">
+                            <p>PPN + 11% </p>
+                            <p class="font-medium tracking-wide">Rp ${tax.toLocaleString('id-ID')}</p>
+                        </div>
+                        <div class="flex justify-between text-xs+">
+                            <p>Biaya Admin</p>
+                            <p class="font-medium tracking-wide">Rp ${biayaAdmin.toLocaleString('id-ID')}</p>
+                        </div>
+                        <div class="flex justify-between text-base font-medium text-primary dark:text-accent-light">
+                            <p>Total</p>
+                            <p>Rp ${total.toLocaleString('id-ID')}</p>
+
+                        </div>
+                            <p>payment method ${pilihanPaymentMethod}</p>
+                `;
+            
+            let totalPriceDiCheckout = document.querySelector('.total-price-checkout');
+            totalPriceDiCheckout.innerHTML = `
+                        <span>Checkout</span>
+                        <span>Rp ${total.toLocaleString('id-ID')}</span>
+            `;
+            console.log('Payment Info:', paymentInfo);
+
+                return paymentInfo;
+        } 
 
         async function saveOrderItemToDatabase () {
             let cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -968,18 +1152,16 @@
 
         function clearCart() {
             localStorage.removeItem('cart');
-            updateCart(); // Perbarui tampilan keranjang
+            updateCart(); 
         }
 
         function clearIdentitas() {
             localStorage.removeItem('identitas');
         }
-        // Memuat keranjang dari local storage saat halaman dimuat
 
         document.addEventListener('DOMContentLoaded', updateCart);
         // clearCart();
 
-        
 
         async function createOrderId() {
             const letter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -1083,47 +1265,49 @@
         // }
 
         async function orderIdToPaymentGateway() {
-        try {
-            // Kirim permintaan transaksi ke server
-            const response = await fetch("{{ route('createTransaction') }}", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                },
-                body: JSON.stringify({ order_id: orderId })
-            });
+            let paymentInfo = updatePrice();
+            console.log("ini paymentinfo", paymentInfo);
+            try {
+                // Kirim permintaan transaksi ke server
+                const response = await fetch("{{ route('createTransaction') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                    },
+                    body: JSON.stringify({ order_id: orderId })
+                });
 
-            // Periksa apakah respons berhasil
-            if (!response.ok) {
-                throw new Error("Gagal menyimpan ke database atau mengirim transaksi ke payment gateway.");
+                // Periksa apakah respons berhasil
+                if (!response.ok) {
+                    throw new Error("Gagal menyimpan ke database atau mengirim transaksi ke payment gateway.");
+                }
+
+                // Ambil data dari respons
+                const data = await response.json();
+
+                console.log("Response Data:", data);
+
+                // Tangani hasil transaksi
+                if (data.error) {
+                    alert(data.error);
+                } else if (data) {
+                    const redirectUrl = `https://app.sandbox.midtrans.com/snap/v4/redirection/${data}#${paymentInfo}`;
+                    console.log("Redirecting to:", redirectUrl);
+                    window.open(redirectUrl, '_blank');
+                } else {
+                    alert("Terjadi kesalahan, tidak ada link pembayaran yang ditemukan.");
+                }
+
+                //    #/gopay-qris, #/shopeepay-qris, #/bank-transfer/bca-va,  #/bank-transfer/bni-va, #/bank-transfer/bri-va
+            } catch (error) {
+                console.error("Error Details:", error);
+                alert("Terjadi kesalahan pada saat memproses transaksi. Silakan coba lagi nanti.");
+            } finally {
+                clearCart();
+                clearIdentitas();
             }
-
-            // Ambil data dari respons
-            const data = await response.json();
-
-            console.log("Response Data:", data);
-
-            // Tangani hasil transaksi
-            if (data.error) {
-                alert(data.error);
-            } else if (data) {
-                const redirectUrl = `https://app.sandbox.midtrans.com/snap/v4/redirection/${data}`;
-                console.log("Redirecting to:", redirectUrl);
-                window.location.href = redirectUrl;
-            } else {
-                alert("Terjadi kesalahan, tidak ada link pembayaran yang ditemukan.");
-            }
-        } catch (error) {
-            // Tangani error
-            console.error("Error Details:", error);
-            alert("Terjadi kesalahan pada saat memproses transaksi. Silakan coba lagi nanti.");
-        } finally {
-            // Bersihkan keranjang dan identitas setelah proses selesai
-            clearCart();
-            clearIdentitas();
         }
-    }
 
         const buttonSlide2 = document.getElementById('button-slide-2');
         const buttonSlide3 = document.getElementById('button-slide-3');
@@ -1149,11 +1333,12 @@
                     closeModal(modal);
                 }
             });
-        };
-
-
-        
-
+        };        
+        function pilihPaymentMethod() {
+            if (clicked === 'slide-2') {
+                const modalPilihPaymentMethod = document.getElementById('payment')
+            }
+        }
 
         function inputIdentitas() {
             if (clicked === 'slide-1') {
@@ -1188,7 +1373,7 @@
                     const modalCash = document.getElementById('paymentModal');
                     modalCash.classList.remove('hidden');
                 };
-            } else {
+            } else if (clicked === 'slide-3') {
                 const modalEmoney = document.getElementById('paymentModal2');
                 modalEmoney.classList.remove('hidden');
                 updateCart('.tampilOrder');
