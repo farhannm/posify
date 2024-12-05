@@ -983,7 +983,7 @@
                                             <label for="name-input" class="block mx-2 mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama</label>
                                             <input 
                                                 type="text" 
-                                                id="name-input" 
+                                                id="name-input2" 
                                                 x-model="name" 
                                                 class="mr-3 rounded-lg border border-slate-200 bg-gray-200 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                 placeholder="Masukkan nama Anda"
@@ -993,7 +993,7 @@
                                             <label for="email-input" class="block mx-2 mb-2 text-sm font-medium text-gray-900 dark:text-white text-right">Email</label>
                                             <input 
                                                 type="text" 
-                                                id="email-input" 
+                                                id="email-input2" 
                                                 x-model="email" 
                                                 class="mr-3 rounded-lg border border-slate-200 bg-gray-200 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                 placeholder="Masukkan email Anda"
@@ -1007,8 +1007,8 @@
                                         :class="{ 'opacity-50 cursor-not-allowed': !name || !email }"
                                         @click = "if (clicked === 'slide-3'){
                                                     showModal = false;
-                                                    const name = document.getElementById('name-input').value;
-                                                    const email = document.getElementById('email-input').value;
+                                                    const name = document.getElementById('name-input2').value;
+                                                    const email = document.getElementById('email-input2').value;
                                                     console.log(name, email);
                                                     let identitas = JSON.parse(localStorage.getItem('identitas')) || [];
                                                     identitas.push({
@@ -1023,8 +1023,8 @@
                                                 }else if (clicked === 'slide-2'){
                                                     showModal = false;
                                                     nextModal = true;
-                                                    const name = document.getElementById('name-input').value;
-                                                    const email = document.getElementById('email-input').value;
+                                                    const name = document.getElementById('name-input2').value;
+                                                    const email = document.getElementById('email-input2').value;
                                                     console.log(name, email);
                                                     let identitas = JSON.parse(localStorage.getItem('identitas')) || [];
                                                     identitas.push({
