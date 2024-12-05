@@ -512,10 +512,36 @@
                                     :class="{ 'opacity-50 cursor-not-allowed': !name || !email }"
                                     @click = "if (clicked === 'slide-3'){
                                                     showModal = false;
+                                                    const name = document.getElementById('name-input').value;
+                                                    const email = document.getElementById('email-input').value;
+                                                    console.log(name, email);
+                                                    let identitas = JSON.parse(localStorage.getItem('identitas')) || [];
+                                                    identitas.push({
+                                                        name:name,
+                                                        email:email
+                                                    });
+                                                    localStorage.setItem('identitas', JSON.stringify(identitas));
+                                                    saveOrderItemToDatabase()
+                                                    .then(() => {
+                                                        return orderIdToPaymentGateway();
+                                                    })
                                                 }else if (clicked === 'slide-2'){
                                                     showModal = false;
                                                     nextModal = true;
-                                                }"
+                                                    const name = document.getElementById('name-input').value;
+                                                    const email = document.getElementById('email-input').value;
+                                                    console.log(name, email);
+                                                    let identitas = JSON.parse(localStorage.getItem('identitas')) || [];
+                                                    identitas.push({
+                                                        name: name,
+                                                        email: email
+                                                    });
+                                                    localStorage.setItem('identitas', JSON.stringify(identitas));
+                                                    console.log('Identitas disimpan:', identitas);
+                                                    saveOrderItemToDatabase();
+                                                    clearCart();
+                                                    clearIdentitas();
+                                                };"
                                     >
                                     Konfirmasi
                                 </button>
@@ -590,7 +616,7 @@
                     
                     <button
                         class="btn mt-5 h-11 justify-between bg-primary font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus dark:focus:bg-accent-focus dark:active:bg-accent/90"
-                        @click="showModal = true; inputIdentitas()">
+                        @click="showModal = true; updateCart('.tampilOrder');">
                         <span>Checkout</span>
                         <span>$88.00</span>
                     </button>
@@ -980,11 +1006,37 @@
                                         :disabled="!name || !email"
                                         :class="{ 'opacity-50 cursor-not-allowed': !name || !email }"
                                         @click = "if (clicked === 'slide-3'){
-                                                        showModal = false;
-                                                    }else if (clicked === 'slide-2'){
-                                                        showModal = false;
-                                                        nextModal = true;
-                                                    }"
+                                                    showModal = false;
+                                                    const name = document.getElementById('name-input').value;
+                                                    const email = document.getElementById('email-input').value;
+                                                    console.log(name, email);
+                                                    let identitas = JSON.parse(localStorage.getItem('identitas')) || [];
+                                                    identitas.push({
+                                                        name:name,
+                                                        email:email
+                                                    });
+                                                    localStorage.setItem('identitas', JSON.stringify(identitas));
+                                                    saveOrderItemToDatabase()
+                                                    .then(() => {
+                                                        return orderIdToPaymentGateway();
+                                                    })
+                                                }else if (clicked === 'slide-2'){
+                                                    showModal = false;
+                                                    nextModal = true;
+                                                    const name = document.getElementById('name-input').value;
+                                                    const email = document.getElementById('email-input').value;
+                                                    console.log(name, email);
+                                                    let identitas = JSON.parse(localStorage.getItem('identitas')) || [];
+                                                    identitas.push({
+                                                        name: name,
+                                                        email: email
+                                                    });
+                                                    localStorage.setItem('identitas', JSON.stringify(identitas));
+                                                    console.log('Identitas disimpan:', identitas);
+                                                    saveOrderItemToDatabase();
+                                                    clearCart();
+                                                    clearIdentitas();
+                                                };"
                                         >
                                         Konfirmasi
                                     </button>
@@ -1043,7 +1095,7 @@
 
                     <<button
                         class="btn mt-5 h-11 justify-between bg-primary font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus dark:focus:bg-accent-focus dark:active:bg-accent/90"
-                        @click="showDrawer = false; showModal = true; updateCart('.cart-items-modal'); inputIdentitas()">
+                        @click="showDrawer = false; showModal = true; updateCart('.cart-items-modal');">
                         <span>Checkout</span>
                         <span>$88.00</span>
                     </button>
@@ -1161,8 +1213,6 @@
             .then(data => {
                 console.log(data.message);
                 alert("Order items berhasil disimpan ke database");
-
-
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -1170,7 +1220,6 @@
             });
             clearIdentitas();
         }
-                        
 
         function clearCart() {
             localStorage.removeItem('cart');
@@ -1366,81 +1415,71 @@
             });
         };
 
-        function inputIdentitas() {
-            let cart = JSON.parse(localStorage.getItem('cart')) || [];
-            console.log(clicked);
-            if (typeof clicked === 'undefined') {
-                alert('Harap pilih metode pembayaran');
-            }
-            if (!cart || cart.length === 0) {
-                alert("Pesanan anda kosong!");
-                return;
-            }else{
-                if (clicked === 'slide-2') {
-                    updateCart('.tampilOrder');
+        // function inputIdentitas() {
+        //     let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        //     console.log(clicked);
+        //     if (typeof clicked === 'undefined') {
+        //         alert('Harap pilih metode pembayaran');
+        //     }
+        //     if (!cart || cart.length === 0) {
+        //         alert("Pesanan anda kosong!");
+        //         return;
+        //     }else{
+        //         if (clicked === 'slide-2') {
 
-                    document.getElementById('closeEmoneyModal').onclick = function () {
-                        const name = document.getElementById('name-input').value;
-                        const email = document.getElementById('email-input').value;
+        //             document.getElementById('closeEmoneyModal').onclick = function () {
+        //                 const name = document.getElementById('name-input').value;
+        //                 const email = document.getElementById('email-input').value;
 
-                        console.log(name, email);
+        //                 console.log(name, email);
 
-                        let identitas = JSON.parse(localStorage.getItem('identitas')) || [];
+        //                 let identitas = JSON.parse(localStorage.getItem('identitas')) || [];
 
-                        identitas.push({
-                            name:name,
-                            email:email
-                        });
+        //                 identitas.push({
+        //                     name:name,
+        //                     email:email
+        //                 });
 
-                        localStorage.setItem('identitas', JSON.stringify(identitas));
-                        console.log("Identitas disimpan:", identitas);
+        //                 localStorage.setItem('identitas', JSON.stringify(identitas));
+        //                 console.log("Identitas disimpan:", identitas);
 
-                        saveOrderItemToDatabase();
-                        
+        //                 saveOrderItemToDatabase();
+        //             };
+        //         } else if(clicked === 'slide-3') {
+        //             console.log("mashok");
+        //             document.getElementById('closeEmoneyModal').onclick = function () {
+        //                 const name = document.getElementById('name-input').value;
+        //                 const email = document.getElementById('email-input').value;
 
-                        closeModal(modalEmoney);
+        //                 console.log(name, email);
 
-                        // Tampilkan modal berikutnya jika perlu
-                        const modalCash = document.getElementById('paymentModal');
-                        modalCash.classList.remove('hidden');
-                    };
-                } else if(clicked === 'slide-3') {
-                    updateCart('.tampilOrder');
-                    console.log("mashok");
-                    document.getElementById('closeEmoneyModal').onclick = function () {
-                        const name = document.getElementById('name-input').value;
-                        const email = document.getElementById('email-input').value;
+        //                 let identitas = JSON.parse(localStorage.getItem('identitas')) || [];
 
-                        console.log(name, email);
+        //                 identitas.push({
+        //                     name:name,
+        //                     email:email
+        //                 });
 
-                        
-                        let identitas = JSON.parse(localStorage.getItem('identitas')) || [];
+        //                 localStorage.setItem('identitas', JSON.stringify(identitas));
+        //                 console.log("Identitas disimpan:", identitas);
 
-                        identitas.push({
-                            name:name,
-                            email:email
-                        });
-
-                        localStorage.setItem('identitas', JSON.stringify(identitas));
-                        console.log("Identitas disimpan:", identitas);
-
-                        saveOrderItemToDatabase()
-                        .then(() => {
-                            console.log("sedang menyiapkan link bayar...");
-                            return orderIdToPaymentGateway();
-                        })
-                        .then(() => {
-                            console.log("Link pembayaran berhasil dibuat");
-                        })
-                        .catch((error) => {
-                            console.error("terjadi kesalahan saat mengakses server, silahkan coba lagi", error);
-                        });
-                        orderIdToPaymentGateway();
-                        Alpine.store('paymentStore').showModal = false;
-                    };
-                }
-            }
-        }
+        //                 saveOrderItemToDatabase()
+        //                 .then(() => {
+        //                     console.log("sedang menyiapkan link bayar...");
+        //                     return orderIdToPaymentGateway();
+        //                 })
+        //                 .then(() => {
+        //                     console.log("Link pembayaran berhasil dibuat");
+        //                 })
+        //                 .catch((error) => {
+        //                     console.error("terjadi kesalahan saat mengakses server, silahkan coba lagi", error);
+        //                 });
+        //                 orderIdToPaymentGateway();
+        //                 Alpine.store('paymentStore').showModal = false;
+        //             };
+        //         }
+        //     }
+        // }
 
 
         
