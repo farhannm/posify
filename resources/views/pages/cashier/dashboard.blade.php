@@ -454,6 +454,7 @@
                         <div
                             id ="paymentModal2"
                             class="fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden py-6 sm:px-5"
+                            x-data="{name: '', email: ''}"
                             x-show="showModal"
                             role="dialog"
                             @keydown.window.escape="showModal = false"
@@ -921,6 +922,7 @@
                                 id ="paymentModal2"
                                 class="fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden py-6 sm:px-5"
                                 x-show="showModal"
+                                x-data="{name: '', email: ''}"
                                 role="dialog"
                                 @keydown.window.escape="showModal = false"
                             >
@@ -1433,7 +1435,7 @@
                         .catch((error) => {
                             console.error("terjadi kesalahan saat mengakses server, silahkan coba lagi", error);
                         });
-                        // orderIdToPaymentGateway();
+                        orderIdToPaymentGateway();
                         Alpine.store('paymentStore').showModal = false;
                     };
                 }
