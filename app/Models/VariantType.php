@@ -14,6 +14,6 @@ class VariantType extends Model
     
     public function variants()
     {
-        return $this->hasMany(Variant::class);
+        return $this->hasMany(Variant::class, 'variant_type_id');
     }
 }

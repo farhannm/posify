@@ -35,7 +35,7 @@ class PaymentController extends Controller
         $params = array (
             'transaction_details' => array(
                 'order_id' => $order->id,
-                'gross_amount' =>  $order->total_amount * 1000,
+                'gross_amount' =>  $order->total_amount ,
             ),
             
             'customer_details' => array(
@@ -47,7 +47,7 @@ class PaymentController extends Controller
         );
 
         for ($i = 0; $i < $valid->count(); $i++) {
-            $grossAmount = $grossAmount + $order_item[$i]->price * 1000 * $order_item[$i]->quantity;
+            $grossAmount = $grossAmount + $order_item[$i]->price  * $order_item[$i]->quantity;
         }
 
         $params['transaction_details']['gross_amount'] = $grossAmount;
@@ -55,7 +55,7 @@ class PaymentController extends Controller
         for ($i = 0; $i < $valid->count(); $i++) {
             $params['item_details'][] = array(
                 'name' => $nama[$i]->name,
-                'price' => $order_item[$i]->price * 1000,
+                'price' => $order_item[$i]->price,
                 'quantity' => $order_item[$i]->quantity
             );
         }
@@ -77,7 +77,7 @@ class PaymentController extends Controller
         $payment->checkout_link = $response->token;
         $payment->save();
         
-        return response()->json($response);
+        return response()->json($response->token);
     }
 
     public function webhook(Request $request){

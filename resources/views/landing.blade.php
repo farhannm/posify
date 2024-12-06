@@ -18,11 +18,11 @@
         </nav>
         <div class="flex items-center justify-end">
             <a href="{{ route('login')}}" class="text-xs+ font-semibold text-[#1E1E1E] hover:underline">Login</a>
-            <a href="#" class="flex items-center border rounded-lg px-4 py-2 ml-4 bg-[#F7F7F7] hover:shadow-lg transition-shadow">
+            {{-- <a href="#" class="flex items-center border rounded-lg px-4 py-2 ml-4 bg-[#F7F7F7] hover:shadow-lg transition-shadow">
               <div class="flex flex-col">
                 <span class="text-sm+ font-semibold text-primary">Get Started</span>
               </div>
-            </a>
+            </a> --}}
         </div>          
       </div>
     </header>

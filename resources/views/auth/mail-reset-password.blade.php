@@ -169,9 +169,10 @@
                 </p>
             </div>
 
-            <!-- Reset Password Button -->
-            <div class="text-center">
-                <a href="#" class="btn">Reset Password</a>
+            <div class="text-center mt-10">
+                <a href="{{ route('validateForgotPasswordView', ['token' => $token]) }}" class="btn">
+                    Reset Password
+                </a>
             </div>
 
             <p class="text-center text-sm font-normal">

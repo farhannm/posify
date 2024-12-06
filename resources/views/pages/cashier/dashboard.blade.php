@@ -1,4 +1,10 @@
 <x-base-layout title="POS System" is-header-blur="true">
+
+<!-- <style>
+        * {
+            border: 1px solid red;
+        }
+</style> -->
     <!-- Sidebar -->
     <div class="sidebar print:hidden">
 
@@ -251,11 +257,26 @@
                     </div>
                     
                     <div class="swiper-wrapper mt-5" x-data="{ selected: 'slide-1' }">
-                        @foreach ($categories as $index => $category)
-                        <div class="card swiper-slide w-24 shrink-0 cursor-pointer" @click="selected = 'slide-{{ $index + 1}}'">
+                        <!-- All Category -->
+                        <div class="card swiper-slide w-24 shrink-0 cursor-pointer" @click="selected = 'slide-all'; filterProducts('all')">
                             <div class="flex flex-col items-center rounded-lg px-2 py-4"
-                                :class="selected === 'slide-{{ $index + 1}}' ?
-                                    'text-secondary bg-secondary/10  dark:bg-secondary-light/10 dark:text-secondary-light' :
+                                :class="selected === 'slide-all' ?
+                                    'text-secondary bg-secondary/10 dark:bg-secondary-light/10 dark:text-secondary-light' :
+                                    'text-slate-600 dark:text-navy-100'">
+                                <img class="w-12" src="{{ asset('images/100x100.png') }}" alt="image" />
+                                <h3 class="pt-2 font-medium tracking-wide line-clamp-1">
+                                    All Category
+                                </h3>
+                            </div>
+                        </div>
+
+                        <!-- Other Categories -->
+                        @foreach ($categories as $index => $category)
+                        <div class="card swiper-slide w-24 shrink-0 cursor-pointer" 
+                            @click="selected = 'slide-{{ $index + 1 }}'; filterProducts('{{ $category->id }}')">
+                            <div class="flex flex-col items-center rounded-lg px-2 py-4"
+                                :class="selected === 'slide-{{ $index + 1 }}' ?
+                                    'text-secondary bg-secondary/10 dark:bg-secondary-light/10 dark:text-secondary-light' :
                                     'text-slate-600 dark:text-navy-100'">
                                 <img class="w-12" src="{{ asset('images/100x100.png') }}" alt="image" />
                                 <h3 class="pt-2 font-medium tracking-wide line-clamp-1">
@@ -264,273 +285,48 @@
                             </div>
                         </div>
                         @endforeach
-                        <!-- <div class="card swiper-slide w-24 shrink-0 cursor-pointer" @click="selected = 'slide-2'">
-                            <div class="flex flex-col items-center rounded-lg px-2 py-4"
-                                :class="selected === 'slide-2' ?
-                                    'text-secondary bg-secondary/10  dark:bg-secondary-light/10 dark:text-secondary-light' :
-                                    'text-slate-600 dark:text-navy-100'">
-                                <img class="w-12" src="{{ asset('images/100x100.png') }}" alt="image" />
-                                <h3 class="pt-2 font-medium tracking-wide line-clamp-1">
-                                    Hot Dog
-                                </h3>
+                    </div>
+
+                    <!-- Product List -->
+                    <div id="product-list" class="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        @foreach ($products as $product)
+                        <div class="card p-2 product-card" 
+                            data-category="{{ $product->category_id }}" 
+                            onclick="addToCart({{ $product->id }}, '{{ $product->name }}', {{ $product->price }})" 
+                            style="cursor: pointer;">
+                            <div class="w-40 h-40 mx-auto flex items-center justify-center">
+                                <img class="rounded-lg w-full h-full object-cover" src="{{ $product->image }}" alt="image" />
+                            </div>
+                            <div class="pt-2">
+                                <p class="font-medium text-slate-700 dark:text-navy-100">{{ $product->name }}</p>
+                                <p class="text-xs text-slate-400 dark:text-navy-300">{{ $product->description }}</p>
+                                <p class="text-right font-medium text-primary dark:text-accent-light">
+                                    {{ 'Rp ' . number_format($product->price, 2) }}
+                                </p>
                             </div>
                         </div>
-                        <div class="card swiper-slide w-24 shrink-0 cursor-pointer" @click="selected = 'slide-3'">
-                            <div class="flex flex-col items-center rounded-lg px-2 py-4"
-                                :class="selected === 'slide-3' ?
-                                    'text-secondary bg-secondary/10  dark:bg-secondary-light/10 dark:text-secondary-light' :
-                                    'text-slate-600 dark:text-navy-100'">
-                                <img class="w-12" src="{{ asset('images/100x100.png') }}" alt="image" />
-                                <h3 class="pt-2 font-medium tracking-wide line-clamp-1">
-                                    Pizza
-                                </h3>
-                            </div>
-                        </div>
-                        <div class="card swiper-slide w-24 shrink-0 cursor-pointer" @click="selected = 'slide-4'">
-                            <div class="flex flex-col items-center rounded-lg px-2 py-4"
-                                :class="selected === 'slide-4' ?
-                                    'text-secondary bg-secondary/10  dark:bg-secondary-light/10 dark:text-secondary-light' :
-                                    'text-slate-600 dark:text-navy-100'">
-                                <img class="w-12" src="{{ asset('images/100x100.png') }}" alt="image" />
-                                <h3 class="pt-2 font-medium tracking-wide line-clamp-1">
-                                    Sandwich
-                                </h3>
-                            </div>
-                        </div>
-                        <div class="card swiper-slide w-24 shrink-0 cursor-pointer" @click="selected = 'slide-5'">
-                            <div class="flex flex-col items-center rounded-lg px-2 py-4"
-                                :class="selected === 'slide-5' ?
-                                    'text-secondary bg-secondary/10  dark:bg-secondary-light/10 dark:text-secondary-light' :
-                                    'text-slate-600 dark:text-navy-100'">
-                                <img class="w-12" src="{{ asset('images/100x100.png') }}" alt="image" />
-                                <h3 class="pt-2 font-medium tracking-wide line-clamp-1">
-                                    Popcorn
-                                </h3>
-                            </div>
-                        </div>
-                        <div class="card swiper-slide w-24 shrink-0 cursor-pointer" @click="selected = 'slide-6'">
-                            <div class="flex flex-col items-center rounded-lg px-2 py-4"
-                                :class="selected === 'slide-6' ?
-                                    'text-secondary bg-secondary/10  dark:bg-secondary-light/10 dark:text-secondary-light' :
-                                    'text-slate-600 dark:text-navy-100'">
-                                <img class="w-12" src="{{ asset('images/100x100.png') }}" alt="image" />
-                                <h3 class="pt-2 font-medium tracking-wide line-clamp-1">
-                                    Taco
-                                </h3>
-                            </div>
-                        </div>
-                        <div class="card swiper-slide w-24 shrink-0 cursor-pointer" @click="selected = 'slide-7'">
-                            <div class="flex flex-col items-center rounded-lg px-2 py-4"
-                                :class="selected === 'slide-7' ?
-                                    'text-secondary bg-secondary/10  dark:bg-secondary-light/10 dark:text-secondary-light' :
-                                    'text-slate-600 dark:text-navy-100'">
-                                <img class="w-12" src="{{ asset('images/100x100.png') }}" alt="image" />
-                                <h3 class="pt-2 font-medium tracking-wide line-clamp-1">
-                                    Burrito
-                                </h3>
-                            </div>
-                        </div>
-                        <div class="card swiper-slide w-24 shrink-0 cursor-pointer" @click="selected = 'slide-8'">
-                            <div class="flex flex-col items-center rounded-lg px-2 py-4"
-                                :class="selected === 'slide-8' ?
-                                    'text-secondary bg-secondary/10  dark:bg-secondary-light/10 dark:text-secondary-light' :
-                                    'text-slate-600 dark:text-navy-100'">
-                                <img class="w-12" src="{{ asset('images/100x100.png') }}" alt="image" />
-                                <h3 class="pt-2 font-medium tracking-wide line-clamp-1">
-                                    Pizza
-                                </h3>
-                            </div>
-                        </div>
-                        <div class="card swiper-slide w-24 shrink-0 cursor-pointer" @click="selected = 'slide-9'">
-                            <div class="flex flex-col items-center rounded-lg px-2 py-4"
-                                :class="selected === 'slide-9' ?
-                                    'text-secondary bg-secondary/10  dark:bg-secondary-light/10 dark:text-secondary-light' :
-                                    'text-slate-600 dark:text-navy-100'">
-                                <img class="w-12" src="{{ asset('images/100x100.png') }}" alt="image" />
-                                <h3 class="pt-2 font-medium tracking-wide line-clamp-1">
-                                    Burrito
-                                </h3>
-                            </div>
-                        </div>-->
-                        
+                        @endforeach
                     </div>
-                </div>
-                
-                
-                <div
-                    class="mt-4 grid grid-cols-2 gap-4 sm:mt-5 sm:grid-cols-2 sm:gap-5 lg:mt-6 lg:grid-cols-3 xl:grid-cols-4">
-                    @foreach ($products as $product)
-                    <div class="card p-2">
-                        <img class="rounded-lg" src="{{ asset('images/800x600.png') }}" alt="image" />
-                        <div class="pt-2">
-                            
-                            <p class="font-medium text-slate-700 line-clamp-1 dark:text-navy-100">
-                                {{$product->name}}
-                            </p>
-                            
-                            <p class="text-xs text-slate-400 line-clamp-1 dark:text-navy-300">
-                                {{$product->description}}
-                            </p>
-                            <p class="text-right font-medium text-primary dark:text-accent-light">
-                                {{'Rp '. number_format($product->price,2)}}
-                            </p>
-                        </div>
-                    </div>
-                    @endforeach
-                    <!-- <div class="card p-2">
-                        <img class="rounded-lg" src="{{ asset('images/800x600.png') }}" alt="image" />
-                        <div class="pt-2">
-                            <p class="font-medium text-slate-700 line-clamp-1 dark:text-navy-100">
-                                Breakfast board
-                            </p>
-                            <p class="text-xs text-slate-400 line-clamp-1 dark:text-navy-300">
-                                Description
-                            </p>
-                            <p class="text-right font-medium text-primary dark:text-accent-light">
-                                14.00 $
-                            </p>
-                        </div>
-                    </div>
-                    <div class="card p-2">
-                        <img class="rounded-lg" src="{{ asset('images/800x600.png') }}" alt="image" />
-                        <div class="pt-2">
-                            <p class="font-medium text-slate-700 line-clamp-1 dark:text-navy-100">
-                                Hummus
-                            </p>
-                            <p class="text-xs text-slate-400 line-clamp-1 dark:text-navy-300">
-                                Description
-                            </p>
-                            <p class="text-right font-medium text-primary dark:text-accent-light">
-                                24.00 $
-                            </p>
-                        </div>
-                    </div>
-                    <div class="card p-2">
-                        <img class="rounded-lg" src="{{ asset('images/800x600.png') }}" alt="image" />
-                        <div class="pt-2">
-                            <p class="font-medium text-slate-700 line-clamp-1 dark:text-navy-100">
-                                Roast beef
-                            </p>
-                            <p class="text-xs text-slate-400 line-clamp-1 dark:text-navy-300">
-                                Description
-                            </p>
-                            <p class="text-right font-medium text-primary dark:text-accent-light">
-                                17.50 $
-                            </p>
-                        </div>
-                    </div>
-                    <div class="card p-2">
-                        <img class="rounded-lg" src="{{ asset('images/800x600.png') }}" alt="image" />
-                        <div class="pt-2">
-                            <p class="font-medium text-slate-700 line-clamp-1 dark:text-navy-100">
-                                Tuna salad
-                            </p>
-                            <p class="text-xs text-slate-400 line-clamp-1 dark:text-navy-300">
-                                Description
-                            </p>
-                            <p class="text-right font-medium text-primary dark:text-accent-light">
-                                35.00 $
-                            </p>
-                        </div>
-                    </div>
-                    <div class="card p-2">
-                        <img class="rounded-lg" src="{{ asset('images/800x600.png') }}" alt="image" />
-                        <div class="pt-2">
-                            <p class="font-medium text-slate-700 line-clamp-1 dark:text-navy-100">
-                                Salmon
-                            </p>
-                            <p class="text-xs text-slate-400 line-clamp-1 dark:text-navy-300">
-                                Description
-                            </p>
-                            <p class="text-right font-medium text-primary dark:text-accent-light">
-                                48.00 $
-                            </p>
-                        </div>
-                    </div>
-                    <div class="card p-2">
-                        <img class="rounded-lg" src="{{ asset('images/800x600.png') }}" alt="image" />
-                        <div class="pt-2">
-                            <p class="font-medium text-slate-700 line-clamp-1 dark:text-navy-100">
-                                California roll
-                            </p>
-                            <p class="text-xs text-slate-400 line-clamp-1 dark:text-navy-300">
-                                Description
-                            </p>
-                            <p class="text-right font-medium text-primary dark:text-accent-light">
-                                74.00 $
-                            </p>
-                        </div>
-                    </div>
-                    <div class="card p-2">
-                        <img class="rounded-lg" src="{{ asset('images/800x600.png') }}" alt="image" />
-                        <div class="pt-2">
-                            <p class="font-medium text-slate-700 line-clamp-1 dark:text-navy-100">
-                                Sashimi
-                            </p>
-                            <p class="text-xs text-slate-400 line-clamp-1 dark:text-navy-300">
-                                Description
-                            </p>
-                            <p class="text-right font-medium text-primary dark:text-accent-light">
-                                75.00 $
-                            </p>
-                        </div>
-                    </div>
-                    <div class="card p-2">
-                        <img class="rounded-lg" src="{{ asset('images/800x600.png') }}" alt="image" />
-                        <div class="pt-2">
-                            <p class="font-medium text-slate-700 line-clamp-1 dark:text-navy-100">
-                                Pub salad
-                            </p>
-                            <p class="text-xs text-slate-400 line-clamp-1 dark:text-navy-300">
-                                Description
-                            </p>
-                            <p class="text-right font-medium text-primary dark:text-accent-light">
-                                64.00 $
-                            </p>
-                        </div>
-                    </div>
-                    <div class="card p-2">
-                        <img class="rounded-lg" src="{{ asset('images/800x600.png') }}" alt="image" />
-                        <div class="pt-2">
-                            <p class="font-medium text-slate-700 line-clamp-1 dark:text-navy-100">
-                                Duck carpaccio
-                            </p>
-                            <p class="text-xs text-slate-400 line-clamp-1 dark:text-navy-300">
-                                Description
-                            </p>
-                            <p class="text-right font-medium text-primary dark:text-accent-light">
-                                72.00 $
-                            </p>
-                        </div>
-                    </div>
-                    <div class="card p-2">
-                        <img class="rounded-lg" src="{{ asset('images/800x600.png') }}" alt="image" />
-                        <div class="pt-2">
-                            <p class="font-medium text-slate-700 line-clamp-1 dark:text-navy-100">
-                                Maui food
-                            </p>
-                            <p class="text-xs text-slate-400 line-clamp-1 dark:text-navy-300">
-                                Description
-                            </p>
-                            <p class="text-right font-medium text-primary dark:text-accent-light">
-                                42.00 $
-                            </p>
-                        </div>
-                    </div>
-                    <div class="card p-2">
-                        <img class="rounded-lg" src="{{ asset('images/800x600.png') }}" alt="image" />
-                        <div class="pt-2">
-                            <p class="font-medium text-slate-700 line-clamp-1 dark:text-navy-100">
-                                Scottish salmon
-                            </p>
-                            <p class="text-xs text-slate-400 line-clamp-1 dark:text-navy-300">
-                                Description
-                            </p>
-                            <p class="text-right font-medium text-primary dark:text-accent-light">
-                                86.00 $
-                            </p>
-                        </div>
-                    </div> -->
+
+                    <script>
+                        function filterProducts(categoryId) {
+                            const productCards = document.querySelectorAll('.product-card');
+
+                            productCards.forEach(card => {
+                                // Show all products if "all" is selected
+                                if (categoryId === 'all') {
+                                    card.style.display = 'block';
+                                } else {
+                                    // Show only products matching the selected category
+                                    if (card.dataset.category === categoryId) {
+                                        card.style.display = 'block';
+                                    } else {
+                                        card.style.display = 'none';
+                                    }
+                                }
+                            });
+                        }
+                    </script>
                 </div>
             </div>
             <div class="hidden sm:col-span-6 sm:block lg:col-span-4">
@@ -586,7 +382,9 @@
                             </svg>
                         </button>
                         <button
-                            class="btn h-7 w-7 rounded-full p-0 hover:bg-slate-300/20 hover:text-error focus:bg-slate-300/20 focus:text-error active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
+                            class="btn h-7 w-7 rounded-full p-0 hover:bg-slate-300/20 hover:text-error focus:bg-slate-300/20 focus:text-error active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25"
+                            onclick="clearCart()">
+                            
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none"
                                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -637,169 +435,12 @@
                     </div>
                 </div>
                 <div class="card mt-5 p-4 sm:p-5">
-                    <div class="flex flex-col space-y-3.5">
-                        <div class="group flex items-center justify-between space-x-3">
-                            <div class="flex items-center space-x-4">
-                                <div class="relative flex">
-                                    <img src="{{ asset('images/800x600.png') }}"
-                                        class="mask is-star h-11 w-11 origin-center object-cover" alt="image" />
+                    <div class="cart-items bg-slate-50">
 
-                                    <div
-                                        class="absolute top-0 right-0 -m-1 flex h-5 min-w-[1.25rem] items-center justify-center rounded-full border border-white bg-slate-200 px-1 text-tiny+ font-medium leading-none text-slate-800 dark:border-navy-700 dark:bg-navy-450 dark:text-white">
-                                        2
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <div class="flex items-center space-x-1">
-                                        <p class="font-medium text-slate-700 line-clamp-1 dark:text-navy-100">
-                                            Roast beef
-                                        </p>
-                                        <button
-                                            class="btn h-6 w-6 rounded-full p-0 opacity-0 hover:bg-slate-300/20 focus:bg-slate-300/20 focus:opacity-100 active:bg-slate-300/25 group-hover:opacity-100 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5"
-                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    <p class="text-xs+ text-slate-400 dark:text-navy-300">
-                                        Lorem ipsum dolor sit.
-                                    </p>
-                                </div>
-                            </div>
-                            <p class="font-inter font-semibold">$12.00</p>
-                        </div>
-                        <div class="group flex items-center justify-between space-x-3">
-                            <div class="flex items-center space-x-4">
-                                <div class="relative flex">
-                                    <img src="{{ asset('images/800x600.png') }}"
-                                        class="mask is-star h-11 w-11 origin-center object-cover" alt="image" />
-
-                                    <div
-                                        class="absolute top-0 right-0 -m-1 flex h-5 min-w-[1.25rem] items-center justify-center rounded-full border border-white bg-slate-200 px-1 text-tiny+ font-medium leading-none text-slate-800 dark:border-navy-700 dark:bg-navy-450 dark:text-white">
-                                        1
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="flex items-center space-x-1">
-                                        <p class="font-medium text-slate-700 line-clamp-1 dark:text-navy-100">
-                                            Tuna salad
-                                        </p>
-                                        <button
-                                            class="btn h-6 w-6 rounded-full p-0 opacity-0 hover:bg-slate-300/20 focus:bg-slate-300/20 focus:opacity-100 active:bg-slate-300/25 group-hover:opacity-100 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5"
-                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    <p class="text-xs+ text-slate-400 dark:text-navy-300">
-                                        Amet consectetur adip.
-                                    </p>
-                                </div>
-                            </div>
-                            <p class="font-inter font-semibold">$14.00</p>
-                        </div>
-                        <div class="group flex items-center justify-between space-x-3">
-                            <div class="flex items-center space-x-4">
-                                <div class="relative flex">
-                                    <img src="{{ asset('images/800x600.png') }}"
-                                        class="mask is-star h-11 w-11 origin-center object-cover" alt="image" />
-
-                                    <div
-                                        class="absolute top-0 right-0 -m-1 flex h-5 min-w-[1.25rem] items-center justify-center rounded-full border border-white bg-slate-200 px-1 text-tiny+ font-medium leading-none text-slate-800 dark:border-navy-700 dark:bg-navy-450 dark:text-white">
-                                        3
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="flex items-center space-x-1">
-                                        <p class="font-medium text-slate-700 line-clamp-1 dark:text-navy-100">
-                                            Salmon
-                                        </p>
-                                        <button
-                                            class="btn h-6 w-6 rounded-full p-0 opacity-0 hover:bg-slate-300/20 focus:bg-slate-300/20 focus:opacity-100 active:bg-slate-300/25 group-hover:opacity-100 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5"
-                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    <p class="text-xs+ text-slate-400 dark:text-navy-300">
-                                        Adipisicing elit. Quos?
-                                    </p>
-                                </div>
-                            </div>
-                            <p class="font-inter font-semibold">$45.00</p>
-                        </div>
-                        <div class="group flex items-center justify-between space-x-3">
-                            <div class="flex items-center space-x-4">
-                                <div class="relative flex">
-                                    <img src="{{ asset('images/800x600.png') }}"
-                                        class="mask is-star h-11 w-11 origin-center object-cover" alt="image" />
-
-                                    <div
-                                        class="absolute top-0 right-0 -m-1 flex h-5 min-w-[1.25rem] items-center justify-center rounded-full border border-white bg-slate-200 px-1 text-tiny+ font-medium leading-none text-slate-800 dark:border-navy-700 dark:bg-navy-450 dark:text-white">
-                                        1
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="flex items-center space-x-1">
-                                        <p class="font-medium text-slate-700 line-clamp-1 dark:text-navy-100">
-                                            California roll
-                                        </p>
-                                        <button
-                                            class="btn h-6 w-6 rounded-full p-0 opacity-0 hover:bg-slate-300/20 focus:bg-slate-300/20 focus:opacity-100 active:bg-slate-300/25 group-hover:opacity-100 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5"
-                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    <p class="text-xs+ text-slate-400 dark:text-navy-300">
-                                        Lorem, ipsum dolor.
-                                    </p>
-                                </div>
-                            </div>
-                            <p class="font-inter font-semibold">$22.00</p>
-                        </div>
-                        <div class="group flex items-center justify-between space-x-3">
-                            <div class="flex items-center space-x-4">
-                                <div class="relative flex">
-                                    <img src="{{ asset('images/800x600.png') }}"
-                                        class="mask is-star h-11 w-11 origin-center object-cover" alt="image" />
-
-                                    <div
-                                        class="absolute top-0 right-0 -m-1 flex h-5 min-w-[1.25rem] items-center justify-center rounded-full border border-white bg-slate-200 px-1 text-tiny+ font-medium leading-none text-slate-800 dark:border-navy-700 dark:bg-navy-450 dark:text-white">
-                                        2
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="flex items-center space-x-1">
-                                        <p class="font-medium text-slate-700 line-clamp-1 dark:text-navy-100">
-                                            Duck carpaccio
-                                        </p>
-                                        <button
-                                            class="btn h-6 w-6 rounded-full p-0 opacity-0 hover:bg-slate-300/20 focus:bg-slate-300/20 focus:opacity-100 active:bg-slate-300/25 group-hover:opacity-100 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5"
-                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    <p class="text-xs+ text-slate-400 dark:text-navy-300">
-                                        Amet consectetur adip.
-                                    </p>
-                                </div>
-                            </div>
-                            <p class="font-inter font-semibold">$18.00</p>
-                        </div>
-                    </div>
+                        
+                        
+                    </div> 
+                    
                     <div class="my-4 h-px bg-slate-200 dark:bg-navy-500"></div>
                     <div class="space-y-2 font-inter">
                         <div class="flex justify-between text-slate-600 dark:text-navy-100">
@@ -815,33 +456,56 @@
                             <p>60.00$</p>
                         </div>
                     </div>
-                    <div class="mt-5 grid grid-cols-2 gap-4 text-center">
-                        <button class="rounded-lg border border-slate-200 p-3 w-50 dark:border-navy-500 active:bg-primary-focus/90 focus:bg-primary-focus">
+                    <script>
+                        export default {
+                            data() {
+                                return {
+                                    clicked : 'slide-1' 
+                                }
+                            }
+                        }
+                    </script>
+                    <div class="mt-5 grid grid-cols-2 gap-4 text-center" x-data="{ clicked : 'slide-1' }">
+                        <button class="rounded-lg border border-slate-200 p-3 w-50 dark:border-navy-500 cursor-pointer" @click="clicked = 'slide-2'"
+                        :class="clicked === 'slide-2' ?
+                        'text-white bg-primary dark:bg-primary-light dark:text-primary-light' :
+                        'text-slate-600 dark:text-navy-100'">
                             <svg xmlns="http://www.w3.org/2000/svg" class="inline h-9 w-9" fill="none"
                                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
-                            <span class="mt-1 font-medium text-primary dark:text-accent-light focus:text-white">
+                            <span class="mt-1 font-medium dark:text-accent-light focus:text-white" @click="clicked = 'slide'"
+                            :class="clicked ==='slide-2' ?
+                            'text-white' : 'text-primary'">
                                 Cash
                             </span>
                         </button>
-                        <button class="rounded-lg border border-slate-200 p-3 w-50 dark:border-navy-500">
+                        <button class="rounded-lg border border-slate-200 p-3 w-50 dark:border-navy-500 cursor-pointer" @click="clicked = 'slide-3'"
+                        :class="clicked === 'slide-3' ?
+                        'text-white bg-primary dark:bg-primary-light dark:text-primary-light' :
+                        'text-slate-600 dark:text-navy-100'">
                             <svg xmlns="http://www.w3.org/2000/svg" class="inline h-9 w-9" fill="none"
                                 viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                             </svg>
-                            <span class="mt-1 font-medium text-primary dark:text-accent-light">
-                                Debit
+                            <span class="mt-1 font-medium dark:text-accent-light"
+                            @click="clicked = 'slide-3'"
+                            :class="clicked === 'slide-3' ?
+                            'text-white' : 'text-primary'">
+                                E-Money
                             </span>
                         </button>
                     </div>
                     <button
-                        class="btn mt-5 h-11 justify-between bg-primary font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus dark:focus:bg-accent-focus dark:active:bg-accent/90">
+                        class="btn mt-5 h-11 justify-between bg-primary font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus dark:focus:bg-accent-focus dark:active:bg-accent/90"
+                        onclick="checkout()">
                         <span>Checkout</span>
                         <span>$88.00</span>
                     </button>
+                    
+                        
                 </div>
             </div>
         </div>
@@ -1174,7 +838,7 @@
                                     d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                             </svg>
                             <span class="mt-1 font-medium text-primary dark:text-accent-light">
-                                Debit
+                                E-Money
                             </span>
                         </button>
                     </div>
@@ -1183,6 +847,8 @@
                         <span>Checkout</span>
                         <span>$88.00</span>
                     </button>
+
+                   
                 </div>
             </div>
         </div>
@@ -1194,5 +860,124 @@
             $60
         </button>
     </div>
+
+    <script>
+        function addToCart(productId, productName, productPrice) {
+            // Ambil keranjang dari local storage atau buat array kosong jika belum ada
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            
+            // Cari produk di keranjang berdasarkan productId
+            let productCart = cart.find(item => item.product_id === productId);
+
+            // Tambah kuantitas jika produk sudah ada di keranjang
+            if (productCart) {
+                productCart.quantity += 1;
+                productCart.total += productPrice;
+            } else {
+                // Jika belum ada, tambahkan produk baru ke keranjang
+                cart.push({
+                    product_id: productId,
+                    name: productName,
+                    price: productPrice,
+                    quantity: 1,
+                    total: productPrice,
+                });
+            }
+
+            // Simpan kembali keranjang ke local storage
+            localStorage.setItem('cart', JSON.stringify(cart));
+
+            // Panggil updateCart untuk memperbarui tampilan keranjang
+            updateCart();
+        }
+
+        function updateCart() {
+            // Ambil keranjang dari local storage atau array kosong jika tidak ada
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let cartContainer = document.querySelector('.cart-items');
+            cartContainer.innerHTML = ''; // Bersihkan elemen sebelum diisi ulang
+
+            // Loop melalui setiap item di keranjang dan tambahkan ke HTML
+            cart.forEach(item => {
+                let cartItemHTML = `
+                    <div class="rounded-xl cart-item flex items-center justify-between my-2 border-b pb-2 text-sm bg-white">
+                            <!-- Product Image and Name -->
+                            <div class="flex items-center">
+                                <!-- Product Image -->
+                                <div class="w-10 h-10 rounded-full overflow-hidden bg-gray-200">
+                                    <img src="path-to-product-image.jpg" alt="Product Image" class="w-full h-full object-cover">
+                                </div>
+                                <!-- Product Name -->
+                                <div class="ml-3">
+                                    <h3 class="font-semibold">${item.name}</h3>
+                                </div>
+                            </div>
+                            <!-- Price and Quantity -->
+                            <div class="text-right">
+                                <p class="font-semibold text-gray-700">Rp ${item.total.toLocaleString()}</p>
+                                <p class="text-xs" style="color: #4A5568;">x ${item.quantity}</p>
+                            </div>
+                        </div>
+                `;
+                cartContainer.innerHTML += cartItemHTML;
+            });
+        }
+
+                        
+
+        function clearCart() {
+            localStorage.removeItem('cart');
+            updateCart(); // Perbarui tampilan keranjang
+        }
+        // Memuat keranjang dari local storage saat halaman dimuat
+
+        document.addEventListener('DOMContentLoaded', updateCart);
+        // clearCart();
+
+        function checkout() {
+                            const orderId = 135; 
+                            fetch("{{ route('createTransaction') }}", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                                },
+                                body: JSON.stringify({
+                                    order_id: orderId
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log("Response Data:", data);
+                                if (data.error) {
+                                    alert(data.error);
+                                } else if (data) {
+                                    const redirectUrl = `https://app.sandbox.midtrans.com/snap/v4/redirection/${data}`;
+                                    console.log("Redirecting to:", redirectUrl);
+                                    window.location.href = redirectUrl;
+                                } else {
+                                    alert("Terjadi kesalahan, tidak ada link pembayaran yang ditemukan.");
+                                }
+                            })
+                            .catch(error => {
+                                console.error("Error Details:", error);
+                                alert("Terjadi kesalahan pada saat memproses transaksi. Silakan coba lagi nanti.");
+                            });
+                            clearCart();
+
+                        }
+
+    </script>
+    <!-- function checkout() {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        console.log("Keranjang checkout:", cart);
+        // Di sini Anda bisa mengirim `cart` ke server menggunakan fetch atau AJAX
+    } -->
+
+
+
+
+
+
 
 </x-base-layout>

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -14,13 +15,24 @@ class VariantSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('variants')->insert([
-            ['variant_type_id' => 1, 'value' => 'Strawberry', 'created_at' => now(), 'updated_at' => now()],
-            ['variant_type_id' => 1, 'value' => 'Vanilla', 'created_at' => now(), 'updated_at' => now()],
-            ['variant_type_id' => 2, 'value' => 'Small', 'created_at' => now(), 'updated_at' => now()],
-            ['variant_type_id' => 2, 'value' => 'Large', 'created_at' => now(), 'updated_at' => now()],
-            ['variant_type_id' => 3, 'value' => 'Red', 'created_at' => now(), 'updated_at' => now()],
-            ['variant_type_id' => 3, 'value' => 'Blue', 'created_at' => now(), 'updated_at' => now()],
-        ]);
+        $variants = [
+            1 => 'Regular',
+            2 => 'Medium',
+            3 => 'Large',
+            4 => 'Strawberry',
+            5 => 'Chocolate',
+            6 => 'Vanilla',
+        ];
+
+        
+        foreach ($variants as $id => $value) {
+            DB::table('variants')->insert([
+                'id' => $id,
+                'variant_type_id' => $id <= 3 ? 1 : 2, 
+                'value' => $value,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+        }
     }
 }

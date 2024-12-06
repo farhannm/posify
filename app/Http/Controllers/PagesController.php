@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Categories;
 use App\Models\Product;
+use App\Models\Variant;
+use App\Models\Categories;
+use App\Models\VariantType;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Models\ProductVariantStock;
 
 class PagesController extends Controller
 {
+    
     // Landing
     public function viewLandingPage()
     {
@@ -18,21 +24,144 @@ class PagesController extends Controller
     {
         $products = Product::all();
         $categories = Categories::all();
+        // $cart = session()->get('cart', []);
+
         return view('pages/cashier/dashboard', compact('products', 'categories'));
     }
 
     public function ownerDashboard()
     {
         $analysis = new AnalysisController();
-        $totalRevenue = $analysis->revenue();
+        $revenueData = $analysis->revenue();
+        $transactionData = $analysis->totalTransaction();
+        $totalItemData = $analysis->itemSold();
+        $revenueThisMonth = $analysis->revenueThisMonth();
 
-        return view('pages/owner/dashboard', compact('totalRevenue'));
+        return view('pages/owner/dashboard', compact('revenueData', 'transactionData', 'totalItemData', 'revenueThisMonth'));
     }
 
     // Admin Pages
     public function adminDashboard()
     {
         return view('pages/admin/dashboard');
+    }
+
+    public function viewProducts()
+    {
+        // Ambil semua produk dengan kategori (tanpa eager loading varian)
+        $products = Product::with('category')->paginate(10);
+
+        // Loop untuk mengambil varian dari setiap produk
+        foreach ($products as $product) {
+            $product->variant_list = $product->productVariantStocks; // Menggunakan properti bukan metode
+            // Hitung total stok untuk setiap produk
+            $product->total_stock = DB::table('product_variant_stocks')
+                ->where('product_id', $product->id)
+                ->sum('stock');
+        }
+
+        $totalProduct = Product::count();
+        $countCoffee = Product::where('category_id', 1)->count();
+        $countNonCoffee = Product::where('category_id', 2)->count();
+        $countMeals = Product::where('category_id', 3)->count();
+        $countSideDish = Product::where('category_id', 4)->count();
+
+        // Return ke view dengan data lengkap
+        return view('pages/admin/products', compact(
+            'products', 'totalProduct',
+            'countCoffee', 'countNonCoffee', 'countMeals', 'countSideDish'
+        ));
+    }
+
+    public function viewProductDetail(Request $request, $id)
+    {
+        // Ambil produk beserta stok variannya
+        $product = Product::with('productVariantStocks')->find($id);
+        
+        if (!$product) {
+            return view('pages.layouts-error-404-2');
+        }
+    
+        // Ambil semua productVariantStocks berdasarkan product_id
+        $productVariantStocks = ProductVariantStock::where('product_id', $id)->get();
+    
+        // Siapkan array untuk hasil
+        $results = [];
+    
+        // Iterasi setiap entry dalam productVariantStocks
+        foreach ($productVariantStocks as $stock) {
+            // Pastikan variant_ids sudah terformat dengan benar
+            $variantIds = $stock->variant_ids; // Decode jika variant_ids disimpan sebagai JSON
+    
+            // Ambil nilai dari tabel variants berdasarkan variant_ids
+            $variantValues = DB::table('variants')
+                ->whereIn('id', $variantIds)
+                ->pluck('value') // Mengambil kolom 'value'
+                ->toArray(); // Ubah menjadi array
+    
+            // Simpan hasil dengan format yang diinginkan
+            $results[] = [
+                'product_variant_stock_id' => $stock->id,
+                'variant_values' => $variantValues,
+            ];
+        }
+    
+        // Kirim data ke view
+        return view('pages/admin.detail-product', compact('product', 'productVariantStocks', 'results'));
+    }
+
+    public function viewProductUpdateForm(Request $request, $id)
+    {
+        $product = Product::with('category')->find($id);
+        $categories = Categories::all();
+
+        if (!$product) {
+            return view('pages/layouts-error-404-2');
+        }
+
+        return view('pages/admin/edit-product', compact('product', 'categories'));
+    }
+    
+    public function viewAddVariantsForm(Request $request, $id)
+    {
+        $product = Product::with('productVariantStocks')->find($id);
+        $variantType = VariantType::all();
+        $variant = Variant::all();
+
+        return view('pages/admin/add-variants', compact('product', 'variantType', 'variant'));
+    }
+
+    public function viewEditVariantsForm(Request $request, $id, $productVariantStockId = null)
+    {
+        $product = Product::with('productVariantStocks')->find($id);
+        $variantType = VariantType::all();
+        $variant = Variant::all();
+
+        $selectedVariant = $product->productVariantStocks->firstWhere('id', $productVariantStockId);
+        
+        $selectedVariantCombinations = $product->productVariantStocks
+            ->where('id', $productVariantStockId)
+            ->map(function($stock) {
+                return is_string($stock->variant_ids) ? json_decode($stock->variant_ids) : $stock->variant_ids;
+            })
+            ->filter() 
+            ->toArray();
+    
+        return view('pages/admin/edit-product-variant', compact('product', 'variantType', 'variant', 'selectedVariant','selectedVariantCombinations'));
+    }    
+
+    public function viewProductVariants()
+    {
+        $variantTypes = VariantType::with('variants')->get();
+
+        return view('pages/admin/product-variants', compact('variantTypes'));
+    }
+
+    public function viewProductForm()
+    {
+        $categories = Categories::all();
+
+        return view('pages/admin/add-product', compact('categories'));
     }
 
     public function elementsAvatar()

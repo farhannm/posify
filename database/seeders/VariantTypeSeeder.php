@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class VariantTypeSeeder extends Seeder
 {
@@ -14,10 +16,12 @@ class VariantTypeSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('variant_types')->insert([
-            ['name' => 'Rasa', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Ukuran', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Warna', 'created_at' => now(), 'updated_at' => now()],
-        ]);
+        $variant_types = [
+            ['name' => 'Size', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'Flavor', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            
+        ];
+
+        DB::table('variant_types')->insert($variant_types);
     }
 }

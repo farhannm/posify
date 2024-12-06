@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class CategorySeeder extends Seeder
 {
@@ -14,12 +16,13 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
-        DB::table('categories')->insert([
-            ['category_name' => 'Coffe', 'created_at' => now(), 'updated_at' => now()],
-            ['category_name' => 'Milkshake', 'created_at' => now(), 'updated_at' => now()],
-            ['category_name' => 'Mie', 'created_at' => now(), 'updated_at' => now()],
-            ['category_name' => 'Nasi', 'created_at' => now(), 'updated_at' => now()],
-            ['category_name' => 'Dessert', 'created_at' => now(), 'updated_at' => now()],
-        ]);
+        $categories = [
+            ['category_name' => 'Coffee', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['category_name' => 'Non Coffee', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['category_name' => 'Meals', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['category_name' => 'Side Dish', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+        ];
+
+        DB::table('categories')->insert($categories);
     }
 }

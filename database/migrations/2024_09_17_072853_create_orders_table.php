@@ -18,6 +18,8 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('transaction_id')->nullable();
             $table->string('customer_name')->nullable();
+            $table->string('email')->nullable();
+            $table->enum('order_status', ['Pending', 'Approved', 'In Process', 'Done', 'Cancelled'])->default('Pending');
             $table->decimal('total_amount', 10, 2);
             $table->timestamps();
 
@@ -34,8 +36,12 @@ return new class extends Migration
     public function down()
     {
         Schema::table('orders', function (Blueprint $table) {
+            // Drop foreign key constraints
             $table->dropForeign(['transaction_id']);
-            $table->dropColumn('transaction_id');
+            $table->dropForeign(['user_id']);
         });
+
+        // Drop the table itself
+        Schema::dropIfExists('orders');
     }
 };
