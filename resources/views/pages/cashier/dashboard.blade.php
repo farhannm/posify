@@ -434,7 +434,7 @@
                         </button>
                         {{-- e money --}}
                         
-                        <div x-data="{showModal:false, clicked: 'slide-1'}">
+                        <div x-data="{showModal:false, clicked: 'slide-1', choosedPaymentMethod: ''}">
                             <button id="button-slide-3" class="rounded-lg border border-slate-200 p-3 w-full dark:border-navy-500 cursor-pointer" @click="clicked = 'slide-3'; showModal = true"
                             :class="clicked === 'slide-3' ? 'text-white bg-primary dark:bg-primary-light dark:text-primary-light' : 'text-slate-600 dark:text-navy-100'">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="inline h-9 w-9" fill="none"
@@ -485,12 +485,12 @@
                                     <h2 class="text-2xl text-slate-700 dark:text-navy-100">
                                         Pilih Metode Pembayaran
                                     </h2>
-                                    <div x-data="{ pilihanPaymentMethod: '' }" class="mt-5 grid lg:gap-4 lg:grid-cols-5 lg:grid-rows-1">
+                                    <div class="mt-5 grid lg:gap-4 lg:grid-cols-5 lg:grid-rows-1">
                                         <div>
                                             <!-- gopay -->
                                             <button
                                                 class="btn border border-slate-300 font-medium text-slate-800 hover:bg-slate-150 focus:bg-slate-150 active:bg-slate-150/80 dark:border-navy-450 dark:text-navy-50 dark:hover:bg-navy-500 dark:focus:bg-navy-500 dark:active:bg-navy-500/90"
-                                                @click="choosedPaymentMethod = 'gopay'; updatePrice(choosedPaymentMethod)">                                                <img class="scale-x-3 object-contain m-1 h-10 w-18" src="{{ asset('images/LogoGopay.png')}}">
+                                                @click="choosedPaymentMethod = 'gopay'">                                                <img class="scale-x-3 object-contain m-1 h-10 w-18" src="{{ asset('images/LogoGopay.png')}}">
                                                 <img class="scale-x-2 object-contain m-1 h-10 w-10" src="{{ asset('images/LogoQRIS.png')}}">                            
                                             </button>
                                             <p>+ 2%</p>
@@ -499,7 +499,7 @@
                                         <div>
                                             <button
                                                 class=" btn border border-slate-300 font-medium text-slate-800 hover:bg-slate-150 focus:bg-slate-150 active:bg-slate-150/80 dark:border-navy-450 dark:text-navy-50 dark:hover:bg-navy-500 dark:focus:bg-navy-500 dark:active:bg-navy-500/90"
-                                                @click="choosedPaymentMethod = 'shopeepay'; updatePrice(choosedPaymentMethod)">
+                                                @click="choosedPaymentMethod = 'shopeepay'">
                                                 <img class="scale-x-1 object-contain m-1 h-10 w-18" src="{{ asset('images/ShopeePay-Horizontal2_O.png')}}">
                                                 <img class="scale-x-2 object-contain m-1 h-10 w-10" src="{{ asset('images/LogoQRIS.png')}}">
                                             </button>
@@ -509,7 +509,7 @@
                                         <div>
                                             <button
                                                 class=" btn border border-slate-300 font-medium text-slate-800 hover:bg-slate-150 focus:bg-slate-150 active:bg-slate-150/80 dark:border-navy-450 dark:text-navy-50 dark:hover:bg-navy-500 dark:focus:bg-navy-500 dark:active:bg-navy-500/90"
-                                                @click="choosedPaymentMethod = 'bri'; updatePrice(choosedPaymentMethod)">
+                                                @click="choosedPaymentMethod = 'bri'">
                                                 <img class="scale-x-1 object-contain m-1 h-10 w-28" src="{{ asset('images/BankBRI.png')}}">
                                             </button>
                                             <p>+ Rp4.440</p>
@@ -518,7 +518,7 @@
                                         <div>
                                             <button
                                                 class=" btn border border-slate-300 font-medium text-slate-800 hover:bg-slate-150 focus:bg-slate-150 active:bg-slate-150/80 dark:border-navy-450 dark:text-navy-50 dark:hover:bg-navy-500 dark:focus:bg-navy-500 dark:active:bg-navy-500/90"
-                                                @click="choosedPaymentMethod = 'bni'; updatePrice(choosedPaymentMethod)">
+                                                @click="choosedPaymentMethod = 'bni'">
                                                 <img class="scale-x-1 object-contain m-1 h-10 w-28" src="{{ asset('images/BankBNI.png')}}">
                                             </button>
                                             <p>+ Rp4.440</p>
@@ -527,17 +527,17 @@
                                         <div>
                                             <button
                                                 class=" btn border border-slate-300 font-medium text-slate-800 hover:bg-slate-150 focus:bg-slate-150 active:bg-slate-150/80 dark:border-navy-450 dark:text-navy-50 dark:hover:bg-navy-500 dark:focus:bg-navy-500 dark:active:bg-navy-500/90"
-                                                @click="choosedPaymentMethod = 'bca'; updatePrice(choosedPaymentMethod)">
+                                                @click="choosedPaymentMethod = 'bca'">
                                                 <img class="scale-x-1 object-contain m-1 h-10 w-28" src="{{ asset('images/BankBCA.png')}}">
                                             </button>
                                             <p>+ Rp4.440</p>
                                         </div>
-                                        <p>Metode pembayaran yang dipilih: <span x-text="pilihanPaymentMethod"></span></p>
+                                        <p>Metode pembayaran yang dipilih: <span x-text="choosedPaymentMethod"></span></p>
 
                                     </div>
                                     
                                     <button
-                                      @click="showModal = false"
+                                      @click="simpanMetodePembayaran(choosedPaymentMethod); updatePrice(choosedPaymentMethod); showModal = false"
                                       class="btn mt-6 bg-primary font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90"
                                     >
                                       Simpan
@@ -944,6 +944,8 @@
 
     <script>
         clearCart();
+        clearIdentitas();
+        clearPaymentMethod();
         let orderId;
         
         function addToCart(productId, productName, productPrice) {
@@ -1020,17 +1022,19 @@
                 `;
                 cartContainer.innerHTML += cartItemHTML;
             });
-            updatePrice();
+            let pilihanPaymentMethod = localStorage.getItem('paymentMethod');
+            updatePrice(pilihanPaymentMethod);
         }
             //    #/gopay-qris, #/shopeepay-qris, #/bank-transfer/bca-va,  #/bank-transfer/bni-va, #/bank-transfer/bri-va
 
         
         // kadieu
-        function callJSFunction(paymentMethod) {
-            console.log("Metode Pembayaran yang dipilih:", paymentMethod);
-            // Lakukan sesuatu dengan nilai paymentMethod
-            }
-
+        
+        function simpanMetodePembayaran(paymentMethod) {
+            console.log("Simpan Metode Pembayaran yang dipilih:", paymentMethod);
+            localStorage.setItem('paymentMethod', paymentMethod);  
+            return paymentMethod;
+        }
 
         function updatePrice(choosedPaymentMethod) {
             let subtotal = totalBayar();
@@ -1068,8 +1072,10 @@
                     biayaAdmin = 0.02 * total;
                     break;
                 default:
-                paymentInfo = 'Pilihan Tidak Valid'
+                    paymentInfo = 'Pilihan Tidak Valid'
             }
+            console.log('Payment Info sebelm disimpan:', paymentInfo);
+            localStorage.setItem('urlPaymentMethod', paymentInfo);
             total += biayaAdmin; 
 
             let totalPriceContainer = document.querySelector('.total-price');
@@ -1100,8 +1106,6 @@
                         <span>Rp ${total.toLocaleString('id-ID')}</span>
             `;
             console.log('Payment Info:', paymentInfo);
-
-                return paymentInfo;
         } 
 
         async function saveOrderItemToDatabase () {
@@ -1155,12 +1159,16 @@
             updateCart(); 
         }
 
+        function clearPaymentMethod() {
+            localStorage.removeItem('paymentMethod');
+            localStorage.removeItem('urlPaymentMethod');
+        }
+
         function clearIdentitas() {
             localStorage.removeItem('identitas');
         }
 
         document.addEventListener('DOMContentLoaded', updateCart);
-        // clearCart();
 
 
         async function createOrderId() {
@@ -1265,7 +1273,7 @@
         // }
 
         async function orderIdToPaymentGateway() {
-            let paymentInfo = updatePrice();
+            let paymentInfo = localStorage.getItem('urlPaymentMethod');
             console.log("ini paymentinfo", paymentInfo);
             try {
                 // Kirim permintaan transaksi ke server
@@ -1292,6 +1300,7 @@
                 if (data.error) {
                     alert(data.error);
                 } else if (data) {
+                    console.log("payment info sebelum redicrect", paymentInfo);
                     const redirectUrl = `https://app.sandbox.midtrans.com/snap/v4/redirection/${data}#${paymentInfo}`;
                     console.log("Redirecting to:", redirectUrl);
                     window.open(redirectUrl, '_blank');
