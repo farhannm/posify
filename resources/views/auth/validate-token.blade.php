@@ -2,7 +2,7 @@
     <div class="hidden w-full place-items-center lg:grid">
         <div class="w-full max-w-lg p-6">
             <img class="w-full" x-show="!$store.global.isDarkModeEnabled"
-                src="{{ asset('images/illustrations/loginWanita.svg') }}" alt="image" />
+                src="{{ asset('images/illustrations/ResetPassword.svg') }}" alt="image" />
             <img class="w-full" x-show="$store.global.isDarkModeEnabled"
                 src="{{ asset('images/illustrations/loginWanita-darkMode.svg') }}" alt="image" />
         </div>

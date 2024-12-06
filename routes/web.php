@@ -5,6 +5,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\CashierController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------

@@ -183,7 +183,7 @@
             <section id="social" class="text-center mt-20">
                 <h2 class="text-l font-base text-center mb-3">Follow Us!</h2>
                 <div class="social-icons">
-                    <a href="https://www.instagram.com/posify.id/" target="_blank">
+                    <a href="https://www.instagram.com/posify.inc/" target="_blank">
                         <img src="{{ asset('images/Instagram.jpg') }}" alt="instagram" class="icon">
                     </a>
                 </div>
