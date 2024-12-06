@@ -270,7 +270,6 @@
                             </div>
                         </div>
                         @endforeach
-               
                         
                     </div>
                 </div>
@@ -285,7 +284,7 @@
                                 <p class="font-medium text-slate-700 dark:text-navy-100">{{ $product->name }}</p>
                                 <p class="text-xs text-slate-400 dark:text-navy-300">{{ $product->description }}</p>
                                 <p class="text-right font-medium text-primary dark:text-accent-light">
-                                    {{ 'Rp ' . number_format($product->price, 2) }}
+                                    {{ 'Rp ' . number_format($product->price, 0) }}
                                 </p>
                             </div>
                         </div>

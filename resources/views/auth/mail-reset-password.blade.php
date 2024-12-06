@@ -188,10 +188,8 @@
                         <img src="{{ asset('images/Instagram.jpg') }}" alt="instagram" class="icon">
                     </a>
                 </div>
-           </section>
+            </section>
         </div>
-
-        
     </main>
 </body>
 </html>

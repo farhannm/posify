@@ -131,5 +131,4 @@ class PaymentController extends Controller
         $payment->save();
         return response()->json($response);
     }
-
 }

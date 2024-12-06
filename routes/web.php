@@ -5,6 +5,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\CashierController;
+use App\Http\Controllers\CustomerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +29,9 @@ Route::get('/', function(){
 
 
 
+
+// session customer
+Route::get('/customer/dashboard', [CustomerController::class, 'session'])->name('customer.dashboard');
 
 Route::get('/login', [\App\Http\Controllers\AuthController::class, 'loginView'])->name('loginView');
 Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login'])->name('login');
