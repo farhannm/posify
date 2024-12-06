@@ -2,32 +2,50 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+
 
 class NotificationController extends Controller
 {
-    public function handlePaymentStatus(Request $request) {
-        $payment = Transaction::where('order_id', $request->order_id)->first();
+    public function handlePaymentStatus(Request $request)
+    {
+        $auth = base64_encode(env('MIDTRANS_SERVER_KEY'));
 
-        if (!$payment) {
-            return response()->json(['error' => 'Payment not found'], 404);
-        }
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'Authorization' => "Basic $auth",
+        ])->get("https://api.sandbox.midtrans.com/v2/$request->order_id/status");
 
-        $order = Order::find($payment->order_id);
+        $response = json_decode($response->body());
+
+        $payment = Transaction::where('order_id', $response->order_id)->firstOrFail();
+        $order = Order::find($response->order_id);
 
         if (!$order) {
             return response()->json(['error' => 'Order not found'], 404);
         }
 
-        if ($payment->payment_status === 'settlement') {
-            return view ('payment-success');
+        if ($response->transaction_status === 'settlement') {
+            $payment->payment_status = 'settlement';
+            $payment->payment_method = $response->payment_type;
+            $order->transaction_id = $payment->id;
+
+            $order->save();
+            $payment->save();
+
+            return view('payment-success'); 
         }
 
-        if ($payment->payment_status === 'cancle') {
-            return view ('payment-cancel');
-        }    
+        if ($response->transaction_status === 'cancel') {
+            $payment->payment_status = 'cancel';
 
-        return response()->json('Payment status tidak dikenali.');
+            $payment->save();
+
+            return view('payment-cancel'); 
+        }
+        return response()->json('success');
     }
 }
