@@ -418,7 +418,7 @@
                     <div id="paymentMethod" class="mt-5 grid grid-cols-2 gap-4 text-center">
                         {{-- cash --}}
                         <button id="button-slide-2" class="rounded-lg border border-slate-200 p-3 w-full dark:border-navy-500 cursor-pointer"
-                        @click="clicked = 'slide-2'"
+                        @click="choosedPaymentMethod = 'cash'; simpanMetodePembayaran(choosedPaymentMethod); updatePrice(choosedPaymentMethod); clicked = 'slide-2'"
                         :class="clicked === 'slide-2' ?
                         'text-white bg-primary dark:bg-primary-light dark:text-primary-light' :
                         'text-slate-600 dark:text-navy-100'">
@@ -851,9 +851,9 @@
                         {{-- ini di javascript --}}
                     </div>
                     
-                    <div id="paymentMethod" class="mt-5 grid grid-cols-2 gap-4 text-center">
-                        <button id="button-slide-2" class="rounded-lg border border-slate-200 p-3 w-50 dark:border-navy-500 cursor-pointer" @click="clicked = 'slide-2'"
-                        @click="clicked = 'slide-2'"
+                    <div id="paymentMethod" class="mt-5 grid grid-cols-2 gap-4 text-center" x-data="{choosedPaymentMethod: null}">
+                        <button id="button-slide-2" class="rounded-lg border border-slate-200 p-3 w-full dark:border-navy-500 cursor-pointer"
+                        @click="choosedPaymentMethod = 'cash'; simpanMetodePembayaran(choosedPaymentMethod); updatePrice(choosedPaymentMethod); clicked = 'slide-2'"
                         :class="clicked === 'slide-2' ?
                         'text-white bg-primary dark:bg-primary-light dark:text-primary-light' :
                         'text-slate-600 dark:text-navy-100'">
@@ -862,15 +862,14 @@
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
-                            <span class="mt-1 font-medium dark:text-accent-light focus:text-white" @click="clicked = 'slide-2'"
-                            @click="clicked = 'slide-2'"
+                            <span class="mt-1 font-medium dark:text-accent-light focus:text-white"@click="clicked = 'slide'"
                             :class="clicked ==='slide-2' ?
                             'text-white' : 'text-primary'">
                                 Cash
                             </span>
                         </button>
                         <div>
-                            <button id="button-slide-3" class="rounded-lg border border-slate-200 p-3 w-full dark:border-navy-500 cursor-pointer" @click="clicked = 'slide-3'; showModal = true"
+                            <button id="button-slide-3" class="rounded-lg border border-slate-200 p-3 w-full dark:border-navy-500 cursor-pointer" @click="clicked = 'slide-3'; showModal = true;  choosedPaymentMethod = null"
                             :class="clicked === 'slide-3' ? 'text-white bg-primary dark:bg-primary-light dark:text-primary-light' : 'text-slate-600 dark:text-navy-100'">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="inline h-9 w-9" fill="none"
                                     viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
@@ -925,7 +924,8 @@
                                             <!-- gopay -->
                                             <button
                                                 class="btn border border-slate-300 font-medium text-slate-800 hover:bg-slate-150 focus:bg-slate-150 active:bg-slate-150/80 dark:border-navy-450 dark:text-navy-50 dark:hover:bg-navy-500 dark:focus:bg-navy-500 dark:active:bg-navy-500/90"
-                                                @click="choosedPaymentMethod = 'gopay'">                                                <img class="scale-x-3 object-contain m-1 h-10 w-18" src="{{ asset('images/LogoGopay.png')}}">
+                                                @click="choosedPaymentMethod = 'gopay'">                                                
+                                                <img class="scale-x-3 object-contain m-1 h-10 w-18" src="{{ asset('images/LogoGopay.png')}}">
                                                 <img class="scale-x-2 object-contain m-1 h-10 w-10" src="{{ asset('images/LogoQRIS.png')}}">                            
                                             </button>
                                             <p>+ 2%</p>
@@ -967,14 +967,13 @@
                                             </button>
                                             <p>+ Rp4.440</p>
                                         </div>
-                                        <p>Metode pembayaran yang dipilih: <span x-text="choosedPaymentMethod"></span></p>
 
                                     </div>
                                     
                                     <button
-                                    
+                                    :disabled="choosedPaymentMethod === null"
+                                    :class="{ 'opacity-50 cursor-not-allowed': choosedPaymentMethod === null }"
                                       @click="simpanMetodePembayaran(choosedPaymentMethod); updatePrice(choosedPaymentMethod); showModal = false"
-                                      
                                       class="btn mt-6 bg-primary font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90"
                                     >
                                       Simpan
@@ -1287,8 +1286,10 @@
                     paymentInfo = '/shopeepay-qris';
                     biayaAdmin = 0.02 * total;
                     break;
+                case 'cash':
+                    break;
                 default:
-                    pilihanPaymentMethod = 'Cash (default)';
+                    pilihanPaymentMethod = null;
             }
             console.log('Payment Info sebelm disimpan:', paymentInfo);
             localStorage.setItem('urlPaymentMethod', paymentInfo);
@@ -1364,7 +1365,7 @@
 
             localStorage.setItem('totalBayar', total);
             localStorage.setItem('paymentInfo', paymentInfo);
-            if (pilihanPaymentMethod === 'Cash (default)') {
+            if (pilihanPaymentMethod === 'cash') {
                 localStorage.setItem('jenisPembayaran', 'Cash');
             } else {
                 localStorage.setItem('jenisPembayaran', 'Cashless');
