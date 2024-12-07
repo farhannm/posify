@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->enum('order_status', ['Pending', 'Approved', 'In Process', 'Done', 'Cancelled'])->default('Pending');
             $table->decimal('total_amount', 10, 2)->default(0);
+            $table->string('jenis_pembayaran')->nullable();
+
             $table->timestamps();
 
             $table->foreign('transaction_id')->references('id')->on('transactions')->onDelete('cascade');

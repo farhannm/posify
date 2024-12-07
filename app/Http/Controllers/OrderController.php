@@ -13,6 +13,7 @@ class OrderController extends Controller
     {
         try {
             \Log::info('Cart Data:', $request->all());
+            
 
             $identitas = $request->validate([
                 'identitas' => 'required|array',
@@ -31,9 +32,17 @@ class OrderController extends Controller
                 'cart.*.price' => 'required|numeric',
                 'cart.*.total' => 'required|numeric',
             ]);
+            
 
+            // $jenisPembayaran = $request->validate('jenisPembayaran' => 'required|string');
             \Log::info('Validated Identitas Data:', $identitas);
             \Log::info('Validated Cart Data:', $validated);
+
+            $jenisPembayaran = $request->input('jenisPembayaran');
+            $totalBayar = $request->input('totalBayar');  // Pastikan ini adalah tipe numeric
+
+            \Log::info('Jenis Pembayaran:', ['jenisPembayaran' => $jenisPembayaran]);
+            \Log::info('Total Bayar:', ['totalBayar' => $totalBayar]);
 
             $totalAmount = 0;
 
@@ -48,7 +57,8 @@ class OrderController extends Controller
                 'user_id' => 1,
                 'customer_name' => $identitas['identitas'][0]['name'],
                 'email' => $identitas['identitas'][0]['email'], // dari frontend
-                'total_amount' => $totalAmount,
+                'total_amount' => $totalBayar,
+                'jenis_pembayaran' => $jenisPembayaran,
             ]);
     
 
