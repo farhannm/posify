@@ -1313,7 +1313,7 @@
                         </div>
                         <div class="flex justify-between text-xs+">
                         <p>Metode Pembayaran: ${ pilihanPaymentMethod ? pilihanPaymentMethod : 'Belum dipilih' }</p>
-                            <p class="font-medium tracking-wide">Rp ${biayaAdmin.toLocaleString('id-ID')}</p>
+                        <p class="font-medium tracking-wide">Rp ${biayaAdmin.toLocaleString('id-ID')}</p>
                         </div>
                         <div class="flex justify-between text-base font-medium text-primary dark:text-accent-light">
                             <p>Total</p>
@@ -1334,13 +1334,15 @@
                         </div>
                         <div class="flex justify-between text-base font-medium text-primary dark:text-accent-light">
                             <p>Biaya Admin</p>
+                        </div>
+                        <div class="flex justify-between text-base font-medium text-primary dark:text-accent-light">
+                            <p>Metode Pembayaran: ${ pilihanPaymentMethod ? pilihanPaymentMethod : 'Belum dipilih' }</p>
                             <p>Rp ${biayaAdmin.toLocaleString('id-ID')}</p>
                         </div>
                         <div class="flex justify-between text-base font-medium text-primary dark:text-accent-light">
                             <p>Total</p>
                             <p>Rp ${total.toLocaleString('id-ID')}</p>
                         </div>
-                            <p>payment method ${pilihanPaymentMethod}</p>
                 `;
 
             let totalPriceDiCheckout = document.querySelector('.total-price-checkout');
