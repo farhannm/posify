@@ -8,6 +8,8 @@
         body {
             background-color: #e5e7eb; /* bg-gray-200 */
             font-family: sans-serif;
+            margin: 0;
+            padding: 0;
         }
 
         .container {
@@ -16,7 +18,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: auto;
+            padding: 1rem;
         }
 
         .box {
@@ -24,26 +26,13 @@
             background-color: white;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
             border-radius: 0.75rem; /* rounded-lg */
-            padding: 40px 20px;
+            padding: 2rem;
             max-width: 36rem;
             width: 100%;
-            min-height: 35rem;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
             z-index: 1;
-        }
-
-        .box::before {
-            content: "";
-            position: absolute;
-            top: 80px;
-            left: 80px;
-            width: 200px;
-            height: 200px;
-            background: rgba(59, 130, 246, 0.2); 
-            border-radius: 100%;
-            z-index: -1; 
         }
 
         .circle {
@@ -88,7 +77,7 @@
 
         .logo {
             margin: 0 auto;
-            margin-bottom: 20px;
+            margin-bottom: 1rem;
             height: 5rem;
             width: 4rem;
         }
@@ -147,6 +136,29 @@
             height: 1.5rem;
             vertical-align: middle;
         }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .circle-1, .circle-2, .circle-3, .circle-4 {
+                display: none;
+            }
+
+            .box {
+                padding: 1.5rem;
+                box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .heading {
+                font-size: 1.25rem;
+            }
+
+            .btn {
+                font-size: 0.75rem;
+                padding: 0.5rem 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -159,7 +171,7 @@
             <div class="circle circle-4"></div>
             <div class="text-center">
                 <!-- Logo -->
-                <img class="logo" src="{{ asset('images/logo.png')}}" alt="logo">
+                <img class="logo" src="{{ asset('images/logo.png') }}" alt="logo">
                 <h2 class="heading">Reset Password</h2>
             </div>
 
@@ -170,7 +182,7 @@
             </div>
 
             <div class="text-center mt-10">
-                <a href="{{ route('validateForgotPasswordView', ['token' => $token]) }}" class="btn">
+                <a class="btn">
                     Reset Password
                 </a>
             </div>
@@ -183,14 +195,12 @@
             <section id="social" class="text-center mt-20">
                 <h2 class="text-l font-base text-center mb-3">Follow Us!</h2>
                 <div class="social-icons">
-                    <a href="https://www.instagram.com/posify.inc/" target="_blank">
+                    <a href="https://www.instagram.com/posify.id/" target="_blank">
                         <img src="{{ asset('images/Instagram.jpg') }}" alt="instagram" class="icon">
                     </a>
                 </div>
            </section>
         </div>
-
-        
     </main>
 </body>
 </html>
