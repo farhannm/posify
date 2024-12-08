@@ -16,7 +16,7 @@ class OrderItemSeeder extends Seeder
     {
         DB::table('order_items')->insert([
             [
-                'order_id' => 1,
+                'order_id' => 'FTW021245D',
                 'product_id' => 1,
                 'variant_ids' => json_encode([1, 5]), 
                 'quantity' => 2,
@@ -26,7 +26,7 @@ class OrderItemSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'order_id' => 1,
+                'order_id' => 'FTW021245D',
                 'product_id' => 2,
                 'variant_ids' => null,
                 'quantity' => 1,

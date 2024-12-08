@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\ProductVariantStock;
 
@@ -56,15 +57,56 @@ class OrderController extends Controller
     {
         try {
             $order = Order::findOrFail($id);
-    
             $order->order_status = 'In Process';
+            $order->save() ;
+    
+            $transaction = new Transaction();
+            $transaction->order_id = $order->id;
+            $transaction->total_paid = $order->total_amount;
+            $transaction->payment_status = 'Completed';
+            $transaction->payment_method = $order->payment_method;
+            $transaction->checkout_link = null;
+            $transaction->save();
+    
+            $order->transaction_id = $transaction->id;
             $order->save();
     
             return redirect()->route('viewAwaitingOrders')->with('edit_success', 'Order approved and now in process.');
         } catch (\Exception $e) {
             dd('Error saat mencoba approve order:', $e->getMessage());
-    
             return redirect()->route('viewAwaitingOrders')->with('edit_failed', 'Failed to approve order: ' . $e->getMessage());
+        }
+    }
+    
+    public function cancelOrder($id)
+    {
+        try {
+            $order = Order::findOrFail($id);
+    
+            $order->order_status = 'Cancelled';
+            $order->save();
+    
+            return redirect()->route('viewAwaitingOrders')->with('edit_success', 'Order cancelled');
+        } catch (\Exception $e) {
+            dd('Error saat mencoba approve order:', $e->getMessage());
+    
+            return redirect()->route('viewAwaitingOrders')->with('edit_failed', 'Failed to cancle: ' . $e->getMessage());
+        }
+    }
+
+    public function completeOrder($id)
+    {
+        try {
+            $order = Order::findOrFail($id);
+    
+            $order->order_status = 'Done';
+            $order->save();
+    
+            return redirect()->route('viewProcessedOrders')->with('edit_success', 'Updated');
+        } catch (\Exception $e) {
+            dd('Error saat mencoba approve order:', $e->getMessage());
+    
+            return redirect()->route('viewProcessedOrders')->with('edit_failed', 'Fail: ' . $e->getMessage());
         }
     }
 
@@ -73,7 +115,7 @@ class OrderController extends Controller
         try {
             $request->validate([
                 'customer_name' => 'required|string',
-                'email' => 'nullable',
+                'email' => 'required|string',
                 'total_amount' => 'required|numeric|min:0',
             ]);
     

@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -54,8 +55,15 @@ Route::middleware(['auth', 'role:cashier'])->group(function () {
     Route::get('/cashier/cancelled-orders', [PagesController::class, 'viewCancelledOrders'])->name('viewCancelledOrders');
     Route::get('/cashier/order-history', [PagesController::class, 'viewOrderHistory'])->name('viewOrderHistory');
 
-    //Approve
-    Route::put('/cashier/awaiting-orders/{id}', [OrderController::class, 'approveOrder'])->name('approve-order');
+    // Approve f
+    Route::put('/cashier/awaiting-orders/{id}/approve', [OrderController::class, 'approveOrder'])->name('approve-order');
+
+    // Cancel
+    Route::put('/cashier/awaiting-orders/{id}/complete', [OrderController::class, 'completeOrder'])->name('complete-order');
+
+    // Cancel
+    Route::put('/cashier/awaiting-orders/{id}/cancel', [OrderController::class, 'cancelOrder'])->name('cancel-order');
+
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
@@ -79,6 +87,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     //Details
     Route::get('/admin/products/product-detail/{id}', [PagesController::class, 'viewProductDetail'])->name('view-product-detail');
+
+    //Cashier
+    Route::get('/admin/cashier', [PagesController::class, 'viewCashier'])->name('view-cashier');
+    Route::get('/admin/cashier/add-cashier', [PagesController::class, 'viewCashierForm'])->name('add-cashier-form');
+    Route::post('/admin/cashier/add-cashier', [UserController::class, 'storeCashier'])->name('cashier-store');
+    Route::get('/admin/cashier/edit-cashier/{id}', [PagesController::class, 'viewCashierUpdateForm'])->name('edit-cashier-form');
+    Route::put('/admin/cashier/edit-cashier/{id}', [UserController::class, 'updateCashier'])->name('cashier-update');
+    Route::delete('/admin/cashier/delete-cashier/{id}', [UserController::class, 'deleteCashier'])->name('cashier-delete');
 
 
     Route::get('/elements/avatar', [PagesController::class, 'elementsAvatar'])->name('elements/avatar');

@@ -28,23 +28,26 @@ class OrderSeeder extends Seeder
         // }
 
         DB::table('orders')->insert([
-            [
+            [   'id' => 'FTW021245D',
                 'user_id' => 2,
                 'transaction_id' => null,
                 'customer_name' => 'John Doe',
                 'email' => 'johndoe@example.com',
                 'order_status' => 'Pending',
                 'total_amount' => 100.00,
+                'payment_method' => 'Tunai',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
+                'id' => 'LZQ021245G',
                 'user_id' => 2,
                 'transaction_id' => null,
                 'customer_name' => 'Jane Smith',
                 'email' => 'janesmith@example.com',
                 'order_status' => 'Pending',
                 'total_amount' => 200.00,
+                'payment_method' => 'Non Tunai',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

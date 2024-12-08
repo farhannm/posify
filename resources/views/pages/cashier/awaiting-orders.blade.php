@@ -4,10 +4,10 @@
 
         <!-- Notification -->
         <div id="edit_success" class="fixed bottom-5 right-5 bg-green-500 text-white px-6 py-2 rounded-md shadow-md hidden transition-all duration-300 z-1">
-            Order approved!
+            Updated successfully!
         </div>
         <div id="edit_failed" class="fixed bottom-5 right-5 bg-red-500 text-white px-6 py-2 rounded-md shadow-md hidden transition-all duration-300 z-1">
-            Failed to approve.
+            Failed to update.
         </div>
 
         <script>
@@ -84,6 +84,9 @@
                                         Total Amount
                                     </th>
                                     <th class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
+                                        Payment Method
+                                    </th>
+                                    <th class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
                                         More
                                     </th>
                                     <th class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
@@ -95,7 +98,7 @@
                                 @foreach($orders as $index => $order)
                                     <tr class="border-y border-transparent">
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            ORD-{{ $order->id }}
+                                            {{ $order->id }}
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
                                             {{ $order->transaction_id ?? '-' }}
@@ -110,18 +113,71 @@
                                             Rp. {{ number_format($order->total_amount, 2) }}
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+                                            {{ $order->payment_method }}
+                                        </td>
+                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
                                             <button @click="expanded === {{ $index }} ? expanded = null : expanded = {{ $index }}" class="btn h-8 w-8 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
                                                 <i :class="expanded === {{ $index }} && '-rotate-180'" class="fas fa-chevron-down text-sm transition-transform"></i>
                                             </button>                                                
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            <form action="{{ route('approve-order', $order->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to approve this order?');">
+                                            {{-- <form action="{{ route('approve-order', $order->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to approve this order?');">
                                                 @csrf
                                                 @method('PUT')
                                                 <button class="btn font-medium text-primary hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:text-accent-light dark:hover:bg-accent-light/20 dark:focus:bg-accent-light/20 dark:active:bg-accent-light/25">
                                                     Approve
                                                 </button>
-                                            </form>                                        
+                                            </form> --}}
+                                            <div
+                                            x-data="usePopper({placement:'bottom-end',offset:4})"
+                                            @click.outside="if(isShowPopper) isShowPopper = false"
+                                            class="inline-flex">
+                                            <button
+                                            x-ref="popperRef"
+                                            @click="isShowPopper = !isShowPopper"
+                                            class="btn h-8 w-8 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25"
+                                            >
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    class="h-5 w-5"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                    stroke-width="2"
+                                                >
+                                                    <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
+                                                    />
+                                                </svg>
+                                            </button>
+
+                                            <div x-ref="popperRoot" class="popper-root" :class="isShowPopper && 'show'">
+                                                <div class="popper-box rounded-md border border-slate-150 bg-white py-1.5 font-inter dark:border-navy-500 dark:bg-navy-700">
+                                                    <ul>
+                                                        <li>
+                                                            <form action="{{ route('approve-order', $order->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to approve this Order?')">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                <button type="submit" class="flex h-8 items-center px-3 pr-8 font-medium tracking-wide outline-none transition-all hover:bg-slate-100 hover:text-slate-800 focus:bg-slate-100 focus:text-slate-800 dark:hover:bg-navy-600 dark:hover:text-navy-100 dark:focus:bg-navy-600 dark:focus:text-navy-100">
+                                                                    Approve
+                                                                </button>
+                                                            </form>
+                                                        </li>
+                                                        <li>
+                                                            <form action="{{ route('cancel-order', $order->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this Order?');">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                <button type="submit" class="flex h-8 items-center px-3 pr-8 font-medium tracking-wide outline-none transition-all hover:bg-slate-100 hover:text-slate-800 focus:bg-slate-100 focus:text-slate-800 dark:hover:bg-navy-600 dark:hover:text-navy-100 dark:focus:bg-navy-600 dark:focus:text-navy-100">
+                                                                    Cancel
+                                                                </button>
+                                                            </form>
+                                                        </li>
+                                                    </ul>                                                    
+                                                </div>
+                                            </div>
+                                        </div>                                  
                                         </td>
                                     </tr>
                                     <tr class="border-y border-transparent border-b-slate-200 dark:border-b-navy-500">
@@ -145,7 +201,7 @@
                                                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
                                                                             {{ $loop->iteration }}
                                                                         </td>
-                                                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">{{ $item->product->name }}</td>
+                                                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">{{ $item->product->name }} </td>
                                                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
                                                                             @if(isset($item->variant_results[$index]['variant_values']))
                                                                                 {{ implode(' in ', $item->variant_results[$index]['variant_values']) }}

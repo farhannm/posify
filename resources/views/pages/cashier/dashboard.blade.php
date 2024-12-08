@@ -60,9 +60,8 @@
                                 :class="selected === 'slide-all' ?
                                     'text-secondary bg-secondary/10 dark:bg-secondary-light/10 dark:text-secondary-light' :
                                     'text-slate-600 dark:text-navy-100'">
-                                <img class="w-12" src="{{ asset('images/100x100.png') }}" alt="image" />
-                                <h3 class="pt-2 font-medium tracking-wide line-clamp-1">
-                                    All Category
+                                <h3 class="font-medium">
+                                    All
                                 </h3>
                             </div>
                         </div>
@@ -75,30 +74,13 @@
                                 :class="selected === 'slide-{{ $index + 1 }}' ?
                                     'text-secondary bg-secondary/10 dark:bg-secondary-light/10 dark:text-secondary-light' :
                                     'text-slate-600 dark:text-navy-100'">
-                                <img class="w-12" src="{{ asset('images/100x100.png') }}" alt="image" />
-                                <h3 class="pt-2 font-medium tracking-wide line-clamp-1">
+                                <h3 class="font-medium">
                                     {{ $category->category_name }}
                                 </h3>
                             </div>
                         </div>
                         @endforeach
                     </div>
-<<<<<<< HEAD
-                </div>
-                
-                
-                <div class="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                    @foreach ($products as $product)
-                        <div class="card p-2 mt" onclick="addToCart({{ $product->id }}, '{{$product->name}}', {{$product->price}} )" style="cursor: pointer;">
-                        <div class="w-40 h-40 mx-auto flex items-center justify-center">
-                            @if ($product->image)
-                                <img src="{{ $product->image }}" alt="Product" class="w-full h-72 object-scale-down">
-                            @else
-                                <img src="{{asset('images/dishes.png')}}" alt="Product" class="w-full h-72 object-scale-down"/>
-                            @endif
-                            {{-- <img class="rounded-lg w-full h-full object-cover" src="{{ $product->image }}" alt="image" /> --}}
-                        </div>                            <div class="pt-2">
-=======
 
                     <!-- Product List -->
                     <div id="product-list" class="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -108,13 +90,16 @@
                             onclick="addToCart({{ $product->id }}, '{{ $product->name }}', {{ $product->price }})" 
                             style="cursor: pointer;">
                             <div class="w-40 h-40 mx-auto flex items-center justify-center">
-                                <img class="rounded-lg w-full h-full object-cover" src="{{ $product->image }}" alt="image" />
+                                @if ($product->image)
+                                    <img src="{{ $product->image }}" alt="Product" class="w-24">
+                                @else
+                                    <img src="{{asset('images/dishes.png')}}" alt="Product" class="w-26"/>
+                                @endif
                             </div>
                             <div class="pt-2">
->>>>>>> c9a855dd1980ba3abb53771cf4ff35ddcbcb194c
                                 <p class="font-medium text-slate-700 dark:text-navy-100">{{ $product->name }}</p>
                                 <p class="text-xs text-slate-400 dark:text-navy-300">{{ $product->description }}</p>
-                                <p class="text-right font-medium text-primary dark:text-accent-light">
+                                <p class="text-right font-medium mt-5 text-primary dark:text-accent-light">
                                     {{ 'Rp ' . number_format($product->price, 2) }}
                                 </p>
                             </div>
@@ -432,14 +417,6 @@
         }
 
     </script>
-<<<<<<< HEAD
-</x-app-layout>
-=======
-    <!-- function checkout() {
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        console.log("Keranjang checkout:", cart);
-        // Di sini Anda bisa mengirim `cart` ke server menggunakan fetch atau AJAX
-    } -->
 
 
 
@@ -448,4 +425,3 @@
 
 
 </x-base-layout>
->>>>>>> c9a855dd1980ba3abb53771cf4ff35ddcbcb194c

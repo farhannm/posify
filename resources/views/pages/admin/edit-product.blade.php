@@ -61,9 +61,9 @@
             </div>
         </div>
 
-        <form action="{{ route('products-store') }}" enctype="multipart/form-data" method="POST">
+        <form action="{{ route('products-update', $product->id) }}" enctype="multipart/form-data" method="POST">
             @csrf
-            @method('POST')
+            @method('PUT')
         
             @if ($errors->has('error'))
                 <div class="alert flex space-x-2 rounded-lg border border-error px-1 py-1 text-error text-tiny+ mt-2">
@@ -75,8 +75,6 @@
             @endif
         
             <div class="grid grid-cols-12 gap-4 sm:gap-5 lg:gap-6" x-data="{ step: 1 }">
-        
-                <!-- Form Content -->
                 <div class="col-span-12">
                     <div class="card">
                         <div class="border-b border-slate-200 p-4 dark:border-navy-500 sm:px-5">
@@ -136,6 +134,13 @@
                                             placeholder="Product description..."
                                             class="form-textarea mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent p-2.5 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
                                         >{{$product->description}}</textarea>
+                                    </div>
+
+                                    <div>
+                                        <span>Images</span>
+                                        <div class="filepond fp-bordered fp-bg-filled">
+                                            <input class="mb-5" type="file" name="image" id="image"/>
+                                        </div>
                                     </div>
 
                                     <button type="submit" class="btn space-x-2 btn min-w-[7rem] bg-primary font-medium text-white hover:bg-primary/20">

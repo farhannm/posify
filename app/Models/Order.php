@@ -13,32 +13,16 @@ class Order extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'customer_name', 'total_amount'];
+    protected $fillable = ['user_id', 'customer_name', 'total_amount', 'email', 'payment_method'];
+    protected $primaryKey = 'id'; // Tentukan kolom primary key
+    public $incrementing = false; // Matikan auto-increment karena menggunakan string
+    protected $keyType = 'string'; // Tentukan tipe key adalah string
 
     public function items()
     {
-        return $this->hasMany(OrderItem::class);
+        return $this->hasMany(OrderItem::class, 'order_id');
     }
-
-    // protected static function booted()
-    // {
-    //     static::updated(function ($order) {
-    //         if ($order->payment_status === 'paid' && is_null($order->transaction_id)) {
-    //             DB::transaction(function () use ($order) {
-    //                 $transaction = Transaction::create([
-    //                     'total_paid' => $order->total_amount,
-    //                     'payment_method' => $order->payment_method,
-    //                 ]);
-
-    //                 $order->transaction_id = $transaction->id;
-    //                 $order->save();
-    //             });
-    //         }
-    //     });
-    // }
-
-
-
+    
     public function transaction()
     {
         return $this->hasOne(Transaction::class, 'id', 'transaction_id');

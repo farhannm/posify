@@ -10,6 +10,7 @@ use App\Models\VariantType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProductVariantStock;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class PagesController extends Controller
@@ -134,7 +135,7 @@ class PagesController extends Controller
     public function viewOrderHistory()
     {
         $orders = Order::with('items')
-            ->where('order_status', 'Done')
+            ->whereIn('order_status', ['Done', 'Cancelled'])
             ->orderBy('id', 'asc')
             ->paginate(10);
     
@@ -298,6 +299,32 @@ class PagesController extends Controller
         $categories = Categories::all();
 
         return view('pages/admin/add-product', compact('categories'));
+    }
+
+    // Cashier
+    public function viewCashier()
+    {
+        $users = User::orderBy('id', 'asc')
+            ->where('role', 'cashier')
+            ->paginate(10);
+
+        return view('pages/admin/cashier', compact('users'));
+    }
+
+    public function viewCashierUpdateForm(Request $request, $id)
+    {
+        $users = User::find($id);
+
+        if (!$users) {
+            return view('pages/layouts-error-404-2');
+        }
+
+        return view('pages/admin/edit-cashier', compact('users'));
+    }
+
+    public function viewCashierForm()
+    {
+        return view('pages/admin/add-cashier');
     }
 
     public function elementsAvatar()

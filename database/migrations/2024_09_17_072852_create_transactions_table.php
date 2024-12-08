@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('order_id');
             $table->decimal('total_paid', 10, 2); 
             $table->string('payment_status');
-            $table->String('payment_method'); 
+            $table->string('payment_method');
+            $table->string('payment_provider')->nullable();
             $table->string('checkout_link')->nullable();
             $table->timestamps();
         });

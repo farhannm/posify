@@ -11,7 +11,7 @@
     <x-base-layout>
         <div class="flex flex-col justify-center items-center h-screen w-full bg-white text-center">
             <div class="mb-4">
-                <img src="{{ asset('images/paymentSuccess.png') }}" alt="Payment Success" class="w-full max-w-sm rounded-lg mx-auto"/>
+                <img src="{{ asset('images/payments/paymentSuccess.png') }}" alt="Payment Success" class="w-full max-w-sm rounded-lg mx-auto"/>
             </div>
             <h1 class="text-3xl font-bold text-gray-800 mt-4">Payment Successful!</h1>
             <p class="text-gray-600 text-sm mt-2 mb-6">Pembayaran anda berhasil, harap sabar menunggu.</p>

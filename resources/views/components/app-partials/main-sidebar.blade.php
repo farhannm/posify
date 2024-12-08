@@ -25,8 +25,8 @@
                         <i class='bx bxs-bowl-rice text-xl'></i>
                     </a>
 
-                    <!-- Users -->
-                    <a href="#"
+                    <!-- Cashiers -->
+                    <a href="{{ route('view-cashier') }}"
                         class="flex h-11 w-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 {{ $routePrefix === '' ? 'text-primary hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:bg-navy-600 bg-primary/10 dark:text-accent-light dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90' : 'hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25' }}"
                         x-tooltip.placement.right="'Cashier'">
                         <i class='bx bxs-user-account text-xl'></i>
@@ -102,11 +102,11 @@
                     </a>
 
                     <!-- Cancelled -->
-                    <a href="{{ route('viewCancelledOrders') }}"
+                    {{-- <a href="{{ route('viewCancelledOrders') }}"
                         class="flex h-11 w-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 {{ $routePrefix === 'viewCancelledOrders' ? 'text-primary hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:bg-navy-600 bg-primary/10 dark:text-accent-light dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90' : 'hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25' }}"
                         x-tooltip.placement.right="'In Process'">
                         <i class='bx bx-message-alt-x text-xl'></i>
-                    </a>
+                    </a> --}}
 
                     <!-- History -->
                     <a href="{{ route('viewOrderHistory') }}"
@@ -154,7 +154,7 @@
                     </a>
 
                     <!-- Cashier -->
-                    <a href="#"
+                    <a href="{{ route('view-cashier') }}"
                         class="flex h-11 w-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 {{ $routePrefix === '' ? 'text-primary hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:bg-navy-600 bg-primary/10 dark:text-accent-light dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90' : 'hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25' }}"
                         x-tooltip.placement.right="'Cashier'">
                         <i class='bx bxs-user-account text-xl'></i>

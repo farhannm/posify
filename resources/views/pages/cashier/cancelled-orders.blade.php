@@ -95,7 +95,7 @@
                                 @foreach($orders as $index => $order)
                                     <tr class="border-y border-transparent">
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            ORD-{{ $order->id }}
+                                            {{ $order->id }}
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
                                             {{ $order->transaction_id ?? '-' }}

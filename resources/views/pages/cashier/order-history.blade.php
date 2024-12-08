@@ -84,11 +84,14 @@
                                         Total Amount
                                     </th>
                                     <th class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        More
+                                        Total Amount
                                     </th>
                                     <th class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        Actions
+                                        More
                                     </th>
+                                    {{-- <th class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
+                                        Actions
+                                    </th> --}}
                                 </tr>
                             </thead>
                             <tbody x-data="{ expanded: null }">
@@ -110,11 +113,14 @@
                                             Rp. {{ number_format($order->total_amount, 2) }}
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+                                            {{ $order->payment_method }}
+                                        </td>
+                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
                                             <button @click="expanded === {{ $index }} ? expanded = null : expanded = {{ $index }}" class="btn h-8 w-8 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
                                                 <i :class="expanded === {{ $index }} && '-rotate-180'" class="fas fa-chevron-down text-sm transition-transform"></i>
                                             </button>                                                
                                         </td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+                                        {{-- <td class="whitespace-nowrap px-4 py-3 sm:px-5">
                                             <form action="{{ route('approve-order', $order->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to approve this order?');">
                                                 @csrf
                                                 @method('PUT')
@@ -122,7 +128,7 @@
                                                     Approve
                                                 </button>
                                             </form>                                        
-                                        </td>
+                                        </td> --}}
                                     </tr>
                                     <tr class="border-y border-transparent border-b-slate-200 dark:border-b-navy-500">
                                         <td colspan="100" class="p-0">
