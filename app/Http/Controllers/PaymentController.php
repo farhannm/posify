@@ -108,6 +108,11 @@ class PaymentController extends Controller
         if($response->transaction_status === 'settlement'){
             $payment->payment_status = 'settlement';
             $payment->payment_method = $response->payment_type;
+            if($response->payment_type === 'qris'){
+                $payment->payment_provider = $response->issuer;
+            }else{
+                $payment->payment_provider = $response->va_numbers[0]->bank;
+            }
             $order->transaction_id = $payment->id;
         }
         if($response->transaction_status === 'pending'){
@@ -124,12 +129,7 @@ class PaymentController extends Controller
         }
         $order->save();
         $payment->save();
-        return response()->json('success');
+        return response()->json($response);
     }
 
-    public function test(Request $request){
-        $test = ProductVariantStock::find($request->id);
-
-        return response()->json($test);
-    }
 }

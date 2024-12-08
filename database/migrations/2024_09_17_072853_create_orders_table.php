@@ -15,13 +15,15 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('transaction_id')->nullable();
             $table->string('customer_name')->nullable();
             $table->string('email')->nullable();
             $table->enum('payment_method', ['Tunai', 'Non Tunai'])->nullable();
             $table->enum('order_status', ['Pending', 'Approved', 'In Process', 'Done', 'Cancelled'])->default('Pending');
-            $table->decimal('total_amount', 10, 2);
+            $table->decimal('total_amount', 10, 2)->default(0);
+            $table->string('jenis_pembayaran')->nullable();
+
             $table->timestamps();
 
             $table->foreign('transaction_id')->references('id')->on('transactions')->onDelete('cascade');
@@ -46,3 +48,6 @@ return new class extends Migration
         Schema::dropIfExists('orders');
     }
 };
+
+// orders_order_status_check
+// order_status::text = ANY (ARRAY['Pending'::character varying, 'Approved'::character varying, 'In Process'::character varying, 'Done'::character varying, 'Cancelled'::character varying]::text[])

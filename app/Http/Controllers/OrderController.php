@@ -5,53 +5,84 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\OrderItem;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\ProductVariantStock;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
-    public function addToCart(Request $request) {
-        $request->validate([
-            'product_id' => 'required|exists:products,id',
-        ]);
+    public function saveOrderItem(Request $request)
+    {
+        try {
+            Log::info('Cart Data:', $request->all());
+            
 
-        $product = Product::findOrFail($request->product_id);
-        $price = $product->price;
-        $quantity = 1;
-        // ambil keranjang
-        $cart = session()->get('cart', []);
+            $identitas = $request->validate([
+                'identitas' => 'required|array',
+                'identitas.*.name' => 'required|string',
+                'identitas.*.email' => 'required|string',
+            ]);
 
-        $sudahAda = null;
-        foreach ($cart as $indexKe => $item) {
-            // cek produk dan variant apakah sudah ada di cart
-            if ($item['product_id'] == $product->id) {
-                $sudahAda = $indexKe;
-                break;
+            
+            // Validasi data
+            $validated = $request->validate([
+                'cart' => 'required|array',
+                'cart.*.order_id' => 'required|string', 
+                'cart.*.product_id' => 'required|integer',
+                'cart.*.variant_ids' => 'required|array',
+                'cart.*.quantity' => 'required|integer',
+                'cart.*.price' => 'required|numeric',
+                'cart.*.total' => 'required|numeric',
+            ]);
+            
+
+            // $jenisPembayaran = $request->validate('jenisPembayaran' => 'required|string');
+            Log::info('Validated Identitas Data:', $identitas);
+            Log::info('Validated Cart Data:', $validated);
+
+            $jenisPembayaran = $request->input('jenisPembayaran');
+            $totalBayar = $request->input('totalBayar');  // Pastikan ini adalah tipe numeric
+
+            Log::info('Jenis Pembayaran:', ['jenisPembayaran' => $jenisPembayaran]);
+            Log::info('Total Bayar:', ['totalBayar' => $totalBayar]);
+
+            $totalAmount = 0;
+
+            foreach ($validated['cart'] as $item) {
+                $totalAmount += $item['total']; 
             }
+            $orderId = $validated['cart'][0]['order_id'];
+            Log::info('Order ID:', ['order_id' => $orderId]);
+
+            $order = Order::create([
+                'id' => $orderId,
+                'user_id' => 1,
+                'customer_name' => $identitas['identitas'][0]['name'],
+                'email' => $identitas['identitas'][0]['email'], // dari frontend
+                'total_amount' => $totalBayar,
+                'jenis_pembayaran' => $jenisPembayaran,
+            ]);
+    
+
+            foreach ($validated['cart'] as $item) {
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $item['product_id'],
+                    'variant_ids' => $item['variant_ids'],
+                    'quantity' => $item['quantity'],
+                    'price' => $item['price'],
+                    'total' => $item['total'],
+                ]);
+            }
+    
+            return response()->json(['message' => 'Order Items saved successfully']);
+        } catch (\Exception $e) {
+            Log::error('Error saving order items:', ['error' => $e->getMessage()]);
+            return response()->json(['message' => 'Failed to save order items'], 500);
         }
-
-        // jika ada maka perbarui quantitasnya
-        if ($sudahAda != null) {
-            $cart[$sudahAda]['quantity'] += $quantity;
-            $cart[$sudahAda]['total'] += $quantity * $price;
-
-        } else {
-            // kalo ga ada, tambah data baru ke keranjang
-            $cartItem = [
-                'product_id' => $product->id,
-                'quantity' => $quantity,
-                'price' => $price,
-                'total' => $price * $quantity,
-                'name' => $product->name, 
-            ];
-            $cart[] = $cartItem;
-        }
-
-        session()->put('cart', $cart);
-
-        return response()->json(['success' => true, 'cart' => $cart]);
-    } 
+    }
 
     public function approveOrder($id)
     {
@@ -158,5 +189,12 @@ class OrderController extends Controller
             dd($e->getMessage(), $e->getTrace());
         }
     }           
-    
+
+    public function checkOrderId($orderId) 
+    {
+        $isUnique = !Order::where('id', $orderId)->exists();
+        return response()->json([
+            'isUnique' => $isUnique
+        ]);
+    }
 }
