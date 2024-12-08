@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Transaction;
 use App\Models\OrderItem;
+use App\Models\Product;
 use Carbon\Carbon;
 
 
@@ -20,54 +21,28 @@ class AnalysisController extends Controller
 
         if($rentangTanggal) {
             if ($startDate == $endDate) {
-                $totalRevenue = Transaction::
-                where('payment_status', 'settlement')
-                ->whereDate('created_at', $startDate)
-                ->sum('total_paid');
+                $totalRevenue = Transaction::join('orders', 'transactions.order_id', '=', 'orders.id')
+                ->where('transactions.payment_status', 'settlement')
+                ->where('orders.order_status', 'completed')
+                ->whereDate('transactions.created_at', $startDate)
+                ->sum('transactions.total_paid');
             } else {
-                $totalRevenue = Transaction::
-                where('payment_status', 'settlement')
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->sum('total_paid');
+                $totalRevenue = Transaction::join('orders', 'transactions.order_id', '=', 'orders.id')
+                ->where('transactions.payment_status', 'settlement')
+                ->where('orders.order_status', 'completed')
+                ->whereBetween('transactions.created_at', [$startDate, $endDate])
+                ->sum('transactions.total_paid');
             }
-            $revenueSebelum = Cache::get('revenue_sebelum', 0);
-
-
-            if ($revenueSebelum != 0) {
-                $persentase = ($totalRevenue - $revenueSebelum) / $revenueSebelum * 100;
-            } else {
-                $persentase = $totalRevenue > 0 ? $totalRevenue * 100 : 0;
-            }
-    
-            Cache::put('revenue_sebelum', $totalRevenue);
         } else {
-            $totalRevenue = Transaction::
-                where('payment_status', 'settlement')
-                ->whereDate('created_at', Carbon::today())
-                ->sum('total_paid');
-            
-
-                $yesterday = Carbon::now()->subDay()->format('Y-m-d');
-            
-                $revenueSebelum = Transaction::
-                where('payment_status', 'settlement')
-                ->whereDate('created_at', $yesterday)
-                ->sum('id');
-    
-                if ($revenueSebelum != 0) {
-                    $persentase = ($totalRevenue - $revenueSebelum) / $revenueSebelum * 100;
-                } else {
-                    $persentase = $totalRevenue > 0 ? $totalRevenue * 100 : 0;
-                }
-        
-                Cache::put('revenue_sebelum', $totalRevenue);
+            $totalRevenue = Transaction::join('orders', 'transactions.order_id', '=', 'orders.id')
+            ->where('transactions.payment_status', 'settlement')
+            ->where('orders.order_status', 'completed')
+            ->whereDate('transactions.created_at', Carbon::today())
+            ->sum('transactions.total_paid');
         }
 
         return [
             'totalRevenue' => $totalRevenue,
-            'revenueSebelum' => $revenueSebelum,
-            'isRevenueIncreased' => $totalRevenue > $revenueSebelum,
-            'persentase' => $persentase,
         ];
     }
 
@@ -80,53 +55,30 @@ class AnalysisController extends Controller
 
         if($rentangTanggal) {
             if ($startDate == $endDate) {
-                $totalTransaksi = Transaction::
-                where('payment_status', 'settlement')
-                ->whereDate('created_at', $startDate)
-                ->count('id');
+                $totalTransaksi = Transaction::join('orders', 'transactions.order_id', '=', 'orders.id')
+                ->where('transactions.payment_status',  'settlement')
+                ->where('orders.order_status', 'completed')
+                ->whereDate('transactions.created_at', $startDate)
+                ->count('transactions.id');
             } else {
-                $totalTransaksi = Transaction::
-                where('payment_status', 'settlement')
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->count('id');
+                $totalTransaksi = Transaction::join('orders', 'transactions.order_id', '=', 'orders.id')
+                ->where('transactions.payment_status',  'settlement')
+                ->where('orders.order_status', 'completed')
+                ->whereBetween('transactions.created_at', [$startDate, $endDate])
+                ->count('transactions.id');
             }
-            $transaksiSebelum = Cache::get('transaksi_sebelum', 0);
-
-            if ($transaksiSebelum != 0) {
-                $persentase = ($totalTransaksi - $transaksiSebelum) / $transaksiSebelum * 100;
-            } else {
-                $persentase = $totalTransaksi > 0 ? $totalTransaksi * 100 : 0;
-            }
-
-            Cache::put('transaksi_sebelum', $totalTransaksi);
         } else {
-            $totalTransaksi = Transaction::
-                where('payment_status', 'settlement')
-                ->whereDate('created_at', Carbon::today())
-                ->count('id');
-
-            $yesterday = Carbon::now()->subDay()->format('Y-m-d');
-            
-            $transaksiSebelum = Transaction::
-            where('payment_status', 'settlement')
-            ->whereDate('created_at', $yesterday)
-            ->count('id');
-
-            if ($transaksiSebelum != 0) {
-                $persentase = ($totalTransaksi - $transaksiSebelum) / $transaksiSebelum * 100;
-            } else {
-                $persentase = $totalTransaksi > 0 ? $totalTransaksi * 100 : 0;
-            }
-    
-            Cache::put('transaksi_sebelum', $totalTransaksi);
+            $totalTransaksi = Transaction::join('orders', 'transactions.order_id', '=', 'orders.id')
+                ->where('transactions.payment_status', 'settlement')
+                ->where('orders.order_status', 'completed')
+                ->whereDate('transactions.created_at', Carbon::today())
+                ->count('transactions.id');
         }
         
         
         return [
             'totalTransaksi' => $totalTransaksi,
-            'transaksiSebelum' => $transaksiSebelum,
-            'isTransactionIncreased' => $totalTransaksi > $totalTransaksi,
-            'persentase' => $persentase,
+
         ];
     }
 
@@ -134,41 +86,30 @@ class AnalysisController extends Controller
         $startOfMonth = Carbon::now()->startOfMonth()->format('Y-m-d');
         $endOfMonth = Carbon::now()->endOfMonth()->format('Y-m-d');
         
-        $totalBulanRevenue = Transaction::
-        where('payment_status', 'settlement')
-        ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
-        ->sum('total_paid');
-            
-        $revenueBulanSebelum = Cache::get('revenue_bulan_sebelum', 0);
+        $totalBulanRevenue = Transaction::join('orders', 'transactions.order_id', '=', 'orders.id')
+        ->where('transactions.payment_status', 'settlement')
+        ->where('orders.order_status', 'completed')
+        ->whereBetween('transactions.created_at', [$startOfMonth, $endOfMonth])
+        ->sum('transactions.total_paid');
 
+        $bulanSebelum = Carbon::now()->subMonth();
+        $startMonthBefore = $bulanSebelum->startOfMonth()->format('Y-m-d');
+        $endMonthBefore = $bulanSebelum->endOfMonth()->format('Y-m-d');
 
-        if ($revenueBulanSebelum != 0) {
-            $persentase = ($totalBulanRevenue - $revenueBulanSebelum) / $revenueBulanSebelum * 100;
+        $revenueBulanSebelum = Transaction::join('orders', 'transactions.order_id', '=', 'orders.id')
+        ->where('transactions.payment_status', 'settlement')
+        ->where('orders.order_status', 'completed')
+        ->whereBetween('transactions.created_at', [$startMonthBefore, $endMonthBefore])
+        ->sum('transactions.total_paid');
+        
+    
+        if ($revenueBulanSebelum > 0) {
+            $persentase = (($totalBulanRevenue - $revenueBulanSebelum) / $revenueBulanSebelum) * 100;
         } else {
-            $persentase = $totalBulanRevenue > 0 ? $totalBulanRevenue * 100 : 0;
+            $persentase = $totalBulanRevenue > 0 ? 100 : 0; 
         }
-    
-        Cache::put('revenue_bulan_sebelum', $totalBulanRevenue);
 
-       
-            
-            
-
-        $monthBefore = Carbon::now()->subMonth()->format('Y-m-d');
-            
-        $revenueBulanSebelum = Transaction::
-            where('payment_status', 'settlement')
-            ->whereDate('created_at', $monthBefore)
-            ->sum('id');
-    
-            if ($revenueBulanSebelum != 0) {
-                $persentase = ($totalBulanRevenue - $revenueBulanSebelum) / $revenueBulanSebelum * 100;
-            } else {
-                $persentase = $totalBulanRevenue > 0 ? $totalBulanRevenue * 100 : 0;
-            }
-        
-            Cache::put('revenue_sebelum', $totalBulanRevenue);
-        
+        $persentase = round($persentase, 2);
 
         return [
             'totalBulanRevenue' => $totalBulanRevenue,
@@ -180,114 +121,180 @@ class AnalysisController extends Controller
     
 
 
-
+    
 
 
 
     public function itemSold() {
         $rentangTanggal = request()->input('rentang_tanggal');
         $tanggal = explode(" to ", $rentangTanggal);
-    
-        $startDate = $tanggal[0] ?? null;
-        $endDate = $tanggal[1] ?? $startDate;
-    
-        if ($rentangTanggal) {
-            // Menghitung totalItemTerjual berdasarkan rentang tanggal
-            $totalItemTerjual = OrderItem::join('orders as O', 'O.id', '=', 'order_items.order_id')
-                ->join('transactions as T', 'T.id', '=', 'O.transaction_id')
-                ->where('T.payment_status', 'settlement')
-                ->whereBetween('T.created_at', [$startDate, $endDate])
+        
+        $startDate = $tanggal[0];
+        $endDate = $tanggal[1] ?? $tanggal[0];
+
+        if($rentangTanggal) {
+            if ($startDate == $endDate) {
+                $totalItemTerjual = OrderItem::join('orders', 'order_items.order_id', '=', 'orders.id')
+                ->join('transactions', 'orders.id', '=', 'transactions.order_id')
+                ->where('transactions.payment_status', 'settlement')
+                ->where('orders.order_status', 'completed')
+                ->whereDate('transactions.created_at', $startDate)
                 ->sum('order_items.quantity');
+            } else {
+                $totalItemTerjual = OrderItem::join('orders', 'order_items.order_id', '=', 'orders.id')
+                ->join('transactions', 'orders.id', '=', 'transactions.order_id')
+                ->where('transactions.payment_status', 'settlement')
+                ->where('orders.order_status', 'completed')
+                ->whereBetween('transactions.created_at', [$startDate, $endDate])
+                ->sum('order_items.quantity');
+            }
             
-            // Ambil totalItemSebelum dari Cache
-            $totalItemSebelum = Cache::get('total_item_sebelum', 0);
         } else {
-            // Menghitung totalItemTerjual untuk hari ini
-            $totalItemTerjual = OrderItem::join('orders as O', 'O.id', '=', 'order_items.order_id')
-                ->join('transactions as T', 'T.id', '=', 'O.transaction_id')
-                ->where('T.payment_status', 'settlement')
-                ->whereDate('T.created_at', Carbon::today())
-                ->sum('order_items.quantity');
-            
-            // Menghitung totalItemSebelum untuk kemarin
-            $yesterday = Carbon::now()->subDay()->format('Y-m-d');
-            $totalItemSebelum = OrderItem::join('orders as O', 'O.id', '=', 'order_items.order_id')
-                ->join('transactions as T', 'T.id', '=', 'O.transaction_id')
-                ->where('T.payment_status', 'settlement')
-                ->whereDate('T.created_at', $yesterday)
+            $totalItemTerjual = OrderItem::join('orders', 'order_items.order_id', '=', 'orders.id')
+                ->join('transactions', 'orders.id', '=', 'transactions.order_id')
+                ->where('transactions.payment_status', 'settlement')
+                ->where('orders.order_status', 'completed')
+                ->whereDate('transactions.created_at', Carbon::today())
                 ->sum('order_items.quantity');
         }
-    
-        // Perhitungan persentase perubahan
-        if ($totalItemSebelum != 0) {
-            $persentase = ($totalItemTerjual - $totalItemSebelum) / $totalItemSebelum * 100;
-        } else {
-            $persentase = $totalItemTerjual > 0 ? $totalItemTerjual * 100 : 0;
-        }
-    
-        // Simpan totalItemTerjual ke Cache untuk penggunaan selanjutnya
-        Cache::put('total_item_sebelum', $totalItemTerjual);
     
         return [
             'totalItemTerjual' => $totalItemTerjual,
-            'totalItemSebelum' => $totalItemSebelum,
-            'isSoldItemIncreased' => $totalItemTerjual > $totalItemSebelum,
-            'persentase' => $persentase,
         ];
     }
 
-    // public function mostSoldItem()
-    // {
-    //     $rentangTanggal = request()->input('rentang_tanggal');
-    //     $tanggal = explode(" to ", $rentangTanggal);
+    public function rankSoldItem() {
+        $rentangTanggal = request()->input('rentang_tanggal');
+        $tanggal = explode(" to ", $rentangTanggal);
+        
+        $startDate = $tanggal[0];
+        $endDate = $tanggal[1] ?? $tanggal[0];
 
-    //     $startDate = $tanggal[0];
-    //     $endDate = $tanggal[1] ?? $tanggal[0];
+        if($rentangTanggal) {
+            if ($startDate == $endDate) {
+                $mostSold = OrderItem::join('orders as o', 'order_items.order_id', '=', 'o.id')
+                ->join('transactions as t', 'o.id', '=', 't.order_id')
+                ->join('products as p', 'order_items.product_id', '=', 'p.id')
+                ->where('t.payment_status', 'settlement')
+                ->where('o.order_status', 'completed')
+                ->whereDate('t.created_at', $startDate)
+                ->select('p.name', DB::raw('SUM(order_items.quantity) as total_quantity'))
+                ->groupBy('p.name')
+                ->orderByDesc('total_quantity')
+                ->limit(1)
+                ->first();
 
-    //     if ($rentangTanggal) {
-    //         if ($startDate === $endDate) {
-    //             $mostSoldItem = OrderItem::join('orders as O', 'O.id', '=', 'order_items.order_id')
-    //                 ->join('transactions as T', 'T.id', '=', 'O.transaction_id')
-    //                 ->join('products as P', 'P.id', '=', 'order_items.product_id')
-    //                 ->where('T.payment_status', 'settlement')
-    //                 ->whereDate('T.created_at', $startDate)
-    //                 ->select(
-    //                     'order_items.product_id',
-    //                     'P.name as product_name',
-    //                     DB::raw('SUM(order_items.quantity) as mostSold')
-    //                 )
-    //                 ->groupBy('order_items.product_id', 'P.name')
-    //                 ->orderByDesc('mostSold')
-    //                 ->first();
-    //         } else {
-    //             $mostSoldItem = OrderItem::join('orders as O', 'O.id', '=', 'order_items.order_id')
-    //                 ->join('transactions as T', 'T.id', '=', 'O.transaction_id')
-    //                 ->join('products as P', 'P.id', '=', 'order_items.product_id')
-    //                 ->where('T.payment_status', 'settlement')
-    //                 ->whereBetween('T.created_at', [$startDate, $endDate])
-    //                 ->select(
-    //                     'order_items.product_id',
-    //                     'P.name as product_name',
-    //                     DB::raw('SUM(order_items.quantity) as mostSold')
-    //                 )
-    //                 ->groupBy('order_items.product_id', 'P.name')
-    //                 ->orderByDesc('mostSold')
-    //         }
+                $leastSold = OrderItem::join('orders as o', 'order_items.order_id', '=', 'o.id')
+                ->join('transactions as t', 'o.id', '=', 't.order_id')
+                ->join('products as p', 'order_items.product_id', '=', 'p.id')
+                ->where('t.payment_status', 'settlement')
+                ->where('o.order_status', 'completed')
+                ->whereDate('t.created_at', $startDate)
+                ->select('p.name', DB::raw('SUM(order_items.quantity) as total_quantity'))
+                ->groupBy('p.name')
+                ->orderBy('total_quantity')
+                ->limit(1)
+                ->first();
 
-    //         if (!$mostSoldItem) {
-    //             return [
-    //                 'mostSoldName' => null,
-    //                 'mostSoldQuantity' => 0,
-    //             ];
-    //         }
+            } else {
+                $mostSold = OrderItem::join('orders as o', 'order_items.order_id', '=', 'o.id')
+                ->join('transactions as t', 'o.id', '=', 't.order_id')
+                ->join('products as p', 'order_items.product_id', '=', 'p.id')
+                ->where('t.payment_status', 'settlement')
+                ->where('o.order_status', 'completed')
+                ->whereBetween('t.created_at', [$startDate, $endDate])
+                ->select('p.name', DB::raw('SUM(order_items.quantity) as total_quantity'))
+                ->groupBy('p.name')
+                ->orderByDesc('total_quantity')
+                ->limit(1)
+                ->first();
 
-    //         return [
-    //             'mostSoldName' => $mostSoldItem->product_name,
-    //             'mostSoldQuantity' => $mostSoldItem->mostSold,
-    //         ];
-    //     }
+                $leastSold = OrderItem::join('orders as o', 'order_items.order_id', '=', 'o.id')
+                ->join('transactions as t', 'o.id', '=', 't.order_id')
+                ->join('products as p', 'order_items.product_id', '=', 'p.id')
+                ->where('t.payment_status', 'settlement')
+                ->where('o.order_status', 'completed')
+                ->whereBetween('t.created_at', [$startDate, $endDate])
+                ->select('p.name', DB::raw('SUM(order_items.quantity) as total_quantity'))
+                ->groupBy('p.name')
+                ->orderBy('total_quantity')
+                ->limit(1)
+                ->first();
 
-    // }
+            }
+        } else {
+            $mostSold = OrderItem::join('orders as o', 'order_items.order_id', '=', 'o.id')
+            ->join('transactions as t', 'o.id', '=', 't.order_id')
+            ->join('products as p', 'order_items.product_id', '=', 'p.id')
+            ->where('t.payment_status', 'settlement')
+            ->where('o.order_status', 'completed')
+            ->whereDate('transactions.created_at', Carbon::today())
+            ->select('p.name', DB::raw('SUM(order_items.quantity) as total_quantity'))
+            ->groupBy('p.name')
+            ->orderByDesc('total_quantity')
+            ->limit(1)
+            ->first();
 
+            $leastSold = OrderItem::join('orders as o', 'order_items.order_id', '=', 'o.id')
+            ->join('transactions as t', 'o.id', '=', 't.order_id')
+            ->join('products as p', 'order_items.product_id', '=', 'p.id')
+            ->where('t.payment_status', 'settlement')
+            ->where('o.order_status', 'completed')
+            ->whereDate('transactions.created_at', Carbon::today())
+            ->select('p.name', DB::raw('SUM(order_items.quantity) as total_quantity'))
+            ->groupBy('p.name')
+            ->orderBy('total_quantity')
+            ->limit(1)
+            ->first();
+
+        }
+
+        return [
+            'mostSold' => $mostSold,
+            'leastSold' => $leastSold,
+        ];
+    }
+
+    public function soldItemToday() {
+        $soldProduct = Product::join('product_variant_stocks as pvs', 'products.id', '=', 'pvs.product_id')
+            ->where('pvs.stock', '>', '100')  
+            ->select(
+                'products.name as product_name', 
+                'pvs.stock as product_stock' 
+            )
+            ->orderBy('pvs.stock')
+            ->get(); 
+    
+        return $soldProduct; 
+    }
+    
+    public function revenuePerMonth() {
+        $startDate = Carbon::now()->startOfYear(); 
+        $endDate = Carbon::now()->endOfYear(); 
+
+        $monthlyRevenue = Transaction::join('orders', 'transactions.order_id', '=', 'orders.id')
+            ->where('transactions.payment_status', 'settlement')
+            ->where('orders.order_status', 'completed')
+            ->whereBetween('transactions.created_at', [$startDate, $endDate])
+            ->selectRaw('MONTH(transactions.created_at) as month, SUM(transactions.total_paid) as total_revenue')
+            ->groupBy('month')
+            ->orderBy('month', 'asc')
+            ->get();
+
+        $revenueData = [];
+        $categories = [];
+
+        foreach ($monthlyRevenue as $data) {
+            $revenueData[] = (int) $data->total_revenue;
+            $categories[] = Carbon::createFromFormat('m', $data->month)->format('M');
+        }
+
+        return response()->json([
+            'data' => $revenueData,
+            'categories' => $categories
+        ]);
+    }
+    
+    
     
 }    

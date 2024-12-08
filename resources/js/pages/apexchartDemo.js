@@ -105,24 +105,18 @@ export const charts = {
       },
     },
   },
-  demoChart3: {
+  barChartVertical: {
     colors: ["#31E1EC", "#3878FF"],
     series: [
       {
         name: "Revenue",
         data: [44000000, 55000000, 57000000, 56000000, 61000000, 58000000, 63000000, 70000000, 65000000, 60000000, 72000000, 68000000],
-        type: "bar",  // Tipe data untuk Revenue
+        type: "bar",  
       },
-      // {
-      //   name: "Transaction",
-      //   // Mengalikan setiap data transaction dengan 100,000
-      //   data: [76, 85, 101, 98, 87, 105, 91, 110, 115, 120, 125, 130].map(val => val * 400000),
-      //   type: "bar",  // Tipe data untuk Transaction  
-      // },
     ],  
     chart: {
       type: "bar",
-      width: "100%", // ini di ubah
+      width: "100%",
       height: 505,
       toolbar: {
         show: false,
@@ -163,11 +157,7 @@ export const charts = {
             return formattedValue.replace('IDR', 'Rp');
           },
         },
-        // {
-        //   formatter: function (val) {
-        //     return (val / 100000) + ' transaction'; // Membagi kembali nilai transaksi agar tampilannya sesuai
-        //   },
-        // },
+
       ],
     },  
     legend: {
@@ -179,6 +169,82 @@ export const charts = {
       },
     },
   },
+
+  barChartHorizontal: {
+    colors: ["#31E1EC", "#3878FF"],
+    series: [
+      {
+        name: "Revenue",
+        data: [44000000, 55000000, 57000000, 56000000, 61000000, 58000000, 63000000, 70000000, 65000000, 60000000, 72000000, 68000000],
+        type: "bar",  
+      },
+    ],  
+    chart: {
+      type: "bar",
+      width: "85%",
+      height: 200,
+      toolbar: {
+        show: false,
+      },
+    },
+    plotOptions: {
+      bar: {
+        horizontal: false,
+        columnWidth: "55%",
+        barHeight: "70%",
+        borderRadius: 5,
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    stroke: {
+      show: true,
+      width: 2,
+      colors: ["transparent"],
+    },
+    xaxis: {
+      categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    },
+
+    yaxis: {
+      show: false,  // Menonaktifkan angka di sumbu Y
+      axisBorder: {
+        show: false,  // Menonaktifkan garis tepi sumbu Y
+      },
+  
+    },
+
+  
+    
+    fill: {
+      opacity: 1,
+    },
+    tooltip: {
+      y: [
+        {
+          formatter: function (val) {
+            let formattedValue = new Intl.NumberFormat('id-ID', {
+              style: 'currency',
+              currency: 'IDR',
+              minimumFractionDigits: 0,
+            }).format(val);
+            return formattedValue.replace('IDR', 'Rp');
+          },
+        },
+
+      ],
+    },  
+    legend: {
+      position: "top",
+      horizontalAlign: "right",
+      fontSize: "14px",
+      markers: {
+        radius: 12,
+      },
+    },
+  },
+
   demoChart4: {
     colors: ["#a855f7"],
     series: [
