@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Http\Controllers\AnalysisController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\ProductsController;
@@ -50,7 +51,8 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'role:owner'])->group(function () {
     Route::get('/owner-dashboard', [PagesController::class, 'ownerDashboard'])->name('ownerDashboardView');
-    Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
+    Route::get('/laporan', [AnalysisController::class, 'index'])->name('laporan');
+    Route::get('/laporan/export-pdf', [AnalysisController::class, 'exportPdf'])->name('laporan.exportPdf');
 });
 
 Route::middleware(['auth', 'role:cashier'])->group(function () {

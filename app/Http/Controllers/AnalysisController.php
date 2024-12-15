@@ -8,6 +8,7 @@ use App\Models\Transaction;
 use App\Models\OrderItem;
 use App\Models\Product;
 use Carbon\Carbon;
+// use Barryvdh\DomPDF\Facade as PDF;
 
 
 class AnalysisController extends Controller
@@ -289,7 +290,134 @@ class AnalysisController extends Controller
     
         return $monthlyRevenueFormatted;
     }
+
+    public function index()
+    {
+        // Ambil data yang diperlukan untuk tampilan laporan
+        $revenueData = $this->revenue();
+        $transactionData = $this->totalTransaction();
+        $monthlyRevenueData = $this->revenuePerMonth();
+        $itemSoldData = $this->itemSold();
+        $rankSoldItemData = $this->rankSoldItem();
     
+        // Tampilkan view dengan data yang diperlukan
+        return view('pages.owner.laporan', [
+            'revenue' => $revenueData['totalRevenue'],
+            'totalTransaction' => $transactionData['totalTransaksi'],
+            'monthlyRevenue' => $monthlyRevenueData,
+            'itemSold' => $itemSoldData['totalItemTerjual'],
+            'rankSoldItem' => $rankSoldItemData
+        ]);
+    }
+    public function laporanView(Request $request)
+    {
+        // Ambil rentang tanggal dari input
+        $rentangTanggal = $request->input('rentang_tanggal');
+        $tanggal = explode(" to ", $rentangTanggal);
+
+        $startDate = $tanggal[0] ?? null;
+        $endDate = $tanggal[1] ?? $tanggal[0] ?? null;
+
+        // Query untuk total revenue
+        $totalRevenueQuery = Transaction::join('orders', 'transactions.order_id', '=', 'orders.id')
+            ->where('transactions.payment_status', 'settlement')
+            ->where('orders.order_status', 'completed');
+
+        if ($startDate && $endDate) {
+            $totalRevenueQuery->whereBetween('transactions.created_at', [$startDate, $endDate]);
+        } else {
+            $totalRevenueQuery->whereDate('transactions.created_at', Carbon::today());
+        }
+
+        $totalRevenue = $totalRevenueQuery->sum('transactions.total_paid');
+
+        // Query untuk total transaksi
+        $totalTransactionQuery = Transaction::join('orders', 'transactions.order_id', '=', 'orders.id')
+            ->where('transactions.payment_status', 'settlement')
+            ->where('orders.order_status', 'completed');
+
+        if ($startDate && $endDate) {
+            $totalTransactionQuery->whereBetween('transactions.created_at', [$startDate, $endDate]);
+        } else {
+            $totalTransactionQuery->whereDate('transactions.created_at', Carbon::today());
+        }
+
+        $totalTransaction = $totalTransactionQuery->count();
+
+        // Query untuk total barang terjual
+        $itemSoldQuery = OrderItem::join('orders', 'order_items.order_id', '=', 'orders.id')
+            ->join('transactions', 'orders.id', '=', 'transactions.order_id')
+            ->where('transactions.payment_status', 'settlement')
+            ->where('orders.order_status', 'completed');
+
+        if ($startDate && $endDate) {
+            $itemSoldQuery->whereBetween('transactions.created_at', [$startDate, $endDate]);
+        } else {
+            $itemSoldQuery->whereDate('transactions.created_at', Carbon::today());
+        }
+
+        $itemSold = $itemSoldQuery->sum('order_items.quantity');
+
+        // Laporan Bulanan
+        $monthlyRevenueQuery = Transaction::selectRaw('MONTH(created_at) as month, SUM(total_paid) as total_revenue')
+            ->join('orders', 'transactions.order_id', '=', 'orders.id')
+            ->where('transactions.payment_status', 'settlement')
+            ->where('orders.order_status', 'completed');
+
+        if ($startDate && $endDate) {
+            $monthlyRevenueQuery->whereBetween('transactions.created_at', [$startDate, $endDate]);
+        }
+
+        $monthlyRevenue = $monthlyRevenueQuery->groupBy('month')
+            ->orderBy('month', 'asc')
+            ->get();
+
+        // Barang Terlaris
+        $mostSoldQuery = OrderItem::join('orders', 'order_items.order_id', '=', 'orders.id')
+            ->join('transactions', 'orders.id', '=', 'transactions.order_id')
+            ->join('products', 'order_items.product_id', '=', 'products.id')
+            ->where('transactions.payment_status', 'settlement')
+            ->where('orders.order_status', 'completed');
+
+        if ($startDate && $endDate) {
+            $mostSoldQuery->whereBetween('transactions.created_at', [$startDate, $endDate]);
+        }
+
+        $mostSold = $mostSoldQuery->select('products.name', DB::raw('SUM(order_items.quantity) as total_quantity'))
+            ->groupBy('products.name')
+            ->orderByDesc('total_quantity')
+            ->first();
+
+        // Barang Paling Sedikit Terjual
+        $leastSoldQuery = OrderItem::join('orders', 'order_items.order_id', '=', 'orders.id')
+            ->join('transactions', 'orders.id', '=', 'transactions.order_id')
+            ->join('products', 'order_items.product_id', '=', 'products.id')
+            ->where('transactions.payment_status', 'settlement')
+            ->where('orders.order_status', 'completed');
+
+        if ($startDate && $endDate) {
+            $leastSoldQuery->whereBetween('transactions.created_at', [$startDate, $endDate]);
+        }
+
+        $leastSold = $leastSoldQuery->select('products.name', DB::raw('SUM(order_items.quantity) as total_quantity'))
+            ->groupBy('products.name')
+            ->orderBy('total_quantity')
+            ->first();
+
+        // Kirim data ke view
+        return view('pages.owner.laporan', [
+            'totalRevenue' => $totalRevenue,
+            'totalTransaction' => $totalTransaction,
+            'itemSold' => $itemSold,
+            'monthlyRevenue' => $monthlyRevenue,
+            'rankSoldItem' => [
+                'mostSold' => $mostSold,
+                'leastSold' => $leastSold
+            ]
+        ]);        
+    }    
+    
+   
     // public function revenuePerMonth() {
     //     $startDate = Carbon::now()->startOfYear(); 
     //     $endDate = Carbon::now()->endOfYear(); 
