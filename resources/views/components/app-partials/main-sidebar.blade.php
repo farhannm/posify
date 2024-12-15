@@ -104,6 +104,14 @@
                         <i class='bx bxs-user-account text-xl'></i>
                     </a>
 
+                    <!-- Laporan -->
+                    <a href="{{ route('laporan') }}" 
+                        class="flex h-11 w-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 
+                        {{ $routePrefix === 'laporan' ? 'text-primary hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:bg-navy-600 bg-primary/10 dark:text-accent-light dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90' : 'hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25' }}" 
+                        x-tooltip.placement.right="'Laporan'">
+                        <i class='bx bxs-bar-chart-alt-2 text-xl'></i>
+                    </a>
+
                 </div>
 
                 <div class="flex flex-col items-center space-y-8 py-8">

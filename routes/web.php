@@ -50,6 +50,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'role:owner'])->group(function () {
     Route::get('/owner-dashboard', [PagesController::class, 'ownerDashboard'])->name('ownerDashboardView');
+    Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
 });
 
 Route::middleware(['auth', 'role:cashier'])->group(function () {
