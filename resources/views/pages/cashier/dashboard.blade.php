@@ -295,55 +295,13 @@
             <div class="hidden sm:col-span-6 sm:block lg:col-span-4">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-1">
-                        <p>
-                            <span class="text-base font-medium text-slate-700 dark:text-navy-100">Draft</span>
-                            <span>#001</span>
-                        </p>
+                        
 
-                        <div x-data="usePopper({ placement: 'bottom-end', offset: 4 })" @click.outside="if(isShowPopper) isShowPopper = false"
-                            class="inline-flex">
-                            <button x-ref="popperRef" @click="isShowPopper = !isShowPopper"
-                                class="btn h-7 w-7 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </button>
-
-                            <div x-ref="popperRoot" class="popper-root" :class="isShowPopper && 'show'">
-                                <div
-                                    class="popper-box rounded-md border border-slate-150 bg-white py-1.5 font-inter dark:border-navy-500 dark:bg-navy-700">
-                                    <ul>
-                                        <li>
-                                            <a href="#"
-                                                class="flex h-8 items-center px-3 pr-8 font-medium tracking-wide outline-none transition-all hover:bg-slate-100 hover:text-slate-800 focus:bg-slate-100 focus:text-slate-800 dark:hover:bg-navy-600 dark:hover:text-navy-100 dark:focus:bg-navy-600 dark:focus:text-navy-100">Draft
-                                                #001</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="flex h-8 items-center px-3 pr-8 font-medium tracking-wide outline-none transition-all hover:bg-slate-100 hover:text-slate-800 focus:bg-slate-100 focus:text-slate-800 dark:hover:bg-navy-600 dark:hover:text-navy-100 dark:focus:bg-navy-600 dark:focus:text-navy-100">Draft
-                                                #002</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="flex h-8 items-center px-3 pr-8 font-medium tracking-wide outline-none transition-all hover:bg-slate-100 hover:text-slate-800 focus:bg-slate-100 focus:text-slate-800 dark:hover:bg-navy-600 dark:hover:text-navy-100 dark:focus:bg-navy-600 dark:focus:text-navy-100">Draft
-                                                #005</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
 
                     <div class="flex space-x-1">
-                        <button
-                            class="btn h-7 w-7 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                    d="M12 4v16m8-8H4" />
-                            </svg>
-                        </button>
+                        
                         <button
                             class="btn h-7 w-7 rounded-full p-0 hover:bg-slate-300/20 hover:text-error focus:bg-slate-300/20 focus:text-error active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25"
                             onclick="clearCart()">
@@ -354,47 +312,7 @@
                                     d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                             </svg>
                         </button>
-                        <div x-data="usePopper({ placement: 'bottom-end', offset: 4 })" @click.outside="if(isShowPopper) isShowPopper = false"
-                            class="inline-flex">
-                            <button x-ref="popperRef" @click="isShowPopper = !isShowPopper"
-                                class="btn h-7 w-7 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                                </svg>
-                            </button>
-
-                            <div x-ref="popperRoot" class="popper-root" :class="isShowPopper && 'show'">
-                                <div
-                                    class="popper-box rounded-md border border-slate-150 bg-white py-1.5 font-inter dark:border-navy-500 dark:bg-navy-700">
-                                    <ul>
-                                        <li>
-                                            <a href="#"
-                                                class="flex h-8 items-center px-3 pr-8 font-medium tracking-wide outline-none transition-all hover:bg-slate-100 hover:text-slate-800 focus:bg-slate-100 focus:text-slate-800 dark:hover:bg-navy-600 dark:hover:text-navy-100 dark:focus:bg-navy-600 dark:focus:text-navy-100">Action</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="flex h-8 items-center px-3 pr-8 font-medium tracking-wide outline-none transition-all hover:bg-slate-100 hover:text-slate-800 focus:bg-slate-100 focus:text-slate-800 dark:hover:bg-navy-600 dark:hover:text-navy-100 dark:focus:bg-navy-600 dark:focus:text-navy-100">Another
-                                                Action</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="flex h-8 items-center px-3 pr-8 font-medium tracking-wide outline-none transition-all hover:bg-slate-100 hover:text-slate-800 focus:bg-slate-100 focus:text-slate-800 dark:hover:bg-navy-600 dark:hover:text-navy-100 dark:focus:bg-navy-600 dark:focus:text-navy-100">Something
-                                                else</a>
-                                        </li>
-                                    </ul>
-                                    <div class="my-1 h-px bg-slate-150 dark:bg-navy-500"></div>
-                                    <ul>
-                                        <li>
-                                            <a href="#"
-                                                class="flex h-8 items-center px-3 pr-8 font-medium tracking-wide outline-none transition-all hover:bg-slate-100 hover:text-slate-800 focus:bg-slate-100 focus:text-slate-800 dark:hover:bg-navy-600 dark:hover:text-navy-100 dark:focus:bg-navy-600 dark:focus:text-navy-100">Separated
-                                                Link</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
                 <div class="card mt-5 p-4 sm:p-5" x-data="{ clicked : 'slide-1' , showModal:false , showModal1:false , nextModal:false , choosedPaymentMethod: null}">
@@ -740,105 +658,21 @@
                             </svg>
                         </button>
                         <div class="flex items-center space-x-1">
-                            <p>
-                                <span class="text-base font-medium text-slate-700 dark:text-navy-100">Draft</span>
-                                <span>#001</span>
-                            </p>
-
-                            <div x-data="usePopper({ placement: 'bottom-end', offset: 4 })" @click.outside="if(isShowPopper) isShowPopper = false"
-                                class="inline-flex">
-                                <button x-ref="popperRef" @click="isShowPopper = !isShowPopper"
-                                    class="btn h-7 w-7 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </button>
-
-                                <div x-ref="popperRoot" class="popper-root" :class="isShowPopper && 'show'">
-                                    <div
-                                        class="popper-box rounded-md border border-slate-150 bg-white py-1.5 font-inter dark:border-navy-500 dark:bg-navy-700">
-                                        <ul>
-                                            <li>
-                                                <a href="#"
-                                                    class="flex h-8 items-center px-3 pr-8 font-medium tracking-wide outline-none transition-all hover:bg-slate-100 hover:text-slate-800 focus:bg-slate-100 focus:text-slate-800 dark:hover:bg-navy-600 dark:hover:text-navy-100 dark:focus:bg-navy-600 dark:focus:text-navy-100">Draft
-                                                    #001</a>
-                                            </li>
-                                            <li>
-                                                <a href="#"
-                                                    class="flex h-8 items-center px-3 pr-8 font-medium tracking-wide outline-none transition-all hover:bg-slate-100 hover:text-slate-800 focus:bg-slate-100 focus:text-slate-800 dark:hover:bg-navy-600 dark:hover:text-navy-100 dark:focus:bg-navy-600 dark:focus:text-navy-100">Draft
-                                                    #002</a>
-                                            </li>
-                                            <li>
-                                                <a href="#"
-                                                    class="flex h-8 items-center px-3 pr-8 font-medium tracking-wide outline-none transition-all hover:bg-slate-100 hover:text-slate-800 focus:bg-slate-100 focus:text-slate-800 dark:hover:bg-navy-600 dark:hover:text-navy-100 dark:focus:bg-navy-600 dark:focus:text-navy-100">Draft
-                                                    #005</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
+                            
                         </div>
                     </div>
 
                     <div class="-mr-1.5 flex space-x-1">
                         <button
-                            class="btn h-7 w-7 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                    d="M12 4v16m8-8H4" />
-                            </svg>
-                        </button>
-                        <button
-                            class="btn h-7 w-7 rounded-full p-0 hover:bg-slate-300/20 hover:text-error focus:bg-slate-300/20 focus:text-error active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
+                            class="btn h-7 w-7 rounded-full p-0 hover:bg-slate-300/20 hover:text-error focus:bg-slate-300/20 focus:text-error active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25"
+                            onclick="clearCart()">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none"
                                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                             </svg>
                         </button>
-                        <div x-data="usePopper({ placement: 'bottom-end', offset: 4 })" @click.outside="if(isShowPopper) isShowPopper = false"
-                            class="inline-flex">
-                            <button x-ref="popperRef" @click="isShowPopper = !isShowPopper"
-                                class="btn h-7 w-7 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                                </svg>
-                            </button>
-
-                            <div x-ref="popperRoot" class="popper-root" :class="isShowPopper && 'show'">
-                                <div
-                                    class="popper-box rounded-md border border-slate-150 bg-white py-1.5 font-inter dark:border-navy-500 dark:bg-navy-700">
-                                    <ul>
-                                        <li>
-                                            <a href="#"
-                                                class="flex h-8 items-center px-3 pr-8 font-medium tracking-wide outline-none transition-all hover:bg-slate-100 hover:text-slate-800 focus:bg-slate-100 focus:text-slate-800 dark:hover:bg-navy-600 dark:hover:text-navy-100 dark:focus:bg-navy-600 dark:focus:text-navy-100">Action</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="flex h-8 items-center px-3 pr-8 font-medium tracking-wide outline-none transition-all hover:bg-slate-100 hover:text-slate-800 focus:bg-slate-100 focus:text-slate-800 dark:hover:bg-navy-600 dark:hover:text-navy-100 dark:focus:bg-navy-600 dark:focus:text-navy-100">Another
-                                                Action</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="flex h-8 items-center px-3 pr-8 font-medium tracking-wide outline-none transition-all hover:bg-slate-100 hover:text-slate-800 focus:bg-slate-100 focus:text-slate-800 dark:hover:bg-navy-600 dark:hover:text-navy-100 dark:focus:bg-navy-600 dark:focus:text-navy-100">Something
-                                                else</a>
-                                        </li>
-                                    </ul>
-                                    <div class="my-1 h-px bg-slate-150 dark:bg-navy-500"></div>
-                                    <ul>
-                                        <li>
-                                            <a href="#"
-                                                class="flex h-8 items-center px-3 pr-8 font-medium tracking-wide outline-none transition-all hover:bg-slate-100 hover:text-slate-800 focus:bg-slate-100 focus:text-slate-800 dark:hover:bg-navy-600 dark:hover:text-navy-100 dark:focus:bg-navy-600 dark:focus:text-navy-100">Separated
-                                                Link</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
 
@@ -1188,6 +1022,7 @@
 
             localStorage.setItem('cart', JSON.stringify(cart));
             updateCart('.cart-items');
+            updateCart('.cart-items-responsive');
 
         }
 
@@ -1214,9 +1049,12 @@
             let cartContainer = document.querySelector(div);
             cartContainer.innerHTML = ''; 
 
+            cart.reverse();
+
             cart.forEach(item => {
                 let cartItemHTML = `
-                    <div class="cart-item flex items-center justify-between pb-2 text-sm bg-white mt-4">
+                    <div class="cart-item rounded-lg flex m-1 p-2 text-sm bg-white">
+                        <div class="flex ">
                             <!-- Product Image and Name -->
                             <div class="flex items-center">
                                 <!-- Product Image -->
@@ -1228,12 +1066,35 @@
                                     <h3 class="font-semibold">${item.product_name}</h3>
                                 </div>
                             </div>
-                            <!-- Price and Quantity -->
-                            <div class="text-right">
-                                <p class="font-semibold text-gray-700">Rp ${item.total.toLocaleString('id-ID')}</p>
-                                <p class="text-xs" style="color: #4A5568;">x ${item.quantity}</p>
-                            </div>
                         </div>
+                        <div class="flex items-center ml-auto">    
+                            <div class="flex flex-col mr-5">    
+                                <div class="text-right">
+                                    <p class="font-semibold text-gray-700">Rp ${item.total.toLocaleString('id-ID')}</p>
+                                </div>  
+                                
+                                <div class="flex items-end">
+                                        
+                                    <!-- Minus -->
+                                    <button onclick="updateQuantity(${item.product_id}, 'kurang')" class="bg-slate-300/20 px-2 py-1 text-gray-600 text-sm">-</button>
+
+                                    <!-- Quantity -->
+                                    <span class="px-3">${item.quantity}</span>
+
+                                    <!-- Plus -->
+                                    <button onclick="updateQuantity(${item.product_id}, 'tambah')" class="bg-slate-300/20 px-2 py-1 text-gray-600 text-sm">+</button>
+                                </div>
+
+                                
+                            </div>
+                        
+                        </div>
+                        <div class="flex justify-end items-center bg-slate-300/20">
+                            <button onclick="hapusPesanan(${item.product_id})" class="w-10 text-gray-600 text-lg text-primary hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:text-accent-light/80 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
+                                    &times; <!-- Tanda X -->
+                            </button>
+                        </div>
+                    </div>
                 `;
                 cartContainer.innerHTML += cartItemHTML;
             });
@@ -1241,10 +1102,47 @@
             let pilihanPaymentMethod = localStorage.getItem('paymentMethod');
             updatePrice(pilihanPaymentMethod);
         }
-            //    #/gopay-qris, #/shopeepay-qris, #/bank-transfer/bca-va,  #/bank-transfer/bni-va, #/bank-transfer/bri-va
+
+        function updateQuantity(productUpdate, action) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+            let productUpdateInCart = cart.find(item => item.product_id === productUpdate);
+
+            if (productUpdateInCart) {
+                if (action == 'tambah') {
+                    productUpdateInCart.quantity += 1;
+                }
+                if (action == 'kurang') {
+                    if (productUpdateInCart.quantity > 1) {
+                        productUpdateInCart.quantity -= 1;
+                    }
+                }
+                productUpdateInCart.total = productUpdateInCart.price * productUpdateInCart.quantity;
+
+                localStorage.setItem('cart', JSON.stringify(cart));
+
+                updateCart('.cart-items');
+                updateCart('.cart-items-responsive');
+
+            }
+
+            
+        }
+
+
+           
 
         
-        // kadieu
+        function hapusPesanan (productDelete) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+            cart = cart.filter(item => item.product_id !== productDelete); // membuat array baru yang memfilter  productDelete
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCart('.cart-items');
+            updateCart('.cart-items-responsive');
+
+            
+        }
         
         function simpanMetodePembayaran(paymentMethod) {
             console.log("Simpan Metode Pembayaran yang dipilih:", paymentMethod);
@@ -1440,7 +1338,8 @@
                 isiCart = 0;
             }
             
-            updateCart(); 
+            updateCart('.cart-items');
+            updateCart('.cart-items-responsive');
         }
 
         function clearPaymentMethod() {

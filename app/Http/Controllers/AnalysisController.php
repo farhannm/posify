@@ -228,7 +228,7 @@ class AnalysisController extends Controller
             ->join('products as p', 'order_items.product_id', '=', 'p.id')
             ->where('t.payment_status', 'settlement')
             ->where('o.order_status', 'completed')
-            ->whereDate('transactions.created_at', Carbon::today())
+            ->whereDate('t.created_at', Carbon::today())
             ->select('p.name', DB::raw('SUM(order_items.quantity) as total_quantity'))
             ->groupBy('p.name')
             ->orderByDesc('total_quantity')
@@ -240,7 +240,7 @@ class AnalysisController extends Controller
             ->join('products as p', 'order_items.product_id', '=', 'p.id')
             ->where('t.payment_status', 'settlement')
             ->where('o.order_status', 'completed')
-            ->whereDate('transactions.created_at', Carbon::today())
+            ->whereDate('t.created_at', Carbon::today())
             ->select('p.name', DB::raw('SUM(order_items.quantity) as total_quantity'))
             ->groupBy('p.name')
             ->orderBy('total_quantity')
@@ -257,7 +257,7 @@ class AnalysisController extends Controller
 
     public function soldItemToday() {
         $soldProduct = Product::join('product_variant_stocks as pvs', 'products.id', '=', 'pvs.product_id')
-            ->where('pvs.stock', '>', '100')  
+            ->where('pvs.stock', '<', '11')  
             ->select(
                 'products.name as product_name', 
                 'pvs.stock as product_stock' 
@@ -267,33 +267,55 @@ class AnalysisController extends Controller
     
         return $soldProduct; 
     }
-    
-    public function revenuePerMonth() {
-        $startDate = Carbon::now()->startOfYear(); 
-        $endDate = Carbon::now()->endOfYear(); 
 
+    public function revenuePerMonth() {
+        
+        $startOfYear = Carbon::now()->startOfYear()->format('Y-m-d');
+        $endOfYear = Carbon::now()->endOfYear()->format('Y-m-d');
+    
         $monthlyRevenue = Transaction::join('orders', 'transactions.order_id', '=', 'orders.id')
             ->where('transactions.payment_status', 'settlement')
             ->where('orders.order_status', 'completed')
-            ->whereBetween('transactions.created_at', [$startDate, $endDate])
-            ->selectRaw('MONTH(transactions.created_at) as month, SUM(transactions.total_paid) as total_revenue')
-            ->groupBy('month')
-            ->orderBy('month', 'asc')
+            ->whereBetween('transactions.created_at', [$startOfYear, $endOfYear])
+            ->selectRaw('DATE_PART(\'year\', transactions.created_at) as year, DATE_PART(\'month\', transactions.created_at) as month, SUM(transactions.total_paid) as total_revenue')
+            ->groupBy(DB::raw('DATE_PART(\'year\', transactions.created_at), DATE_PART(\'month\', transactions.created_at)'))
+            ->orderBy(DB::raw('DATE_PART(\'year\', transactions.created_at), DATE_PART(\'month\', transactions.created_at)'))
             ->get();
-
-        $revenueData = [];
-        $categories = [];
-
-        foreach ($monthlyRevenue as $data) {
-            $revenueData[] = (int) $data->total_revenue;
-            $categories[] = Carbon::createFromFormat('m', $data->month)->format('M');
-        }
-
-        return response()->json([
-            'data' => $revenueData,
-            'categories' => $categories
-        ]);
+    
+        $monthlyRevenueFormatted = $monthlyRevenue->map(function ($item) {
+            $item->total_revenue;
+            return $item;
+        });
+    
+        return $monthlyRevenueFormatted;
     }
+    
+    // public function revenuePerMonth() {
+    //     $startDate = Carbon::now()->startOfYear(); 
+    //     $endDate = Carbon::now()->endOfYear(); 
+
+    //     $monthlyRevenue = Transaction::join('orders', 'transactions.order_id', '=', 'orders.id')
+    //         ->where('transactions.payment_status', 'settlement')
+    //         ->where('orders.order_status', 'completed')
+    //         ->whereBetween('transactions.created_at', [$startDate, $endDate])
+    //         ->selectRaw('MONTH(transactions.created_at) as month, SUM(transactions.total_paid) as total_revenue')
+    //         ->groupBy('month')
+    //         ->orderBy('month', 'asc')
+    //         ->get();
+
+    //     $revenueData = [];
+    //     $categories = [];
+
+    //     foreach ($monthlyRevenue as $data) {
+    //         $revenueData[] = (int) $data->total_revenue;
+    //         $categories[] = Carbon::createFromFormat('m', $data->month)->format('M');
+    //     }
+
+    //     return response()->json([
+    //         'data' => $revenueData,
+    //         'categories' => $categories
+    //     ]);
+    // }
     
     
     
